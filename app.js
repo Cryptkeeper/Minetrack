@@ -7,20 +7,21 @@ var config = require('./config.json');
 var networkHistory = [];
 var connectedClients = 0;
 
-// Start our main loop that fires off pings.
-setInterval(function() {
+function pingAll() {
 	var servers = config.servers;
 
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
-			ping.ping(network.ip, network.port || 25565, network.type, 2500, function(err, result) {
+			ping.ping(network.ip, network.port, network.type, 2500, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
 					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err);
+				} else {
+					console.log(network.ip + ': ' + res.players.online);
 				}
 
-				server.io.sockets.emit('update', result);
+				server.io.sockets.emit('update', res);
 
 				// Log our response.
 				if (!networkHistory[network.ip]) {
@@ -35,8 +36,8 @@ setInterval(function() {
 				}
 
 				_networkHistory.push({
-					err: err,
-					result: result
+					error: err,
+					result: res
 				});
 
 				// Make sure we never log too much.
@@ -46,7 +47,7 @@ setInterval(function() {
 			});
 		})(servers[i]);
 	}
-}, 2500);
+}
 
 server.start(function() {
 	// Track how many people are currently connected.
@@ -74,4 +75,9 @@ server.start(function() {
 			logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
 		});
 	});
+
+	// Start our main loop that fires off pings.
+	setInterval(pingAll, 2500);
+
+	pingAll();
 });
