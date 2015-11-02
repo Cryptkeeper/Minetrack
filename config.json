@@ -1,0 +1,33 @@
+{
+	"networks": [
+		{
+			"name": "Hypixel",
+			"ip": "mc.hypixel.net",
+			"type": "PC"
+		},
+		{
+			"name": "Mineplex: US",
+			"ip": "us.mineplex.com",
+			"type": "PC"
+		},
+		{
+			"name": "Mineplex: EU",
+			"ip": "eu.mineplex.com",
+			"type": "PC"
+		},
+		{
+			"name": "Overcast: US",
+			"ip": "us.oc.tc",
+			"type": "PC"
+		},
+		{
+			"name": "Overcast: EU",
+			"ip": "eu.oc.tc",
+			"type": "PC"
+		}
+	],
+	"site": {
+		"port": 80,
+		"ip": "0.0.0.0"
+	}
+}
