@@ -1,5 +1,7 @@
 var server = require('./lib/server');
 var ping = require('./lib/ping');
+var logger = require('./lib/logger');
+
 var config = require('./config.json');
 
 var networkHistory = [];
@@ -15,9 +17,7 @@ setInterval(function() {
 			ping.ping(network.ip, network.port || 25565, network.type, 2500, function(err, result) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
-					console.log('Failed to ping ' + network.ip + ': ' + err);
-				} else {
-					console.log(network.ip + ' reply: ' + result.players.online + '/' + result.players.max);
+					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err);
 				}
 
 				server.io.sockets.emit('update', result);
@@ -48,17 +48,13 @@ setInterval(function() {
 	}
 }, 2500);
 
-setInterval(function() {
-	console.log('Connected clients: %d', connectedClients);
-}, 1000);
-
 server.start(function() {
 	// Track how many people are currently connected.
 	server.io.on('connect', function(client) {
-		console.log('Incoming connection: %s', client.request.connection.remoteAddress);
-
 		// We're good to connect them!
 		connectedClients += 1;
+
+		logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
 		// Remap our associative array into just an array.
 		var networkHistoryList = [];
@@ -73,8 +69,6 @@ server.start(function() {
 
 		// Attach our listeners.
 		client.on('disconnect', function(client) {
-			console.log('Dropped connection: %s', client.request.connection.remoteAddress);
-
 			connectedClients -= 1;
 		});
 	});
