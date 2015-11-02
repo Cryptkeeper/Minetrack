@@ -1,7 +1,7 @@
 {
   "name": "minetrack",
   "version": "1.0.0",
-  "description": "A Minecraft network tracker that lets you focus on the basics.",
+  "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "app.js",
   "dependencies": {
     "socket.io": "^1.3.7",

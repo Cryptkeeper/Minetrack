@@ -7,9 +7,9 @@ var connectedClients = 0;
 
 // Start our main loop that fires off pings.
 setInterval(function() {
-	var networks = config.networks;
+	var servers = config.servers;
 
-	for (var i = 0; i < networks.length; i++) {
+	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
 			ping.ping(network.ip, network.port || 25565, network.type, 2500, function(err, result) {
@@ -44,7 +44,7 @@ setInterval(function() {
 					_networkHistory.shift();
 				}
 			});
-		})(networks[i]);
+		})(servers[i]);
 	}
 }, 2500);
 

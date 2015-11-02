@@ -1,39 +1,29 @@
 {
-	"networks": [
+	"servers": [
 		{
 			"name": "Hypixel",
 			"ip": "mc.hypixel.net",
 			"type": "PC"
 		},
 		{
-			"name": "Mineplex: US",
+			"name": "Mineplex",
 			"ip": "us.mineplex.com",
 			"type": "PC"
 		},
 		{
-			"name": "Mineplex: EU",
-			"ip": "eu.mineplex.com",
-			"type": "PC"
-		},
-		{
-			"name": "Overcast: US",
+			"name": "Overcast",
 			"ip": "us.oc.tc",
-			"type": "PC"
-		},
-		{
-			"name": "Overcast: EU",
-			"ip": "eu.oc.tc",
 			"type": "PC"
 		}
 	],
-	"site": {
-		"port": 80,
-		"ip": "0.0.0.0"
-	},
 	"routes": {
 		"/": "assets/html/index.html",
 		"/images/compass.png": "assets/images/compass.png",
 		"/js/site.js": "assets/js/site.js",
 		"/css/main.css": "assets/css/main.css"
+	},
+	"site": {
+		"port": 80,
+		"ip": "0.0.0.0"
 	}
 }
