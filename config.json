@@ -29,5 +29,11 @@
 	"site": {
 		"port": 80,
 		"ip": "0.0.0.0"
+	},
+	"routes": {
+		"/": "assets/html/index.html",
+		"/images/compass.png": "assets/images/compass.png",
+		"/js/site.js": "assets/js/site.js",
+		"/css/main.css": "assets/css/main.css"
 	}
 }

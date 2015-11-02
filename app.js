@@ -18,9 +18,9 @@ setInterval(function() {
 					console.log('Failed to ping ' + network.ip + ': ' + err);
 				} else {
 					console.log(network.ip + ' reply: ' + result.players.online + '/' + result.players.max);
-
-					server.io.sockets.emit('update', result);
 				}
+
+				server.io.sockets.emit('update', result);
 
 				// Log our response.
 				if (!networkHistory[network.ip]) {
@@ -52,11 +52,7 @@ setInterval(function() {
 	console.log('Connected clients: %d', connectedClients);
 }, 1000);
 
-// Manually construct our paths.
-server.urlMapping['/'] = 'assets/html/index.html';
-server.urlMapping['/compass-icon'] = 'assets/images/compass.png';
-
-server.start(config.site.ip, config.site.port, function() {
+server.start(function() {
 	// Track how many people are currently connected.
 	server.io.on('connect', function(client) {
 		console.log('Incoming connection: %s', client.request.connection.remoteAddress);
