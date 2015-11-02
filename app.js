@@ -17,8 +17,6 @@ function pingAll() {
 				// Handle our ping results, if it succeeded.
 				if (err) {
 					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err);
-				} else {
-					console.log(network.ip + ': ' + res.players.online);
 				}
 
 				server.io.sockets.emit('update', res);
