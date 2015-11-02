@@ -70,6 +70,8 @@ server.start(function() {
 		// Attach our listeners.
 		client.on('disconnect', function(client) {
 			connectedClients -= 1;
+
+			logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
 		});
 	});
 });
