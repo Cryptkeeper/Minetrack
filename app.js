@@ -1,6 +1,7 @@
 var server = require('./lib/server');
 var ping = require('./lib/ping');
 var logger = require('./lib/logger');
+var mojang = require('./lib/mojang_services');
 
 var config = require('./config.json');
 
@@ -13,10 +14,10 @@ function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
-			ping.ping(network.ip, network.port, network.type, 2500, function(err, res) {
+			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
-					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err);
+					logger.log('error', 'Failed to ping ' + network.ip + ': ' + JSON.stringify(err));
 				}
 
 				server.io.sockets.emit('update', res);
@@ -47,6 +48,23 @@ function pingAll() {
 	}
 }
 
+// Start our main loop that does everything.
+function startMainLoop() {
+	setInterval(pingAll, config.rates.pingAll);
+
+	setInterval(function() {
+		mojang.update(config.rates.mojangStatusTimeout);
+
+		server.io.sockets.emit('updateMojangServices', mojang.toMessage());
+	}, config.rates.upateMojangStatus);
+
+	// Manually fire the first round of our tasks.
+	mojang.update(config.rates.mojangStatusTimeout);
+	server.io.sockets.emit('updateMojangServices', mojang.toMessage());
+
+	pingAll();
+}
+
 server.start(function() {
 	// Track how many people are currently connected.
 	server.io.on('connect', function(client) {
@@ -74,8 +92,5 @@ server.start(function() {
 		});
 	});
 
-	// Start our main loop that fires off pings.
-	setInterval(pingAll, 2500);
-
-	pingAll();
+	startMainLoop();
 });

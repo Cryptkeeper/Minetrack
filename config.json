@@ -4,7 +4,7 @@
 			"name": "Hypixel",
 			"ip": "mc.hypixel.net",
 			"type": "PC"
-		},
+		}, 
 		{
 			"name": "Mineplex",
 			"ip": "us.mineplex.com",
@@ -30,5 +30,11 @@
 	"site": {
 		"port": 80,
 		"ip": "0.0.0.0"
+	},
+	"rates": {
+		"upateMojangStatus": 5000,
+		"mojangStatusTimeout": 3500,
+		"pingAll": 2500,
+		"connectTimeout": 2500
 	}
 }
