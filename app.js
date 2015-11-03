@@ -83,6 +83,7 @@ server.start(function() {
 
 		// Send them our previous data, so they have somewhere to start.
 		client.emit('add', networkHistoryList);
+		client.emit('updateMojangServices', mojang.toMessage());
 
 		// Attach our listeners.
 		client.on('disconnect', function(client) {
