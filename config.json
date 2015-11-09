@@ -64,6 +64,16 @@
 			"name": "Mineplex",
 			"ip": "us.mineplex.com",
 			"type": "PC"
+		},
+		{
+			"name": "Hypixel PE",
+			"ip": "pe.hypixel.net",
+			"type": "PE"
+		},
+		{
+			"name": "LifeBoat",
+			"ip": "play.lbsg.net",
+			"type": "PE"
 		}
 	],
 	"routes": {

@@ -175,9 +175,13 @@ $(document).ready(function() {
                         </div>'
             }).appendTo("#server-container");
 
+            var favicon = MISSING_FAVICON_BASE64;
+
             if (lastEntry.result && lastEntry.result.favicon) {
-                $('#favicon_' + safeName(info.name)).attr('src', lastEntry.result.favicon);
+                favicon = lastEntry.result.favicon;
             }
+
+            $('#favicon_' + safeName(info.name)).attr('src', favicon);
 
             updateServerStatus(lastEntry);
 
