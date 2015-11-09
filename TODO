@@ -1,6 +1,0 @@
-Fix icons not updating when a network that was offline comes online.
-Add auto-reconnect to frontend.
-Finish design.
-Deploy to actual website.
-Add new API.
-Add support for ingame server.
