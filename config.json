@@ -86,8 +86,18 @@
 			"type": "PC"
 		},
 		{
-			"name": "Shock",
+			"name": "Shock Network",
 			"ip": "play.snw.io",
+			"type": "PC"
+		},
+		{
+			"name": "MCBrawl",
+			"ip": "mcbrawl.com",
+			"type": "PC"
+		},
+		{
+			"name": "SaicoPvP",
+			"ip": "saicopvp.com",
 			"type": "PC"
 		}
 	],

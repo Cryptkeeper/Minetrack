@@ -11,7 +11,7 @@ var smallChartOptions = {
         show: false
     },
     yaxis: {
-        minTickSize: 100,
+        minTickSize: 75,
         tickDecimals: 0,
         show: true,
         tickLength: 10,
@@ -25,7 +25,7 @@ var smallChartOptions = {
     },
     grid: {
         hoverable: true,
-        color: "#C4C4C4"
+        color: "#696969"
     },
     colors: [
         "#E9E581"
@@ -38,6 +38,10 @@ var lastPlayerEntries = {};
 
 // Generate (and set) the HTML that displays Mojang status.
 function updateMojangServices() {
+    if (!lastMojangServiceUpdate) {
+        return;
+    }
+
 	var keys = Object.keys(lastMojangServiceUpdate);
     var newStatus = 'Mojang Services: ';
     var serviceCountByType = {
@@ -75,18 +79,28 @@ function updateMojangServices() {
 	$('#tagline-text').text(newStatus);
 }
 
+function findErrorMessage(error) {
+    if (error.description) {
+        return error.description;
+    } else if (error.errno) {
+        return error.errno;
+    }
+}
+
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
     var div = $('#status_' + safeName(info.name));
 
     if (lastEntry.result) {
         var result = lastEntry.result;
-        var newStatus = formatNumber(result.players.online) + '/' + formatNumber(result.players.max);
+        var newStatus = 'Players: ' + formatNumber(result.players.online);
 
-        if (lastPlayerEntries[info.name]) {
+        var listing = graphs[lastEntry.info.name].listing;
+
+        if (listing.length > 0) {
             newStatus += '<span class="color-gray"> (';
 
-            var playerDifference = lastPlayerEntries[info.name] - result.players.online;
+            var playerDifference = listing[listing.length - 1][1] - listing[0][1];
 
             if (playerDifference >= 0) {
                 newStatus += '+';
@@ -111,6 +125,31 @@ function updateServerStatus(lastEntry) {
         lastLatencyEntries[info.name] = result.latency;
 
         div.html(newStatus);
+    } else {
+        var newStatus = '<span class="color-red">Failed to ping!';
+
+        if (findErrorMessage(lastEntry.error)) {
+            newStatus += '<br />' + findErrorMessage(lastEntry.error);
+        }
+
+        div.html(newStatus + '</span>');
+    }
+}
+
+function sortServers() {
+    var keys = Object.keys(lastPlayerEntries);
+    var nameList = [];
+
+    keys.sort(function(a, b) {
+        return lastPlayerEntries[b] - lastPlayerEntries[a];
+    });
+
+    keys.reverse();
+
+    for (var i = 0; i < keys.length; i++) {
+        $('#' + safeName(keys[i])).prependTo('#server-container');
+
+        $('#ranking_' + safeName(keys[i])).text('#' + (keys.length - i));
     }
 }
 
@@ -131,8 +170,8 @@ $(document).ready(function() {
             clearInterval(mojangServicesUpdater);
         }
 
-        $('#tagline').attr('class', 'status-connecting');
-        $('#tagline-text').text('Attempting reconnnect...');
+        $('#tagline').attr('class', 'status-offline');
+        $('#tagline-text').text('Disconnected! Refresh?');
 
         lastPlayerEntries = {};
         lastLatencyEntries = {};
@@ -159,11 +198,21 @@ $(document).ready(function() {
             var lastEntry = history[history.length - 1];
             var info = lastEntry.info;
 
+            if (lastEntry.error) {
+                lastPlayerEntries[info.name] = 0;
+                lastLatencyEntries[info.name] = 0;
+            } else if (lastEntry.result) {
+                lastPlayerEntries[info.name] = lastEntry.result.players.online;
+                lastLatencyEntries[info.name] = lastEntry.result.latency;
+            }
+
             $('<div/>', {
                 id: safeName(info.name),
                 class: 'server',
                 html: '<div class="column" style="width: 80px;">\
                             <img style="padding-top: 5px;" id="favicon_' + safeName(info.name) + '">\
+                            <br />\
+                            <span id="ranking_' + safeName(info.name) + '"></span>\
                         </div>\
                         <div class="column" style="width: 280px;"><h3>' + info.name + '</h3>\
                             <span class="color-gray">' + info.ip + '</span>\
@@ -183,12 +232,12 @@ $(document).ready(function() {
 
             $('#favicon_' + safeName(info.name)).attr('src', favicon);
 
-            updateServerStatus(lastEntry);
-
             graphs[lastEntry.info.name] = {
                 listing: listing,
                 plot: $.plot('#chart_' + safeName(info.name), [listing], smallChartOptions)
             };
+
+            updateServerStatus(lastEntry);
 
             $('#chart_' + safeName(info.name)).bind('plothover', function(event, pos, item) {
                 if (item) {
@@ -200,9 +249,21 @@ $(document).ready(function() {
                 }
             });
         }
+
+        sortServers();
 	});
 
 	socket.on('update', function(update) {
+        // Prevent weird race conditions.
+        if (!graphs[update.info.name]) {
+            return;
+        }
+
+        // We have a new favicon, update the old one.
+        if (update.result && update.result.favicon) {
+            $('#favicon_' + safeName(update.info.name)).attr('src', update.result.favicon);
+        }
+
         var graph = graphs[update.info.name];
 
         updateServerStatus(update);
@@ -230,4 +291,8 @@ $(document).ready(function() {
 	mojangServicesUpdater = setInterval(function() {
 		updateMojangServices();
 	}, 1000);
+
+    setInterval(function() {
+        sortServers();
+    }, 30 * 1000);
 });

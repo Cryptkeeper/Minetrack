@@ -34,6 +34,19 @@ body {
     border-bottom: 1px dashed transparent;
 }
 
+#header > .slogan {
+    letter-spacing: 2px;
+    font-size: 20px;
+}
+
+#header > .info {
+    font-size: 17px;
+}
+
+#header > h1 {
+    font-size: 42px;
+}
+
 /* Tagline */
 #tagline {
     padding: 10px 0;
@@ -66,7 +79,7 @@ body {
 /* Server listing */
 #server-container {
     width: 800px;
-    margin: 10px auto;
+    margin: 10px auto 20px auto;
 }
 
 #server-container .server:nth-child(2n) {
@@ -77,6 +90,7 @@ body {
 .server {
     overflow: auto;
     padding: 10px;
+    margin: 5px;
 }
 
 .server > .column > img {
@@ -116,7 +130,7 @@ h3 {
 }
 
 .color-red {
-    color: #c0392b;
+    color: #e74c3c;
 }
 
 .text-uppercase {
