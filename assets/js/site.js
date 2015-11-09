@@ -93,7 +93,7 @@ function updateServerStatus(lastEntry) {
 
     if (lastEntry.result) {
         var result = lastEntry.result;
-        var newStatus = 'Players: ' + formatNumber(result.players.online);
+        var newStatus = '<br />Players: ' + formatNumber(result.players.online);
 
         var listing = graphs[lastEntry.info.name].listing;
 
@@ -109,7 +109,7 @@ function updateServerStatus(lastEntry) {
             newStatus += playerDifference + ')</span>';
         }
 
-        if (lastLatencyEntries[info.name]) {
+        /*if (lastLatencyEntries[info.name]) {
             newStatus += '<br />';
 
             var latencyDifference = lastLatencyEntries[info.name] - result.latency;
@@ -119,7 +119,7 @@ function updateServerStatus(lastEntry) {
             }
 
             newStatus += latencyDifference + 'ms';
-        }
+        }*/
 
         lastPlayerEntries[info.name] = result.players.online;
         lastLatencyEntries[info.name] = result.latency;
@@ -212,7 +212,7 @@ $(document).ready(function() {
                 html: '<div class="column" style="width: 80px;">\
                             <img style="padding-top: 5px;" id="favicon_' + safeName(info.name) + '">\
                             <br />\
-                            <span id="ranking_' + safeName(info.name) + '"></span>\
+                            <p class="text-center-align" style="width: 64px; padding-top: 3px;" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
                         <div class="column" style="width: 280px;"><h3>' + info.name + '</h3>\
                             <span class="color-gray">' + info.ip + '</span>\

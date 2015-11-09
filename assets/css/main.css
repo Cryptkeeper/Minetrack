@@ -136,3 +136,7 @@ h3 {
 .text-uppercase {
     text-transform: uppercase;
 }
+
+.text-center-align {
+    text-align: center;
+}
