@@ -21,6 +21,11 @@ function pingAll() {
 					logger.log('error', 'Failed to ping ' + network.ip + ': ' + JSON.stringify(err));
 				}
 
+				// If we have favicon override specified, use it.
+				if (res && config.faviconOverride && config.faviconOverride[network.name]) {
+					res.favicon = config.faviconOverride[network.name];
+				}
+
 				server.io.sockets.emit('update', {
                     result: res,
                     error: err,
