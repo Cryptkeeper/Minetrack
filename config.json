@@ -71,9 +71,24 @@
 			"type": "PE"
 		},
 		{
-			"name": "LifeBoat",
+			"name": "Lifeboat",
 			"ip": "play.lbsg.net",
 			"type": "PE"
+		},
+		{
+			"name": "PartyZone",
+			"ip": "play.mcpz.net",
+			"type": "PC"
+		},
+		{
+			"name": "The Chunk",
+			"ip": "hub.thechunk.net",
+			"type": "PC"
+		},
+		{
+			"name": "Shock",
+			"ip": "play.snw.io",
+			"type": "PC"
 		}
 	],
 	"routes": {
@@ -88,7 +103,7 @@
 	},
 	"faviconOverride": {
 		"Hypixel PE": "/favicons/hypixelpe.png",
-		"LifeBoat": "/favicons/lifeboat.png",
+		"Lifeboat": "/favicons/lifeboat.png",
 		"Mineplex": "/favicons/mineplex.png"
 	},
 	"site": {
