@@ -2,6 +2,7 @@ var server = require('./lib/server');
 var ping = require('./lib/ping');
 var logger = require('./lib/logger');
 var mojang = require('./lib/mojang_services');
+var util = require('./lib/util');
 
 var config = require('./config.json');
 
@@ -20,7 +21,14 @@ function pingAll() {
 					logger.log('error', 'Failed to ping ' + network.ip + ': ' + JSON.stringify(err));
 				}
 
-				server.io.sockets.emit('update', res);
+				server.io.sockets.emit('update', {
+                    result: res,
+                    error: err,
+                    info: {
+                        name: network.name,
+                        timestamp: util.getCurrentTimeMs()
+                    }
+                });
 
 				// Log our response.
 				if (!networkHistory[network.ip]) {
@@ -29,18 +37,25 @@ function pingAll() {
 
 				var _networkHistory = networkHistory[network.ip];
 
-				// Remove our previous entrie's favicons, we don't need them, just the latest one.
+				// Remove our previous data that we don't need anymore.
 				for (var i = 0; i < _networkHistory.length; i++) {
-					delete _networkHistory[i].favicon;
+                    delete _networkHistory[i].info;
 				}
 
 				_networkHistory.push({
 					error: err,
-					result: res
+					result: res,
+					timestamp: util.getCurrentTimeMs(),
+                    info: {
+                        ip: network.ip,
+                        port: network.port,
+                        type: network.type,
+                        name: network.name
+                    }
 				});
 
 				// Make sure we never log too much.
-				if (_networkHistory.length > 300) {
+				if (_networkHistory.length > 72) { // 60/2.5 = 24, so 24 is one minute
 					_networkHistory.shift();
 				}
 			});
@@ -68,6 +83,13 @@ function startMainLoop() {
 server.start(function() {
 	// Track how many people are currently connected.
 	server.io.on('connect', function(client) {
+        // If we haven't sent out at least one round of pings, disconnect them for now.
+        if (Object.keys(networkHistory) < config.servers.length) {
+            client.disconnect();
+
+            return;
+        }
+
 		// We're good to connect them!
 		connectedClients += 1;
 

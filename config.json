@@ -6,8 +6,13 @@
 			"type": "PC"
 		}, 
 		{
-			"name": "Mineplex",
-			"ip": "us.mineplex.com",
+			"name": "HiveMC",
+			"ip": "play.hivemc.com",
+			"type": "PC"
+		},
+		{
+			"name": "CCGN",
+			"ip": "play.cubecraftgames.net",
 			"type": "PC"
 		},
 		{
@@ -16,15 +21,56 @@
 			"type": "PC"
 		},
 		{
-			"name": "Hypixel PE",
-			"ip": "pe.hypixel.net",
-			"type": "PE"
+			"name": "Shotbow",
+			"ip": "us.shotbow.net",
+			"type": "PC"
+		},
+		{
+			"name": "Badlion",
+			"ip": "na.badlion.net",
+			"type": "PC"
+		},
+		{
+			"name": "MCGamer",
+			"ip": "play.mcgamer.net",
+			"type": "PC"
+		},
+		{
+			"name": "Olimpocraft",
+			"ip": "olimpo.me",
+			"type": "PC"
+		},
+		{
+			"name": "Minecade",
+			"ip": "mineca.de",
+			"type": "PC"
+		},
+		{
+			"name": "The Nexus",
+			"ip": "hub.thenexusmc.com",
+			"type": "PC"
+		},
+		{
+			"name": "Kohi",
+			"ip": "kohi.us",
+			"type": "PC"
+		},
+		{
+			"name": "Wynncraft",
+			"ip": "play.wynncraft.com",
+			"type": "PC"
+		},
+		{
+			"name": "Mineplex",
+			"ip": "us.mineplex.com",
+			"type": "PC"
 		}
 	],
 	"routes": {
 		"/": "assets/html/index.html",
 		"/images/compass.png": "assets/images/compass.png",
 		"/js/site.js": "assets/js/site.js",
+		"/js/util.js": "assets/js/util.js",
 		"/css/main.css": "assets/css/main.css"
 	},
 	"site": {
@@ -35,6 +81,6 @@
 		"upateMojangStatus": 5000,
 		"mojangStatusTimeout": 3500,
 		"pingAll": 2500,
-		"connectTimeout": 2500
+		"connectTimeout": 2000
 	}
 }

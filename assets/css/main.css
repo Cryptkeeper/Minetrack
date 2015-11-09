@@ -1,4 +1,124 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300,400);
+
 * {
 	margin: 0;
 	padding: 0;
+}
+
+body {
+	background: #3B3738;
+	color: #FFF;
+	font-family: "Open Sans", sans-serif;
+	font-size: 18px;
+	font-weight: 300 !important;
+}
+
+/* Header */
+#header {
+    background: #EBEBEB;
+    color: #3B3738;
+    padding: 20px 0;
+    text-align: center;
+    border-top: 1px solid #DED3D6;
+    width: 840px;
+    margin: 0 auto;
+}
+
+#header a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px dashed #3B3738;
+}
+
+#header a:hover {
+    border-bottom: 1px dashed transparent;
+}
+
+/* Tagline */
+#tagline {
+    padding: 10px 0;
+    text-align: center;
+    width: 840px;
+    margin: 0 auto;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+/* Colors used by the Mojang service's status bar */
+.status-online {
+    background: #87D37C;
+    color: #3B3738;
+}
+
+.status-unstable {
+    background: #E9E581;
+    color: #3B3738;
+}
+
+.status-offline {
+    background: #e74c3c;
+}
+
+.status-connecting {
+    background: #3498db;
+}
+
+/* Server listing */
+#server-container {
+    width: 800px;
+    margin: 10px auto;
+}
+
+#server-container .server:nth-child(2n) {
+    background: #4E4E4E;
+    border-radius: 2px;
+}
+
+.server {
+    overflow: auto;
+    padding: 10px;
+}
+
+.server > .column > img {
+    border-radius: 2px;
+}
+
+.server > .column {
+    float: left;
+    display: inline-block;
+}
+
+/* Charts */
+.chart {
+    height: 100px;
+    width: 400px;
+    margin-right: -3px;
+    margin-bottom: 5px;
+}
+
+#tooltip {
+    display: none;
+    position: absolute;
+    padding: 5px;
+    border-radius: 3px;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 999;
+}
+
+/* Existing elements */
+h3 {
+    text-transform: uppercase;
+}
+
+/* Basic classes used randomly */
+.color-gray {
+    color: #C4C4C4;
+}
+
+.color-red {
+    color: #c0392b;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
 }

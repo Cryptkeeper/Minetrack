@@ -12,9 +12,34 @@
 
 	<body>
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+		<div id="tooltip"></div>
 
+		<div id="header">
+
+			<h1 class="text-uppercase">Minetrack</h1>
+
+			<p class="text-uppercase">All your favorite Minecraft servers, right now.</p>
+			<p class="text-uppercase">Made by <a href="http://cryptkpr.me">Cryptkeeper</a> | Source code on <a href="https://github.com/Cryptkeeper/Minetrack">Github</a></p>
+
+		</div>
+
+		<div id="tagline" class="status-connecting">
+			
+			<span id="tagline-text" class="text-uppercase">Connecting...</span>
+
+		</div>
+
+        <div id="server-container" class="container"></div>
+
+        <!-- External JS assets -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+
+        <!-- Internal JS assets -->
+        <script src="js/util.js"></script>
 		<script src="js/site.js"></script>
 
 	</body>
