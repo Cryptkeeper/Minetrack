@@ -268,16 +268,18 @@ $(document).ready(function() {
 
         updateServerStatus(update);
 
-        graph.listing.push([update.info.timestamp, update.result ? update.result.players.online : 0]);
+        if (update.result) {
+            graph.listing.push([update.info.timestamp, update.result ? update.result.players.online : 0]);
 
-        if (graph.listing.length > 72) {
-            graph.listing.shift();
+            if (graph.listing.length > 72) {
+                graph.listing.shift();
+            }
+
+            graph.plot.setData([graph.listing]);
+            graph.plot.setupGrid();
+
+            graph.plot.draw();
         }
-
-        graph.plot.setData([graph.listing]);
-        graph.plot.setupGrid();
-
-        graph.plot.draw();
 	});
 
 	socket.on('updateMojangServices', function(data) {
