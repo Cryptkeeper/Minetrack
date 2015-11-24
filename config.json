@@ -99,6 +99,26 @@
 			"name": "SaicoPvP",
 			"ip": "saicopvp.com",
 			"type": "PC"
+		},
+		{
+			"name": "TheArchon",
+			"ip": "pvp.thearchon.net",
+			"type": "PC"
+		},
+		{
+			"name": "PrimeMC",
+			"ip": "play.primemc.org",
+			"type": "PC"
+		},
+		{
+			"name": "GotPvP",
+			"ip": "play.gotpvp.com",
+			"type": "PC"
+		},
+		{
+			"name": "MCCentral",
+			"ip": "mc-central.net",
+			"type": "PC"
 		}
 	],
 	"routes": {
