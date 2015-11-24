@@ -89,7 +89,7 @@ server.start(function() {
 	// Track how many people are currently connected.
 	server.io.on('connect', function(client) {
         // If we haven't sent out at least one round of pings, disconnect them for now.
-        if (Object.keys(networkHistory) < config.servers.length) {
+        if (Object.keys(networkHistory).length < config.servers.length) {
             client.disconnect();
 
             return;
@@ -100,16 +100,18 @@ server.start(function() {
 
 		logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
-		// Remap our associative array into just an array.
-		var networkHistoryKeys = Object.keys(networkHistory);
+		setTimeout(function() {
+			// Send them our previous data, so they have somewhere to start.
+			client.emit('updateMojangServices', mojang.toMessage());
 
-		// Send each individually, this should look cleaner than waiting for one big array to transfer.
-		for (var i = 0; i < networkHistoryKeys.length; i++) {
-			client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
-		}
+			// Remap our associative array into just an array.
+			var networkHistoryKeys = Object.keys(networkHistory);
 
-		// Send them our previous data, so they have somewhere to start.
-		client.emit('updateMojangServices', mojang.toMessage());
+			// Send each individually, this should look cleaner than waiting for one big array to transfer.
+			for (var i = 0; i < networkHistoryKeys.length; i++) {
+				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
+			}
+		}, 1);
 
 		// Attach our listeners.
 		client.on('disconnect', function(client) {
