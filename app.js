@@ -101,15 +101,14 @@ server.start(function() {
 		logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
 		// Remap our associative array into just an array.
-		var networkHistoryList = [];
 		var networkHistoryKeys = Object.keys(networkHistory);
 
+		// Send each individually, this should look cleaner than waiting for one big array to transfer.
 		for (var i = 0; i < networkHistoryKeys.length; i++) {
-			networkHistoryList.push(networkHistory[networkHistoryKeys[i]]);
+			client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
 		}
 
 		// Send them our previous data, so they have somewhere to start.
-		client.emit('add', networkHistoryList);
 		client.emit('updateMojangServices', mojang.toMessage());
 
 		// Attach our listeners.
