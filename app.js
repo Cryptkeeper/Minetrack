@@ -26,14 +26,20 @@ function pingAll() {
 					res.favicon = config.faviconOverride[network.name];
 				}
 
-				server.io.sockets.emit('update', {
-                    result: res,
-                    error: err,
-                    info: {
-                        name: network.name,
-                        timestamp: util.getCurrentTimeMs()
-                    }
-                });
+				var networkSnapshot = {
+					info: {
+						name: network.name,
+						timestamp: util.getCurrentTimeMs()
+					}
+				};
+
+				if (networkSnapshot) {
+					object.result = res;
+				} else if (err) {
+					networkSnapshot.err = error;
+				}
+
+				server.io.sockets.emit('update', networkSnapshot);
 
 				// Log our response.
 				if (!networkHistory[network.ip]) {
@@ -45,6 +51,10 @@ function pingAll() {
 				// Remove our previous data that we don't need anymore.
 				for (var i = 0; i < _networkHistory.length; i++) {
                     delete _networkHistory[i].info;
+
+                    if (_networkHistory[i].result) {
+                    	delete _networkHistory[i].result.favicon;
+                    }
 				}
 
 				_networkHistory.push({
