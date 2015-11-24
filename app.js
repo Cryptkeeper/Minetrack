@@ -33,10 +33,10 @@ function pingAll() {
 					}
 				};
 
-				if (networkSnapshot) {
-					object.result = res;
+				if (res) {
+					networkSnapshot.result = res;
 				} else if (err) {
-					networkSnapshot.err = error;
+					networkSnapshot.error = err;
 				}
 
 				server.io.sockets.emit('update', networkSnapshot);
@@ -80,19 +80,13 @@ function pingAll() {
 
 // Start our main loop that does everything.
 function startMainLoop() {
-	setInterval(pingAll, config.rates.pingAll);
+	util.setIntervalNoDelay(pingAll, config.rates.pingAll);
 
-	setInterval(function() {
+	util.setIntervalNoDelay(function() {
 		mojang.update(config.rates.mojangStatusTimeout);
 
 		server.io.sockets.emit('updateMojangServices', mojang.toMessage());
 	}, config.rates.upateMojangStatus);
-
-	// Manually fire the first round of our tasks.
-	mojang.update(config.rates.mojangStatusTimeout);
-	server.io.sockets.emit('updateMojangServices', mojang.toMessage());
-
-	pingAll();
 }
 
 server.start(function() {
