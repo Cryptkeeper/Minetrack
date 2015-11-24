@@ -126,10 +126,12 @@ function updateServerStatus(lastEntry) {
 
         div.html(newStatus);
     } else {
-        var newStatus = '<span class="color-red">Failed to ping!';
+        var newStatus = '<br /><span class="color-red">';
 
         if (findErrorMessage(lastEntry.error)) {
-            newStatus += '<br />' + findErrorMessage(lastEntry.error);
+            newStatus += findErrorMessage(lastEntry.error);
+        } else {
+            newStatus += 'Failed to ping!';
         }
 
         div.html(newStatus + '</span>');
