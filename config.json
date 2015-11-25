@@ -111,8 +111,8 @@
 			"type": "PC"
 		},
 		{
-			"name": "MCCentral",
-			"ip": "mc-central.net",
+			"name": "DestinyMC",
+			"ip": "play.thedestinymc.com",
 			"type": "PC"
 		},
 		{
@@ -121,8 +121,8 @@
 			"type": "PC"
 		},
 		{
-			"name": "Lichcraft",
-			"ip": "us.lichcraft.com",
+			"name": "Minetime",
+			"ip": "minetime.com",
 			"type": "PC"
 		},
 		{
@@ -153,7 +153,7 @@
 	"rates": {
 		"upateMojangStatus": 5000,
 		"mojangStatusTimeout": 3500,
-		"pingAll": 2500,
-		"connectTimeout": 2000
+		"pingAll": 3000,
+		"connectTimeout": 2500
 	}
 }
