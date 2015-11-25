@@ -16,3 +16,4 @@ You can see an up-to-date copy of the master branch running on http://rewrite.mi
 - Add auto-reconnect to frontend.
 - Add public API (similiar to old server.json)
 - Add ingame server, similiar to old mc.minetrack.me
+- History graphs (database?)
