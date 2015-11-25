@@ -91,8 +91,8 @@
 			"type": "PC"
 		},
 		{
-			"name": "MCBrawl",
-			"ip": "mcbrawl.com",
+			"name": "Brawl",
+			"ip": "brawl.com",
 			"type": "PC"
 		},
 		{
@@ -111,8 +111,8 @@
 			"type": "PC"
 		},
 		{
-			"name": "DestinyMC",
-			"ip": "play.thedestinymc.com",
+			"name": "MCLegends",
+			"ip": "play.mc-legends.com",
 			"type": "PC"
 		},
 		{
@@ -121,13 +121,33 @@
 			"type": "PC"
 		},
 		{
-			"name": "Minetime",
-			"ip": "minetime.com",
+			"name": "Arkham",
+			"ip": "mc.arkhamnetwork.org",
 			"type": "PC"
 		},
 		{
 			"name": "VikkCraft",
 			"ip": "hub.vikkcraft.com",
+			"type": "PC"
+		},
+		{
+			"name": "GommeHD",
+			"ip": "gommehd.net",
+			"type": "PC"
+		},
+		{
+			"name": "Jerry and Harry",
+			"ip": "play.itsjerryandharry.com",
+			"type": "PC"
+		},
+		{
+			"name": "Rewinside",
+			"ip": "mc.rewinside.tv",
+			"type": "PC"
+		},
+		{
+			"name": "Playminity",
+			"ip": "mc.playminity.com",
 			"type": "PC"
 		}
 	],

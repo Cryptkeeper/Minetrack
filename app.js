@@ -42,11 +42,11 @@ function pingAll() {
 				server.io.sockets.emit('update', networkSnapshot);
 
 				// Log our response.
-				if (!networkHistory[network.ip]) {
-					networkHistory[network.ip] = [];
+				if (!networkHistory[network.name]) {
+					networkHistory[network.name] = [];
 				}
 
-				var _networkHistory = networkHistory[network.ip];
+				var _networkHistory = networkHistory[network.name];
 
 				// Remove our previous data that we don't need anymore.
 				for (var i = 0; i < _networkHistory.length; i++) {
@@ -110,6 +110,8 @@ server.start(function() {
 
 			// Remap our associative array into just an array.
 			var networkHistoryKeys = Object.keys(networkHistory);
+
+			networkHistoryKeys.sort();
 
 			// Send each individually, this should look cleaner than waiting for one big array to transfer.
 			for (var i = 0; i < networkHistoryKeys.length; i++) {

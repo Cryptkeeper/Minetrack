@@ -1,5 +1,3 @@
-var lastMojangServiceUpdate;
-
 var smallChartOptions = {
     series: {
         shadowSize: 0
@@ -31,6 +29,8 @@ var smallChartOptions = {
         "#E9E581"
     ]
 };
+
+var lastMojangServiceUpdate;
 
 var graphs = {};
 var lastLatencyEntries = {};
@@ -156,12 +156,14 @@ function sortServers() {
 }
 
 function safeName(name) {
-    return name.replace(' ', '');
+    return name.replace(/ /g, '');
 }
 
 $(document).ready(function() {
 	var socket = io.connect();
+
     var mojangServicesUpdater;
+    var sortServersTask;
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
@@ -172,6 +174,10 @@ $(document).ready(function() {
             clearInterval(mojangServicesUpdater);
         }
 
+        if (sortServersTask) {
+            clearInterval(sortServersTask);
+        }
+
         $('#tagline').attr('class', 'status-offline');
         $('#tagline-text').text('Disconnected! Refresh?');
 
@@ -180,6 +186,7 @@ $(document).ready(function() {
         graphs = {};
 
         $('#server-container').html('');
+        $('#quick-jump-container').html('');
     });
 
 	socket.on('add', function(servers) {
@@ -211,7 +218,7 @@ $(document).ready(function() {
             $('<div/>', {
                 id: safeName(info.name),
                 class: 'server',
-                html: '<div class="column" style="width: 80px;">\
+                html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
                             <img style="padding-top: 5px;" id="favicon_' + safeName(info.name) + '">\
                             <br />\
                             <p class="text-center-align" style="width: 64px; padding-top: 3px;" id="ranking_' + safeName(info.name) + '"></p>\
@@ -233,6 +240,8 @@ $(document).ready(function() {
             }
 
             $('#favicon_' + safeName(info.name)).attr('src', favicon);
+
+            $('#quick-jump-container').append('<img id="quick-jump-' + safeName(info.name) + '" data-target-network="' + safeName(info.name) + '" class="quick-jump-icon" src="' + favicon + '">');
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
@@ -264,6 +273,7 @@ $(document).ready(function() {
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
             $('#favicon_' + safeName(update.info.name)).attr('src', update.result.favicon);
+            $('#quick-jump-' + safeName(update.info.name)).attr('src', update.result.favicon);
         }
 
         var graph = graphs[update.info.name];
@@ -296,7 +306,17 @@ $(document).ready(function() {
 		updateMojangServices();
 	}, 1000);
 
-    setInterval(function() {
+    sortServersTask = setInterval(function() {
         sortServers();
     }, 30 * 1000);
+
+    // Our super fancy scrolly thing!
+    $(document).on('click', '.quick-jump-icon', function(e) {
+        var serverName = $(this).attr('data-target-network');
+        var target = $('#server-' + serverName);
+
+        $('html, body').animate({
+            scrollTop: target.offset().top
+        }, 100);
+    });
 });
