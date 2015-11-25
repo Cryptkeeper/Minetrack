@@ -119,6 +119,16 @@
 			"name": "MCCentral",
 			"ip": "mc-central.net",
 			"type": "PC"
+		},
+		{
+			"name": "Battlemine",
+			"ip": "mc.battlemine.net",
+			"type": "PC"
+		},
+		{
+			"name": "OmgaMC",
+			"ip": "mc.omgamcnetwork.net",
+			"type": "PC"
 		}
 	],
 	"routes": {
