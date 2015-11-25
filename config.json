@@ -129,11 +129,6 @@
 			"name": "Lichcraft",
 			"ip": "us.lichcraft.com",
 			"type": "PC"
-		},
-		{
-			"name": "Brawl",
-			"ip": "brawl.com",
-			"type": "PC"
 		}
 	],
 	"routes": {
