@@ -106,11 +106,6 @@
 			"type": "PC"
 		},
 		{
-			"name": "PrimeMC",
-			"ip": "play.primemc.org",
-			"type": "PC"
-		},
-		{
 			"name": "GotPvP",
 			"ip": "play.gotpvp.com",
 			"type": "PC"
