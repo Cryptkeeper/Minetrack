@@ -71,7 +71,7 @@
 			"type": "PE"
 		},
 		{
-			"name": "Lifeboat",
+			"name": "Lifeboat PE",
 			"ip": "play.lbsg.net",
 			"type": "PE"
 		},
@@ -143,7 +143,7 @@
 	},
 	"faviconOverride": {
 		"Hypixel PE": "/favicons/hypixelpe.png",
-		"Lifeboat": "/favicons/lifeboat.png",
+		"Lifeboat PE": "/favicons/lifeboat.png",
 		"Mineplex": "/favicons/mineplex.png"
 	},
 	"site": {
