@@ -4,7 +4,7 @@
 			"name": "Hypixel",
 			"ip": "mc.hypixel.net",
 			"type": "PC"
-		}, 
+		},
 		{
 			"name": "HiveMC",
 			"ip": "play.hivemc.com",
@@ -128,6 +128,11 @@
 		{
 			"name": "Lichcraft",
 			"ip": "us.lichcraft.com",
+			"type": "PC"
+		},
+		{
+			"name": "VikkCraft",
+			"ip": "hub.vikkcraft.com",
 			"type": "PC"
 		}
 	],
