@@ -13,7 +13,6 @@ You can see an up-to-date copy of the master branch running on http://rewrite.mi
 (There's also ```install.sh``` and ```start.sh```, but they may not for your installations.)
 
 #### TODO
-- Add auto-reconnect to frontend.
 - Add public API (similiar to old server.json)
 - Add ingame server, similiar to old mc.minetrack.me
 - History graphs (database?)

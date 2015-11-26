@@ -160,7 +160,11 @@ function safeName(name) {
 }
 
 $(document).ready(function() {
-	var socket = io.connect();
+	var socket = io.connect({
+        'reconnect': true,
+        'reconnection delay': 1000,
+        'max reconnection attempts': 10
+    });
 
     var mojangServicesUpdater;
     var sortServersTask;
