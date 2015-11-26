@@ -152,9 +152,9 @@
 		}
 	],
 	"faviconOverride": {
-		"Hypixel PE": "/favicons/hypixelpe.png",
-		"Lifeboat": "/favicons/lifeboat.png",
-		"Mineplex": "/favicons/mineplex.png"
+		"Hypixel PE": "/images/favicons/hypixelpe.png",
+		"Lifeboat": "/images/favicons/lifeboat.png",
+		"Mineplex": "/images/favicons/mineplex.png"
 	},
 	"site": {
 		"port": 80,
