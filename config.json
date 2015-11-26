@@ -151,16 +151,6 @@
 			"type": "PC"
 		}
 	],
-	"routes": {
-		"/": "assets/html/index.html",
-		"/images/compass.png": "assets/images/compass.png",
-		"/js/site.js": "assets/js/site.js",
-		"/js/util.js": "assets/js/util.js",
-		"/css/main.css": "assets/css/main.css",
-		"/favicons/hypixelpe.png": "assets/images/favicons/hypixelpe.png",
-		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
-		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png"
-	},
 	"faviconOverride": {
 		"Hypixel PE": "/favicons/hypixelpe.png",
 		"Lifeboat": "/favicons/lifeboat.png",
