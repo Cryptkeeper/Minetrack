@@ -29,7 +29,7 @@
 		</div>
 
         <div id="server-container" class="container">
-        	<div class="server" ng-repeat="server in servers | sortServers">
+        	<div ng-attr-id="server-{{server.name | safeName}}" class="server" ng-repeat="server in servers | sortServers">
         		<div class="column" style="width: 80px">
         			<img ng-src="{{server.favicon}}">
         			<p class="text-center-align" style="width: 64px; padding-top: 3px;" ng-bind="'#' + $index"></p>
@@ -48,7 +48,7 @@
         	</div>
         </div>
 
-        <div id="quick-jump-container"></div>
+        <div id="quick-jump-container"><img ng-repeat="server in servers" ng-click="scrollTo(server.name)" ng-src="{{server.favicon}}" class="quick-jump-icon" /></div>
 
         <!-- External JS assets -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.2/angular.min.js"></script>

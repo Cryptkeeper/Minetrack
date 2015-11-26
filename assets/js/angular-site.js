@@ -124,6 +124,14 @@ minepack.controller('minepackHome', function($scope, socket){
 	$scope.mojang = socket.getMojangStatus();
 	$scope.servers = socket.getServers();
 	$scope.chartOpts = chartOpts;
+	$scope.scrollTo = function(serverName){
+        $('html, body').animate({
+            scrollTop: $('#server-' + serverName).offset().top
+        }, 100);
+	}
+});
+minepack.filter('safeName', function(){
+	return safeName;
 });
 minepack.filter('handlError', function(){
 	return function(error) {
@@ -146,7 +154,15 @@ minepack.filter('sortServers', function(){
 			servers.push(server);
 		});
 		servers.sort(function(a, b){
-			return a.players || 0 - b.players || 0;
+			if(!a.players && !b.players){
+				return 0;
+			}else if(!a.players || a.players < b.players){
+				return -1;
+			}else if(!b.players || a.players > b.players){
+				return 1;
+			}else{
+				return 0;
+			}
 		});
 		return servers.reverse();
 	}
