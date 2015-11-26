@@ -66,12 +66,12 @@
 			"type": "PC"
 		},
 		{
-			"name": "Hypixel PE",
+			"name": "Hypixel",
 			"ip": "pe.hypixel.net",
 			"type": "PE"
 		},
 		{
-			"name": "Lifeboat PE",
+			"name": "Lifeboat",
 			"ip": "play.lbsg.net",
 			"type": "PE"
 		},
