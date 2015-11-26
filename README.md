@@ -12,6 +12,11 @@ You can see an up-to-date copy of the master branch running on http://rewrite.mi
 
 (There's also ```install.sh``` and ```start.sh```, but they may not for your installations.)
 
+#### Angular TODO
+ - Fix sorting problem on main ng-repeat
+ - Add icon list from left
+ - Fix flot to force data change to update graph
+
 #### TODO
 - Add auto-reconnect to frontend.
 - Add public API (similiar to old server.json)
