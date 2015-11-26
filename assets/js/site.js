@@ -242,7 +242,7 @@ $(document).ready(function() {
 
             $('#favicon_' + safeName(info.name)).attr('src', favicon);
 
-            $('#quick-jump-container').append('<img id="quick-jump-' + safeName(info.name) + '" data-target-network="' + safeName(info.name) + '" class="quick-jump-icon" src="' + favicon + '">');
+            $('#quick-jump-container').append('<img id="quick-jump-' + safeName(info.name) + '" data-target-network="' + safeName(info.name) + '" title="' + info.name + '" alt="' + info.name + '" class="quick-jump-icon" src="' + favicon + '">');
 
             graphs[lastEntry.info.name] = {
                 listing: listing,

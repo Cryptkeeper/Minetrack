@@ -163,8 +163,11 @@ h3 {
     display: block;
     margin-bottom: 2px;
     border-radius: 2px;
+    transition: all 0.1s;
 }
 
 .quick-jump-icon:hover {
     cursor: pointer;
+    height: 42px;
+    width: 42px;
 }
