@@ -58,7 +58,7 @@ function updateMojangServices() {
 
     if (serviceCountByType['Online'] === keys.length) {
         $('#tagline').attr('class', 'status-online');
-        
+
         newStatus += 'All systems operational.';
     } else {
         if (serviceCountByType['Unstable'] > serviceCountByType['Offline']) {
@@ -223,7 +223,7 @@ $(document).ready(function() {
                             <br />\
                             <p class="text-center-align" style="width: 64px; padding-top: 3px;" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
-                        <div class="column" style="width: 280px;"><h3>' + info.name + '</h3>\
+                        <div class="column" style="width: 280px;"><h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
                             <span class="color-gray">' + info.ip + '</span>\
                             <br />\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\

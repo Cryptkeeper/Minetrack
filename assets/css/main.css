@@ -102,6 +102,14 @@ body {
     display: inline-block;
 }
 
+.server > .column > h3 > .type {
+		padding: 1px 5px 1px 5px;
+		border-radius: 2px;
+		border: 1px solid #A09E9E;
+		font-size: 14px;
+		margin-bottom: 2px;
+}
+
 /* Charts */
 .chart {
     height: 100px;
