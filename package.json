@@ -23,5 +23,12 @@
   "bugs": {
     "url": "https://github.com/Cryptkeeper/Minetrack/issues"
   },
-  "homepage": "https://github.com/Cryptkeeper/Minetrack#README"
+  "homepage": "https://github.com/Cryptkeeper/Minetrack#README",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-cssmin": "^0.1.7",
+    "gulp-if": "^2.0.0",
+    "gulp-nodemon": "^2.0.4",
+    "gulp-uglify": "^1.5.1"
+  }
 }
