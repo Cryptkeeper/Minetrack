@@ -58,7 +58,7 @@ body {
 }
 
 /* Colors used by the Mojang service's status bar */
-.status-online {
+.status-connected {
     background: #87D37C;
     color: #3B3738;
 }
@@ -68,7 +68,7 @@ body {
     color: #3B3738;
 }
 
-.status-offline {
+.status-disconnected {
     background: #e74c3c;
 }
 
