@@ -14,7 +14,7 @@
 
 	<body ng-controller="minepackHome">
 
-		<div id="tooltip" ng-show="tooltip" ng-bind="tooltip" ng-cloak></div>
+		<div id="tooltip" ng-show="tooltip.show" ng-bind-html="tooltip.text" ng-style="tooltip.css" ng-cloak></div>
 
 		<div id="header">
 
@@ -53,17 +53,18 @@
 
         <!-- External JS assets -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.2/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0-beta.2/angular-sanitize.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.time.min.js"></script>
         <script src="js/angular-flot.js"></script>
 
         <!-- Internal JS assets -->
-        <!-- <script src="js/util.js"></script>
-        <script src="js/site.js"></script>-->
+		<script src="js/angular-util.js"></script>
 		<script src="js/angular-site.js"></script>
 
 		<script>

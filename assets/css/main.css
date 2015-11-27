@@ -119,7 +119,6 @@ body {
 }
 
 #tooltip {
-    display: none;
     position: absolute;
     padding: 5px;
     border-radius: 3px;

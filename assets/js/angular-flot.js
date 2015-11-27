@@ -10,9 +10,9 @@ angular.module('angular-flot', []).directive('flot', ['$timeout', function ($tim
       dataset: '=',
       options: '=',
       callback: '=',
-      onPlotClick: '&',
-      onPlotHover: '&',
-      onPlotSelected: '&'
+      onPlotClick: '=',
+      onPlotHover: '=',
+      onPlotSelected: '='
     },
     link: function (scope, element, attributes) {
       var plot = null;
