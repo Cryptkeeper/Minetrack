@@ -14,7 +14,7 @@
 
 	<body ng-controller="minepackHome">
 
-		<div id="tooltip"></div>
+		<div id="tooltip" ng-show="tooltip" ng-bind="tooltip" ng-cloak></div>
 
 		<div id="header">
 
@@ -24,15 +24,16 @@
 
 		</div>
 
-		<div id="tagline" ng-class="'status-' + statusVerb()">
-			<span id="tagline-text" class="text-uppercase" ng-bind="statusVerb()"></span>
+		<div id="tagline" ng-class="['status-' + statusVerb(), 'status-' + mojangStatus()]">
+			<span id="tagline-text" class="text-uppercase" ng-bind="statusVerb()" ng-hide="status.connected && !status.connecting"></span>
+			<span id="tagline-text" class="text-uppercase" ng-show="status.connected && !status.connecting" ng-bind="mojangText()"></span>
 		</div>
 
-        <div id="server-container" class="container">
+        <div id="server-container" class="container" ng-show="status.connected" ng-cloak>
         	<div ng-attr-id="server-{{server.name | safeName}}" class="server" ng-repeat="server in servers | sortServers">
         		<div class="column" style="width: 80px">
         			<img ng-src="{{server.favicon}}">
-        			<p class="text-center-align" style="width: 64px; padding-top: 3px;" ng-bind="'#' + $index"></p>
+        			<p class="text-center-align" style="width: 64px; padding-top: 3px;" ng-bind="'#' + ($index+1)"></p>
         		</div>
         		<div class="column" style="width: 280px;">
         			<h3><span ng-bind="server.name"></span> <span class="type" ng-bind="server.type"></span></h3>
@@ -43,7 +44,7 @@
         			<p ng-hide="server.error">Players: <span ng-bind="server.players | number"></span> <span class="color-gray">({{server.playerDiff}})</span></p>
         		</div>
         		<div class="column" style="float: right;">
-        			<flot height="100px" width="400px" dataset="server.graph" options="chartOpts"></flot>
+        			<flot height="100px" width="400px" dataset="[server.graph]" options="chartOpts" on-plot-hover="setTooltip" />
         		</div>
         	</div>
         </div>
@@ -61,7 +62,8 @@
         <script src="js/angular-flot.js"></script>
 
         <!-- Internal JS assets -->
-        <!--<script src="js/util.js"></script>-->
+        <!-- <script src="js/util.js"></script>
+        <script src="js/site.js"></script>-->
 		<script src="js/angular-site.js"></script>
 
 		<script>
