@@ -134,9 +134,6 @@ function updateServerStatus(lastEntry) {
             newStatus += 'Failed to ping!';
         }
 
-        lastPlayerEntries[info.name] = 0;
-        lastLatencyEntries[info.name] = 0;
-
         div.html(newStatus + '</span>');
     }
 
