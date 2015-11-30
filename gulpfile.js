@@ -6,20 +6,19 @@ var gif = require('gulp-if');
 
 var inProduction = process.env['NODE_ENV'] == 'production';
 
-gulp.task('asset-css', function() {
+gulp.task('build-assets-css', function() {
   gulp.src('assets/css/main.css')
     .pipe(gif(inProduction, cssmin()))
-    .pipe(gulp.dest('production/css'));
+    .pipe(gulp.dest('production-assets/css'));
 });
 
-
-gulp.task('asset-js', function() {
+gulp.task('build-assets-js', function() {
   gulp.src('assets/js/*')
     .pipe(gif(inProduction, uglify()))
-    .pipe(gulp.dest('production/js'));
+    .pipe(gulp.dest('production-assets/js'));
 });
 
-gulp.task('build', ['asset-css', 'asset-js']);
+gulp.task('build-assets', ['build-assets-css', 'build-assets-js']);
 
 gulp.task('watch-app', function() {
   nodemon({
