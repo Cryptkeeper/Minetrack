@@ -134,8 +134,21 @@ function updateServerStatus(lastEntry) {
             newStatus += 'Failed to ping!';
         }
 
+        lastPlayerEntries[info.name] = 0;
+        lastLatencyEntries[info.name] = 0;
+
         div.html(newStatus + '</span>');
     }
+
+    var keys = Object.keys(lastPlayerEntries);
+    var totalPlayers = 0;
+
+    for (var i = 0; i < keys.length; i++) {
+        totalPlayers += lastPlayerEntries[keys[i]];
+    }
+
+    $("#stat_totalPlayers").text(formatNumber(totalPlayers));
+    $("#stat_networks").text(formatNumber(keys.length));
 }
 
 function sortServers() {
