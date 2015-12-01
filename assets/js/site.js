@@ -171,9 +171,9 @@ function safeName(name) {
 
 $(document).ready(function() {
 	var socket = io.connect({
-        'reconnect': true,
-        'reconnection delay': 1000,
-        'max reconnection attempts': 10
+        reconnect: true,
+        reconnectDelay: 1000,
+        reconnectionAttempts: 10
     });
 
     var mojangServicesUpdater;
