@@ -146,7 +146,7 @@
 			"type": "PC"
 		},
 		{
-			"name": "Mobcrush",
+			"name": "Mobcrush Land",
 			"ip": "play.mobcrush.com",
 			"type": "PE"
 		}
@@ -159,12 +159,14 @@
 		"/css/main.css": "assets/css/main.css",
 		"/favicons/hypixelpe.png": "assets/images/favicons/hypixelpe.png",
 		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
-		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png"
+		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
+		"/favicons/mobcrush.png": "assets/images/favicons/mobcrush.png"
 	},
 	"faviconOverride": {
 		"Hypixel PE": "/favicons/hypixelpe.png",
 		"Lifeboat": "/favicons/lifeboat.png",
-		"Mineplex": "/favicons/mineplex.png"
+		"Mineplex": "/favicons/mineplex.png",
+		"Mobcrush Land": "/favicons/mobcrush.png"
 	},
 	"site": {
 		"port": 80,
