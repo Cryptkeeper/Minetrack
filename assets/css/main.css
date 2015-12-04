@@ -95,11 +95,17 @@ body {
 
 .server > .column > img {
     border-radius: 2px;
+    margin-top: 5px;
 }
 
 .server > .column {
     float: left;
     display: inline-block;
+}
+
+.server > .column > .rank {
+    width: 64px; 
+    padding-top: 3px;
 }
 
 .server > .column > h3 > .type {

@@ -233,9 +233,9 @@ $(document).ready(function() {
                 id: safeName(info.name),
                 class: 'server',
                 html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
-                            <img style="padding-top: 5px;" id="favicon_' + safeName(info.name) + '">\
+                            <img id="favicon_' + safeName(info.name) + '">\
                             <br />\
-                            <p class="text-center-align" style="width: 64px; padding-top: 3px;" id="ranking_' + safeName(info.name) + '"></p>\
+                            <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
                         <div class="column" style="width: 280px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
