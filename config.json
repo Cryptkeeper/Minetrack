@@ -141,14 +141,14 @@
 			"type": "PC"
 		},
 		{
-			"name": "Rewinside",
-			"ip": "mc.rewinside.tv",
-			"type": "PC"
-		},
-		{
 			"name": "Playminity",
 			"ip": "mc.playminity.com",
 			"type": "PC"
+		},
+		{
+			"name": "Mobcrush",
+			"ip": "play.mobcrush.com",
+			"type": "PE"
 		}
 	],
 	"routes": {
