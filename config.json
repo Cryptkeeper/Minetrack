@@ -116,6 +116,16 @@
 			"type": "PC"
 		},
 		{
+			"name": "Rewinside",
+			"ip": "mc.rewinside.tv",
+			"type": "PC"
+		},
+		{
+			"name": "Woodycraft",
+			"ip": "woodycraft.net",
+			"type": "PC"
+		},
+		{
 			"name": "Battlemine",
 			"ip": "mc.battlemine.net",
 			"type": "PC"
