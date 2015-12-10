@@ -141,6 +141,11 @@
 			"type": "PC"
 		},
 		{
+			"name": "MCMagic",
+			"ip": "mcmagic.us",
+			"type": "PC"
+		},
+		{
 			"name": "GommeHD",
 			"ip": "gommehd.net",
 			"type": "PC"
