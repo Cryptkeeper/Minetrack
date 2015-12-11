@@ -10,9 +10,11 @@ You can see an up-to-date copy of the master branch running on http://rewrite.mi
 2. Run ```npm install```.
 2. Run ```node app.js``` to boot the system (may need sudo!)
 
-(There's also ```install.sh``` and ```start.sh```, but they may not for your installations.)
+(There's also ```install.sh``` and ```start.sh```, but they may not work for your OS.)
+
+Database logging is disabled by default. You can enable it in ```config.json``` by setting ```logToDatabase``` to true.
+This requires sqlite3 drivers to be installed.
 
 #### TODO
 - Add public API (similiar to old server.json)
 - Add ingame server, similiar to old mc.minetrack.me
-- History graphs (database?)

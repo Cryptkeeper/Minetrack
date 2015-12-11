@@ -192,5 +192,6 @@
 		"mojangStatusTimeout": 3500,
 		"pingAll": 3000,
 		"connectTimeout": 2500
-	}
+	},
+	"logToDatabase": true
 }

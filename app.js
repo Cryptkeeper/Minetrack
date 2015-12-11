@@ -3,6 +3,7 @@ var ping = require('./lib/ping');
 var logger = require('./lib/logger');
 var mojang = require('./lib/mojang_services');
 var util = require('./lib/util');
+var db = require('./lib/database');
 
 var config = require('./config.json');
 
@@ -73,6 +74,11 @@ function pingAll() {
 				if (_networkHistory.length > 72) { // 60/2.5 = 24, so 24 is one minute
 					_networkHistory.shift();
 				}
+
+				// Log it to the database if needed.
+				if (config.logToDatabase) {
+					db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
+				}
 			});
 		})(servers[i]);
 	}
@@ -87,6 +93,13 @@ function startMainLoop() {
 
 		server.io.sockets.emit('updateMojangServices', mojang.toMessage());
 	}, config.rates.upateMojangStatus);
+}
+
+if (config.logToDatabase) {
+	// Setup our database.
+	db.setup();
+} else {
+	logger.warn('Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
 }
 
 server.start(function() {
