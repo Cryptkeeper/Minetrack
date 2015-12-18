@@ -267,6 +267,7 @@ $(document).ready(function() {
 
         $('#server-container').html('');
         $('#quick-jump-container').html('');
+        $('#big-graph').html('');
     });
 
     socket.on('historyGraph', function(rawData) {
