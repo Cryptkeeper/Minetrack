@@ -86,7 +86,10 @@ function pingAll() {
 				// Push it to our graphs.
 				var timeMs = util.getCurrentTimeMs();
 
-				if (!lastGraphPush[network.ip] || timeMs - lastGraphPush[network.ip] >= 60 * 1000) {
+				// The same mechanic from trimUselessPings is seen here.
+				// If we dropped the ping, then to avoid destroying the graph, ignore it.
+				// However if it's been too long since the last successful ping, we'll send it anyways.
+				if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
 					lastGraphPush[network.ip] = timeMs;
 
 					// Don't have too much data!
