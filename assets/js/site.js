@@ -30,6 +30,36 @@ var smallChartOptions = {
     ]
 };
 
+var bigChartOptions = {
+    series: {
+        shadowSize: 0
+    },
+    xaxis: {
+        font: {
+            color: "#E3E3E3"
+        },
+        show: false
+    },
+    yaxis: {
+        show: true,
+        tickLength: 10,
+        tickFormatter: function(value) {
+            return formatNumber(value);
+        },
+        font: {
+            color: "#E3E3E3"
+        },
+        labelWidth: -5
+    },
+    grid: {
+        hoverable: true,
+        color: "#696969"
+    },
+    legend: {
+        show: false
+    }
+};
+
 var lastMojangServiceUpdate;
 
 var graphs = {};
@@ -169,6 +199,38 @@ function safeName(name) {
     return name.replace(/ /g, '');
 }
 
+function handlePlotHover(event, pos, item) {
+    if (item) {
+        var text = getTimestamp(item.datapoint[0] / 1000) + '\
+            <br />\
+            ' + formatNumber(item.datapoint[1]) + ' Players';
+
+        if (item.series && item.series.label) {
+            text = item.series.label + '<br />' + text;
+        }
+
+        renderTooltip(item.pageX + 5, item.pageY + 5, text);
+    } else {
+        hideTooltip();
+    }
+}
+
+function convertGraphData(rawData) {
+    var data = [];
+
+    var keys = Object.keys(rawData);
+
+    for (var i = 0; i < keys.length; i++) {
+        data.push({
+            data: rawData[keys[i]],
+            yaxis: 1,
+            label: keys[i]
+        });
+    }
+
+    return data;
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -178,6 +240,9 @@ $(document).ready(function() {
 
     var mojangServicesUpdater;
     var sortServersTask;
+
+    var historyPlot;
+    var historyData;
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
@@ -201,6 +266,27 @@ $(document).ready(function() {
 
         $('#server-container').html('');
         $('#quick-jump-container').html('');
+    });
+
+    socket.on('historyGraph', function(rawData) {
+        historyData = rawData;
+
+        historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
+
+        $('#big-graph').bind('plothover', handlePlotHover);
+    });
+
+    socket.on('updateHistoryGraph', function(rawData) {
+        if (historyData[rawData.ip].length > 24 * 60) {
+            historyData[rawData.ip].shift();
+        }
+
+        historyData[rawData.ip].push([rawData.timestamp, rawData.players]);
+
+        historyPlot.setData(convertGraphData(historyData));
+        historyPlot.setupGrid();
+
+        historyPlot.draw();
     });
 
 	socket.on('add', function(servers) {
@@ -265,15 +351,7 @@ $(document).ready(function() {
 
             updateServerStatus(lastEntry);
 
-            $('#chart_' + safeName(info.name)).bind('plothover', function(event, pos, item) {
-                if (item) {
-                    renderTooltip(item.pageX + 5, item.pageY + 5, getTimestamp(item.datapoint[0] / 1000) + '\
-                        <br />\
-                        ' + formatNumber(item.datapoint[1]) + ' Players');
-                } else {
-                    hideTooltip();
-                }
-            });
+            $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
         }
 
         sortServers();
@@ -323,7 +401,7 @@ $(document).ready(function() {
 
     sortServersTask = setInterval(function() {
         sortServers();
-    }, 30 * 1000);
+    }, 10 * 1000);
 
     // Our super fancy scrolly thing!
     $(document).on('click', '.quick-jump-icon', function(e) {

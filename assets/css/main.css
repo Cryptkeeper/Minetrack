@@ -177,3 +177,11 @@ h3 {
     height: 42px;
     width: 42px;
 }
+
+/* The big graph */
+#big-graph {
+    height: 500px;
+    width: 800px;
+    margin: 15px auto 0 auto;
+    padding-left: 500px;
+}

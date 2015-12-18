@@ -10,6 +10,9 @@ var config = require('./config.json');
 var networkHistory = [];
 var connectedClients = 0;
 
+var graphData = [];
+var lastGraphPush = [];
+
 function pingAll() {
 	var servers = config.servers;
 
@@ -79,6 +82,27 @@ function pingAll() {
 				if (config.logToDatabase) {
 					db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
 				}
+
+				// Push it to our graphs.
+				var timeMs = util.getCurrentTimeMs();
+
+				if (!lastGraphPush[network.ip] || timeMs - lastGraphPush[network.ip] >= 60 * 1000) {
+					lastGraphPush[network.ip] = timeMs;
+
+					// Don't have too much data!
+					if (graphData[network.ip].length >= 24 * 60) {
+						graphData[network.ip].shift();
+					}
+
+					graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
+
+					// Send the update.
+					server.io.sockets.emit('updateHistoryGraph', {
+						ip: network.ip,
+						players: (res ? res.players.online : 0),
+						timestamp: timeMs
+					});
+				}
 			});
 		})(servers[i]);
 	}
@@ -98,6 +122,14 @@ function startMainLoop() {
 if (config.logToDatabase) {
 	// Setup our database.
 	db.setup();
+
+	var timestamp = util.getCurrentTimeMs();
+
+	db.queryPings(24 * 60 * 60 * 1000, function(data) {
+		graphData = util.convertPingsToGraph(data);
+
+		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
+	});
 } else {
 	logger.warn('Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
 }
@@ -130,6 +162,9 @@ server.start(function() {
 			for (var i = 0; i < networkHistoryKeys.length; i++) {
 				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
 			}
+
+			// Send them the big 24h graph.
+			client.emit('historyGraph', graphData);
 		}, 1);
 
 		// Attach our listeners.
