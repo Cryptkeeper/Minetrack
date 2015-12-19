@@ -192,7 +192,36 @@ h3 {
     width: 100%;
 }
 
+#big-graph-controls {
+    margin: 10px auto;
+}
+
+#big-graph-controls a {
+    text-decoration: none;
+    color: inherit;
+    text-transform: uppercase;
+    border-bottom: 1px dashed #FFF;
+    font-size: 16px;
+}
+
+#big-graph-controls a:hover {
+    border-bottom: 1px dashed transparent;
+    cursor: pointer;
+}
+
 /* Basic elements */
 .button {
-    
+    background: #3498db;
+    border-radius: 2px;
+    text-shadow: 0 0 0 #000;
+    width: 85px;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin: 0 auto;
+}
+
+.button:hover {
+    background: #ecf0f1;
+    color: #3498db;
+    cursor: pointer;
 }

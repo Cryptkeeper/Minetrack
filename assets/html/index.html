@@ -35,12 +35,29 @@
 		</div>
 
 		<div id="big-graph"></div>
-		<div id="big-graph-controls">
-			
-			<div id="big-graph-checkboxes"></div>
 
-			<button onclick="setAllGraphVisibility(true);">Show All</button>
-			<button onclick="setAllGraphVisibility(false);">Hide All</button>
+		<div id="big-graph-controls" style="display: none;">
+
+			<span style="text-align: center; display: block;">
+
+				<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a>
+
+			</span>
+			
+			<div id="big-graph-controls-drawer" style="display: none;">
+
+				<div id="big-graph-checkboxes"></div>
+
+				<br />
+
+				<span style="text-align: center; display: block; margin-bottom: 15px;">
+
+					<span onclick="setAllGraphVisibility(true);" class="button">Show All</span>
+					<span onclick="setAllGraphVisibility(false);" class="button">Hide All</span>
+
+				</span>
+
+			</div>
 
 		</div>
 

@@ -215,6 +215,12 @@ function setAllGraphVisibility(visible) {
     historyPlot.draw();
 }
 
+function toggleControlsDrawer() {
+    var div = $('#big-graph-controls-drawer');
+
+    div.css('display', div.css('display') !== 'none' ? 'none' : 'block');
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -246,8 +252,10 @@ $(document).ready(function() {
 
         $('#server-container').html('');
         $('#quick-jump-container').html('');
+
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
+        $('#big-graph-controls').css('display', 'none');
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -277,6 +285,7 @@ $(document).ready(function() {
         }
 
         $('#big-graph-checkboxes').append(html + '</tr></table>');
+        $('#big-graph-controls').css('display', 'block');
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
