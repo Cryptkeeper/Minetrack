@@ -111,11 +111,6 @@
 			"type": "PC"
 		},
 		{
-			"name": "MCLegends",
-			"ip": "play.mc-legends.com",
-			"type": "PC"
-		},
-		{
 			"name": "Rewinside",
 			"ip": "mc.rewinside.tv",
 			"type": "PC"
@@ -190,8 +185,8 @@
 	"rates": {
 		"upateMojangStatus": 5000,
 		"mojangStatusTimeout": 3500,
-		"pingAll": 3000,
-		"connectTimeout": 2500
+		"pingAll": 2000,
+		"connectTimeout": 1500
 	},
-	"logToDatabase": false
+	"logToDatabase": true
 }

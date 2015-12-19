@@ -30,11 +30,45 @@ var smallChartOptions = {
     ]
 };
 
+var bigChartOptions = {
+    series: {
+        shadowSize: 0
+    },
+    xaxis: {
+        font: {
+            color: "#E3E3E3"
+        },
+        show: false
+    },
+    yaxis: {
+        show: true,
+        tickSize: 2000,
+        tickLength: 10,
+        tickFormatter: function(value) {
+            return formatNumber(value);
+        },
+        font: {
+            color: "#E3E3E3"
+        },
+        labelWidth: -5
+    },
+    grid: {
+        hoverable: true,
+        color: "#696969"
+    },
+    legend: {
+        show: false
+    }
+};
+
 var lastMojangServiceUpdate;
 
 var graphs = {};
-var lastLatencyEntries = {};
 var lastPlayerEntries = {};
+
+var historyPlot;
+var displayedGraphData;
+var hiddenGraphData = [];
 
 // Generate (and set) the HTML that displays Mojang status.
 function updateMojangServices() {
@@ -109,20 +143,7 @@ function updateServerStatus(lastEntry) {
             newStatus += playerDifference + ')</span>';
         }
 
-        /*if (lastLatencyEntries[info.name]) {
-            newStatus += '<br />';
-
-            var latencyDifference = lastLatencyEntries[info.name] - result.latency;
-
-            if (latencyDifference >= 0) {
-                newStatus += '+';
-            }
-
-            newStatus += latencyDifference + 'ms';
-        }*/
-
         lastPlayerEntries[info.name] = result.players.online;
-        lastLatencyEntries[info.name] = result.latency;
 
         div.html(newStatus);
     } else {
@@ -165,8 +186,39 @@ function sortServers() {
     }
 }
 
-function safeName(name) {
-    return name.replace(/ /g, '');
+function setAllGraphVisibility(visible) {
+    if (visible) {
+        var keys = Object.keys(hiddenGraphData);
+
+        for (var i = 0; i < keys.length; i++) {
+            displayedGraphData[keys[i]] = hiddenGraphData[keys[i]];
+        }
+
+        hiddenGraphData = [];
+    } else {
+        var keys = Object.keys(displayedGraphData);
+
+        for (var i = 0; i < keys.length; i++) {
+            hiddenGraphData[keys[i]] = displayedGraphData[keys[i]];
+        }
+
+        displayedGraphData = [];
+    }
+
+    $('.graph-control').each(function(index, item) {
+        item.checked = visible;
+    });
+
+    historyPlot.setData(convertGraphData(displayedGraphData));
+    historyPlot.setupGrid();
+
+    historyPlot.draw();
+}
+
+function toggleControlsDrawer() {
+    var div = $('#big-graph-controls-drawer');
+
+    div.css('display', div.css('display') !== 'none' ? 'none' : 'block');
 }
 
 $(document).ready(function() {
@@ -181,6 +233,10 @@ $(document).ready(function() {
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
+
+        if (!isMobileBrowser()) {
+            socket.emit('requestHistoryGraph');
+        }
 	});
 
     socket.on('disconnect', function() {
@@ -196,11 +252,66 @@ $(document).ready(function() {
         $('#tagline-text').text('Disconnected! Refresh?');
 
         lastPlayerEntries = {};
-        lastLatencyEntries = {};
         graphs = {};
 
         $('#server-container').html('');
         $('#quick-jump-container').html('');
+
+        $('#big-graph').html('');
+        $('#big-graph-checkboxes').html('');
+        $('#big-graph-controls').css('display', 'none');
+    });
+
+    socket.on('historyGraph', function(rawData) {
+        displayedGraphData = rawData;
+
+        $('#big-graph').css('height', '500px');
+
+        historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
+
+        $('#big-graph').bind('plothover', handlePlotHover);
+
+        var keys = Object.keys(rawData);
+
+        var sinceBreak = 0;
+        var html = '<table><tr>';
+
+        keys.sort();
+
+        for (var i = 0; i < keys.length; i++) {
+            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></td>';
+
+            if (sinceBreak >= 3) {
+                sinceBreak = 0;
+
+                html += '</tr><tr>';
+            } else {
+                sinceBreak++;
+            }
+        }
+
+        $('#big-graph-checkboxes').append(html + '</tr></table>');
+        $('#big-graph-controls').css('display', 'block');
+    });
+
+    socket.on('updateHistoryGraph', function(rawData) {
+        var targetGraphData = displayedGraphData[rawData.ip];
+
+        // If it's not in our display group, push it to the hidden group instead so it can be restored and still be up to date.
+        if (!targetGraphData) {
+            targetGraphData = hiddenGraphData[rawData.ip];
+        }
+
+        if (targetGraphData.length > 24 * 60) {
+            targetGraphData.shift();
+        }
+
+        targetGraphData.push([rawData.timestamp, rawData.players]);
+
+        historyPlot.setData(convertGraphData(displayedGraphData));
+        historyPlot.setupGrid();
+
+        historyPlot.draw();
     });
 
 	socket.on('add', function(servers) {
@@ -223,10 +334,8 @@ $(document).ready(function() {
 
             if (lastEntry.error) {
                 lastPlayerEntries[info.name] = 0;
-                lastLatencyEntries[info.name] = 0;
             } else if (lastEntry.result) {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
-                lastLatencyEntries[info.name] = lastEntry.result.latency;
             }
 
             $('<div/>', {
@@ -265,15 +374,7 @@ $(document).ready(function() {
 
             updateServerStatus(lastEntry);
 
-            $('#chart_' + safeName(info.name)).bind('plothover', function(event, pos, item) {
-                if (item) {
-                    renderTooltip(item.pageX + 5, item.pageY + 5, getTimestamp(item.datapoint[0] / 1000) + '\
-                        <br />\
-                        ' + formatNumber(item.datapoint[1]) + ' Players');
-                } else {
-                    hideTooltip();
-                }
-            });
+            $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
         }
 
         sortServers();
@@ -323,7 +424,7 @@ $(document).ready(function() {
 
     sortServersTask = setInterval(function() {
         sortServers();
-    }, 30 * 1000);
+    }, 10 * 1000);
 
     // Our super fancy scrolly thing!
     $(document).on('click', '.quick-jump-icon', function(e) {
@@ -333,5 +434,26 @@ $(document).ready(function() {
         $('html, body').animate({
             scrollTop: target.offset().top
         }, 100);
+    });
+
+    $(document).on('click', '.graph-control', function(e) {
+        var serverIp = $(this).attr('data-target-network');
+        var checked = $(this).attr('checked');
+
+        // Restore it, or delete it - either works.
+        if (!this.checked) {
+            hiddenGraphData[serverIp] = displayedGraphData[serverIp];
+
+            delete displayedGraphData[serverIp];
+        } else {
+            displayedGraphData[serverIp] = hiddenGraphData[serverIp];
+
+            delete hiddenGraphData[serverIp];
+        }
+
+        historyPlot.setData(convertGraphData(displayedGraphData));
+        historyPlot.setupGrid();
+
+        historyPlot.draw();
     });
 });
