@@ -151,9 +151,6 @@ function startServices() {
 				for (var i = 0; i < networkHistoryKeys.length; i++) {
 					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
 				}
-
-				// Send them the big 24h graph.
-				client.emit('historyGraph', graphData);
 			}, 1);
 
 			// Attach our listeners.
@@ -162,6 +159,11 @@ function startServices() {
 
 				logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
 			});
+		});
+
+		server.io.on('requestHistoryGraph', function(client) {
+			// Send them the big 24h graph.
+			client.emit('historyGraph', graphData);
 		});
 
 		startMainLoop();

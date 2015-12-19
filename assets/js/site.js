@@ -233,6 +233,10 @@ $(document).ready(function() {
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
+
+        if (!isMobileBrowser()) {
+            socket.emit('requestHistoryGraph');
+        }
 	});
 
     socket.on('disconnect', function() {
