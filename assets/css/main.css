@@ -187,3 +187,7 @@ h3 {
 #big-graph {
     height: 500px;
 }
+
+#big-graph-controls > table {
+    width: 100%;
+}

@@ -168,6 +168,8 @@ function startServices() {
 	});
 }
 
+logger.log('info', 'Booting, please wait...');
+
 if (config.logToDatabase) {
 	// Setup our database.
 	db.setup();

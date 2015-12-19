@@ -218,6 +218,7 @@ $(document).ready(function() {
         $('#server-container').html('');
         $('#quick-jump-container').html('');
         $('#big-graph').html('');
+        $('#big-graph-controls').html('');
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -229,9 +230,24 @@ $(document).ready(function() {
 
         var keys = Object.keys(rawData);
 
+        var sinceBreak = 0;
+        var html = '<table><tr>';
+
+        keys.sort();
+
         for (var i = 0; i < keys.length; i++) {
-            $('#big-graph-controls').append('<input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input> ');
+            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></td>';
+
+            if (sinceBreak >= 3) {
+                sinceBreak = 0;
+
+                html += '</tr><tr>';
+            } else {
+                sinceBreak++;
+            }
         }
+
+        $('#big-graph-controls').append(html + '</tr></table>');
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
