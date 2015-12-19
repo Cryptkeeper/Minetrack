@@ -287,7 +287,7 @@ $(document).ready(function() {
         for (var i = 0; i < keys.length; i++) {
             html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></td>';
 
-            if (sinceBreak >= 3) {
+            if (sinceBreak >= 7) {
                 sinceBreak = 0;
 
                 html += '</tr><tr>';
@@ -354,7 +354,7 @@ $(document).ready(function() {
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
-                        <div class="column" style="width: 280px;">\
+                        <div class="column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
                             <span class="color-gray">' + info.ip + '</span>\
                             <br />\
