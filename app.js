@@ -154,16 +154,16 @@ function startServices() {
 			}, 1);
 
 			// Attach our listeners.
-			client.on('disconnect', function(client) {
+			client.on('disconnect', function() {
 				connectedClients -= 1;
 
 				logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
 			});
-		});
 
-		server.io.on('requestHistoryGraph', function(client) {
-			// Send them the big 24h graph.
-			client.emit('historyGraph', graphData);
+			client.on('requestHistoryGraph', function() {
+				// Send them the big 24h graph.
+				client.emit('historyGraph', graphData);
+			});
 		});
 
 		startMainLoop();
