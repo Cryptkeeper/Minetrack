@@ -265,6 +265,8 @@ $(document).ready(function() {
     socket.on('historyGraph', function(rawData) {
         displayedGraphData = rawData;
 
+        $('#big-graph').css('height', '500px');
+
         historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);

@@ -184,10 +184,6 @@ h3 {
     margin: 15px auto 0 auto;
 }
 
-#big-graph {
-    height: 500px;
-}
-
 #big-graph-checkboxes > table {
     width: 100%;
 }
