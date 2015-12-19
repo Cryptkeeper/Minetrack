@@ -179,7 +179,7 @@ h3 {
 }
 
 /* The big graph */
-#big-graph, #big-graph-controls {
+#big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 1000px;
     margin: 15px auto 0 auto;
 }
@@ -188,6 +188,11 @@ h3 {
     height: 500px;
 }
 
-#big-graph-controls > table {
+#big-graph-checkboxes > table {
     width: 100%;
+}
+
+/* Basic elements */
+.button {
+    
 }

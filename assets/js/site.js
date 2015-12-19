@@ -66,6 +66,10 @@ var lastMojangServiceUpdate;
 var graphs = {};
 var lastPlayerEntries = {};
 
+var historyPlot;
+var displayedGraphData;
+var hiddenGraphData = [];
+
 // Generate (and set) the HTML that displays Mojang status.
 function updateMojangServices() {
     if (!lastMojangServiceUpdate) {
@@ -182,6 +186,35 @@ function sortServers() {
     }
 }
 
+function setAllGraphVisibility(visible) {
+    if (visible) {
+        var keys = Object.keys(hiddenGraphData);
+
+        for (var i = 0; i < keys.length; i++) {
+            displayedGraphData[keys[i]] = hiddenGraphData[keys[i]];
+        }
+
+        hiddenGraphData = [];
+    } else {
+        var keys = Object.keys(displayedGraphData);
+
+        for (var i = 0; i < keys.length; i++) {
+            hiddenGraphData[keys[i]] = displayedGraphData[keys[i]];
+        }
+
+        displayedGraphData = [];
+    }
+
+    $('.graph-control').each(function(index, item) {
+        item.checked = visible;
+    });
+
+    historyPlot.setData(convertGraphData(displayedGraphData));
+    historyPlot.setupGrid();
+
+    historyPlot.draw();
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -191,10 +224,6 @@ $(document).ready(function() {
 
     var mojangServicesUpdater;
     var sortServersTask;
-
-    var historyPlot;
-    var displayedGraphData;
-    var hiddenGraphData = [];
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
@@ -218,7 +247,7 @@ $(document).ready(function() {
         $('#server-container').html('');
         $('#quick-jump-container').html('');
         $('#big-graph').html('');
-        $('#big-graph-controls').html('');
+        $('#big-graph-checkboxes').html('');
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -247,7 +276,7 @@ $(document).ready(function() {
             }
         }
 
-        $('#big-graph-controls').append(html + '</tr></table>');
+        $('#big-graph-checkboxes').append(html + '</tr></table>');
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
