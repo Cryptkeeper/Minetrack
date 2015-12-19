@@ -20,7 +20,7 @@ body {
     padding: 20px 0;
     text-align: center;
     border-top: 1px solid #DED3D6;
-    width: 840px;
+    width: 1540px;
     margin: 0 auto;
 }
 
@@ -51,7 +51,7 @@ body {
 #tagline {
     padding: 10px 0;
     text-align: center;
-    width: 840px;
+    width: 1540px;
     margin: 0 auto;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -78,19 +78,17 @@ body {
 
 /* Server listing */
 #server-container {
-    width: 800px;
-    margin: 10px auto 20px auto;
-}
-
-#server-container .server:nth-child(2n) {
-    background: #4E4E4E;
-    border-radius: 2px;
+    width: 1540px;
+    margin: 10px auto 0 auto;
+    overflow: auto;
 }
 
 .server {
     overflow: auto;
-    padding: 10px;
-    margin: 5px;
+    padding: 5px 10px;
+    margin: 0 5px;
+    width: 740px;
+    display: inline-block;
 }
 
 .server > .column > img {
@@ -161,6 +159,7 @@ h3 {
     top: 10px;
     left: 10px;
     overflow: auto;
+    display: none;
 }
 
 .quick-jump-icon {
@@ -180,12 +179,16 @@ h3 {
 
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
-    width: 1000px;
+    width: 1540px;
     margin: 15px auto 0 auto;
 }
 
 #big-graph-checkboxes > table {
     width: 100%;
+}
+
+#big-graph {
+    margin-top: 20px;
 }
 
 #big-graph-controls {
