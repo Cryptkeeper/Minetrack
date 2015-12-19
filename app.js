@@ -93,9 +93,7 @@ function pingAll() {
 					lastGraphPush[network.ip] = timeMs;
 
 					// Don't have too much data!
-					if (graphData[network.ip].length >= 24 * 60) {
-						graphData[network.ip].shift();
-					}
+					util.trimOldPings(graphData);
 
 					graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
 
@@ -139,6 +137,8 @@ function startServices() {
 			logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
 			setTimeout(function() {
+				client.emit('setGraphDuration', config.graphDuration);
+
 				// Send them our previous data, so they have somewhere to start.
 				client.emit('updateMojangServices', mojang.toMessage());
 
@@ -178,7 +178,7 @@ if (config.logToDatabase) {
 
 	var timestamp = util.getCurrentTimeMs();
 
-	db.queryPings(24 * 60 * 60 * 1000, function(data) {
+	db.queryPings(config.graphDuration, function(data) {
 		graphData = util.convertPingsToGraph(data);
 
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
@@ -186,7 +186,7 @@ if (config.logToDatabase) {
 		startServices();
 	});
 } else {
-	logger.warn('Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
+	logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
 
 	startServices();
 }

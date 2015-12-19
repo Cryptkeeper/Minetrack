@@ -231,6 +231,8 @@ $(document).ready(function() {
     var mojangServicesUpdater;
     var sortServersTask;
 
+    var graphDuration;
+
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
 
@@ -260,6 +262,10 @@ $(document).ready(function() {
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
+    });
+
+    socket.on('setGraphDuration', function(value) {
+        graphDuration = value;
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -295,23 +301,25 @@ $(document).ready(function() {
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
-        var targetGraphData = displayedGraphData[rawData.ip];
-
-        // If it's not in our display group, push it to the hidden group instead so it can be restored and still be up to date.
-        if (!targetGraphData) {
-            targetGraphData = hiddenGraphData[rawData.ip];
+        // Prevent race conditions.
+        if (!graphDuration) {
+            return;
         }
 
-        if (targetGraphData.length > 24 * 60) {
-            targetGraphData.shift();
+        // If it's not in our display group, use the hidden group instead.
+        var targetGraphData = displayedGraphData[rawData.ip] ? displayedGraphData : hiddenGraphData;
+
+        trimOldPings(targetGraphData, graphDuration);
+
+        targetGraphData[rawData.ip].push([rawData.timestamp, rawData.players]);
+
+        // Redraw if we need to.
+        if (displayedGraphData[rawData.ip]) {
+            historyPlot.setData(convertGraphData(displayedGraphData));
+            historyPlot.setupGrid();
+
+            historyPlot.draw();
         }
-
-        targetGraphData.push([rawData.timestamp, rawData.players]);
-
-        historyPlot.setData(convertGraphData(displayedGraphData));
-        historyPlot.setupGrid();
-
-        historyPlot.draw();
     });
 
 	socket.on('add', function(servers) {

@@ -36,6 +36,30 @@ function isMobileBrowser() {
   return check;
 }
 
+function trimOldPings(data, graphDuration) {
+	var keys = Object.keys(data);
+
+	var timeMs = new Date().getTime();
+
+	for (var x = 0; x < keys.length; x++) {
+		var listing = data[keys[x]];
+
+		var toSplice = [];
+
+		for (var i = 0; i < listing.length; i++) {
+			var entry = listing[i];
+
+			if (timeMs - entry[0] > graphDuration) {
+				toSplice.push(i);
+			}
+		}
+
+		for (var i = 0; i < toSplice.length; i++) {
+			listing.splice(toSplice[i], 1);
+		}
+	}
+}
+
 function handlePlotHover(event, pos, item) {
     if (item) {
         var text = getTimestamp(item.datapoint[0] / 1000) + '\
