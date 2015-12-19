@@ -42,7 +42,7 @@ var bigChartOptions = {
     },
     yaxis: {
         show: true,
-        tickSize: 1000,
+        tickSize: 2000,
         tickLength: 10,
         tickFormatter: function(value) {
             return formatNumber(value);
@@ -64,7 +64,6 @@ var bigChartOptions = {
 var lastMojangServiceUpdate;
 
 var graphs = {};
-var lastLatencyEntries = {};
 var lastPlayerEntries = {};
 
 // Generate (and set) the HTML that displays Mojang status.
@@ -140,20 +139,7 @@ function updateServerStatus(lastEntry) {
             newStatus += playerDifference + ')</span>';
         }
 
-        /*if (lastLatencyEntries[info.name]) {
-            newStatus += '<br />';
-
-            var latencyDifference = lastLatencyEntries[info.name] - result.latency;
-
-            if (latencyDifference >= 0) {
-                newStatus += '+';
-            }
-
-            newStatus += latencyDifference + 'ms';
-        }*/
-
         lastPlayerEntries[info.name] = result.players.online;
-        lastLatencyEntries[info.name] = result.latency;
 
         div.html(newStatus);
     } else {
@@ -196,42 +182,6 @@ function sortServers() {
     }
 }
 
-function safeName(name) {
-    return name.replace(/ /g, '');
-}
-
-function handlePlotHover(event, pos, item) {
-    if (item) {
-        var text = getTimestamp(item.datapoint[0] / 1000) + '\
-            <br />\
-            ' + formatNumber(item.datapoint[1]) + ' Players';
-
-        if (item.series && item.series.label) {
-            text = item.series.label + '<br />' + text;
-        }
-
-        renderTooltip(item.pageX + 5, item.pageY + 5, text);
-    } else {
-        hideTooltip();
-    }
-}
-
-function convertGraphData(rawData) {
-    var data = [];
-
-    var keys = Object.keys(rawData);
-
-    for (var i = 0; i < keys.length; i++) {
-        data.push({
-            data: rawData[keys[i]],
-            yaxis: 1,
-            label: keys[i]
-        });
-    }
-
-    return data;
-}
-
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -243,7 +193,8 @@ $(document).ready(function() {
     var sortServersTask;
 
     var historyPlot;
-    var historyData;
+    var displayedGraphData;
+    var hiddenGraphData = [];
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
@@ -262,7 +213,6 @@ $(document).ready(function() {
         $('#tagline-text').text('Disconnected! Refresh?');
 
         lastPlayerEntries = {};
-        lastLatencyEntries = {};
         graphs = {};
 
         $('#server-container').html('');
@@ -271,21 +221,34 @@ $(document).ready(function() {
     });
 
     socket.on('historyGraph', function(rawData) {
-        historyData = rawData;
+        displayedGraphData = rawData;
 
         historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);
+
+        var keys = Object.keys(rawData);
+
+        for (var i = 0; i < keys.length; i++) {
+            $('#big-graph-controls').append('<input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input> ');
+        }
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
-        if (historyData[rawData.ip].length > 24 * 60) {
-            historyData[rawData.ip].shift();
+        var targetGraphData = displayedGraphData[rawData.ip];
+
+        // If it's not in our display group, push it to the hidden group instead so it can be restored and still be up to date.
+        if (!targetGraphData) {
+            targetGraphData = hiddenGraphData[rawData.ip];
         }
 
-        historyData[rawData.ip].push([rawData.timestamp, rawData.players]);
+        if (targetGraphData.length > 24 * 60) {
+            targetGraphData.shift();
+        }
 
-        historyPlot.setData(convertGraphData(historyData));
+        targetGraphData.push([rawData.timestamp, rawData.players]);
+
+        historyPlot.setData(convertGraphData(displayedGraphData));
         historyPlot.setupGrid();
 
         historyPlot.draw();
@@ -311,10 +274,8 @@ $(document).ready(function() {
 
             if (lastEntry.error) {
                 lastPlayerEntries[info.name] = 0;
-                lastLatencyEntries[info.name] = 0;
             } else if (lastEntry.result) {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
-                lastLatencyEntries[info.name] = lastEntry.result.latency;
             }
 
             $('<div/>', {
@@ -413,5 +374,26 @@ $(document).ready(function() {
         $('html, body').animate({
             scrollTop: target.offset().top
         }, 100);
+    });
+
+    $(document).on('click', '.graph-control', function(e) {
+        var serverIp = $(this).attr('data-target-network');
+        var checked = $(this).attr('checked');
+
+        // Restore it, or delete it - either works.
+        if (!this.checked) {
+            hiddenGraphData[serverIp] = displayedGraphData[serverIp];
+
+            delete displayedGraphData[serverIp];
+        } else {
+            displayedGraphData[serverIp] = hiddenGraphData[serverIp];
+
+            delete hiddenGraphData[serverIp];
+        }
+
+        historyPlot.setData(convertGraphData(displayedGraphData));
+        historyPlot.setupGrid();
+
+        historyPlot.draw();
     });
 });

@@ -122,6 +122,52 @@ function startMainLoop() {
 	}, config.rates.upateMojangStatus);
 }
 
+function startServices() {
+	server.start(function() {
+		// Track how many people are currently connected.
+		server.io.on('connect', function(client) {
+	        // If we haven't sent out at least one round of pings, disconnect them for now.
+	        if (Object.keys(networkHistory).length < config.servers.length) {
+	            client.disconnect();
+
+	            return;
+	        }
+
+			// We're good to connect them!
+			connectedClients += 1;
+
+			logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
+
+			setTimeout(function() {
+				// Send them our previous data, so they have somewhere to start.
+				client.emit('updateMojangServices', mojang.toMessage());
+
+				// Remap our associative array into just an array.
+				var networkHistoryKeys = Object.keys(networkHistory);
+
+				networkHistoryKeys.sort();
+
+				// Send each individually, this should look cleaner than waiting for one big array to transfer.
+				for (var i = 0; i < networkHistoryKeys.length; i++) {
+					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
+				}
+
+				// Send them the big 24h graph.
+				client.emit('historyGraph', graphData);
+			}, 1);
+
+			// Attach our listeners.
+			client.on('disconnect', function(client) {
+				connectedClients -= 1;
+
+				logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
+			});
+		});
+
+		startMainLoop();
+	});
+}
+
 if (config.logToDatabase) {
 	// Setup our database.
 	db.setup();
@@ -132,51 +178,11 @@ if (config.logToDatabase) {
 		graphData = util.convertPingsToGraph(data);
 
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
+
+		startServices();
 	});
 } else {
 	logger.warn('Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
+
+	startServices();
 }
-
-server.start(function() {
-	// Track how many people are currently connected.
-	server.io.on('connect', function(client) {
-        // If we haven't sent out at least one round of pings, disconnect them for now.
-        if (Object.keys(networkHistory).length < config.servers.length) {
-            client.disconnect();
-
-            return;
-        }
-
-		// We're good to connect them!
-		connectedClients += 1;
-
-		logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
-
-		setTimeout(function() {
-			// Send them our previous data, so they have somewhere to start.
-			client.emit('updateMojangServices', mojang.toMessage());
-
-			// Remap our associative array into just an array.
-			var networkHistoryKeys = Object.keys(networkHistory);
-
-			networkHistoryKeys.sort();
-
-			// Send each individually, this should look cleaner than waiting for one big array to transfer.
-			for (var i = 0; i < networkHistoryKeys.length; i++) {
-				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
-			}
-
-			// Send them the big 24h graph.
-			client.emit('historyGraph', graphData);
-		}, 1);
-
-		// Attach our listeners.
-		client.on('disconnect', function(client) {
-			connectedClients -= 1;
-
-			logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
-		});
-	});
-
-	startMainLoop();
-});

@@ -179,9 +179,11 @@ h3 {
 }
 
 /* The big graph */
+#big-graph, #big-graph-controls {
+    width: 1000px;
+    margin: 15px auto 0 auto;
+}
+
 #big-graph {
     height: 500px;
-    width: 800px;
-    margin: 15px auto 0 auto;
-    padding-left: 500px;
 }

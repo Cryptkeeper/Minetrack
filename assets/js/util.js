@@ -10,6 +10,10 @@ function getTimestamp(ms, timeOnly) {
     return date.toLocaleTimeString();
 }
 
+function safeName(name) {
+    return name.replace(/ /g, '');
+}
+
 function renderTooltip(x, y, html) {
 	tooltip.html(html).css({
 		top: y,
@@ -23,6 +27,51 @@ function hideTooltip() {
 
 function formatNumber(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function handlePlotHover(event, pos, item) {
+    if (item) {
+        var text = getTimestamp(item.datapoint[0] / 1000) + '\
+            <br />\
+            ' + formatNumber(item.datapoint[1]) + ' Players';
+
+        if (item.series && item.series.label) {
+            text = item.series.label + '<br />' + text;
+        }
+
+        renderTooltip(item.pageX + 5, item.pageY + 5, text);
+    } else {
+        hideTooltip();
+    }
+}
+
+function convertGraphData(rawData) {
+    var data = [];
+
+    var keys = Object.keys(rawData);
+
+    for (var i = 0; i < keys.length; i++) {
+        data.push({
+            data: rawData[keys[i]],
+            yaxis: 1,
+            label: keys[i],
+            color: stringToColor(keys[i])
+        });
+    }
+
+    return data;
+}
+
+function stringToColor(base) {
+    var hash;
+
+    for (var i = 0, hash = 0; i < base.length; i++) {
+        hash = base.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
+
+    return '#' + Array(6 - color.length + 1).join('0') + color;
 }
 
 function msToTime(timer) {
