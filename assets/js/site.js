@@ -271,7 +271,7 @@ $(document).ready(function() {
     socket.on('historyGraph', function(rawData) {
         displayedGraphData = rawData;
 
-        $('#big-graph').css('height', '500px');
+        $('#big-graph').css('height', '400px');
 
         historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
 
