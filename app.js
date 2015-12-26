@@ -89,20 +89,22 @@ function pingAll() {
 				// The same mechanic from trimUselessPings is seen here.
 				// If we dropped the ping, then to avoid destroying the graph, ignore it.
 				// However if it's been too long since the last successful ping, we'll send it anyways.
-				if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
-					lastGraphPush[network.ip] = timeMs;
+				if (config.logToDatabase) {
+					if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
+						lastGraphPush[network.ip] = timeMs;
 
-					// Don't have too much data!
-					util.trimOldPings(graphData);
+						// Don't have too much data!
+						util.trimOldPings(graphData);
 
-					graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
+							graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
 
-					// Send the update.
-					server.io.sockets.emit('updateHistoryGraph', {
-						ip: network.ip,
-						players: (res ? res.players.online : 0),
-						timestamp: timeMs
-					});
+						// Send the update.
+						server.io.sockets.emit('updateHistoryGraph', {
+							ip: network.ip,
+							players: (res ? res.players.online : 0),
+							timestamp: timeMs
+						});
+					}
 				}
 			});
 		})(servers[i]);
@@ -161,8 +163,10 @@ function startServices() {
 			});
 
 			client.on('requestHistoryGraph', function() {
-				// Send them the big 24h graph.
-				client.emit('historyGraph', graphData);
+				if (config.logToDatabase) {
+					// Send them the big 24h graph.
+					client.emit('historyGraph', graphData);
+				}
 			});
 		});
 
