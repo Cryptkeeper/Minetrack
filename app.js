@@ -30,84 +30,90 @@ function pingAll() {
 					res.favicon = config.faviconOverride[network.name];
 				}
 
-				var networkSnapshot = {
-					info: {
-						name: network.name,
-						timestamp: util.getCurrentTimeMs()
-					}
-				};
-
-				if (res) {
-					networkSnapshot.result = res;
-				} else if (err) {
-					networkSnapshot.error = err;
-				}
-
-				server.io.sockets.emit('update', networkSnapshot);
-
-				// Log our response.
-				if (!networkHistory[network.name]) {
-					networkHistory[network.name] = [];
-				}
-
-				var _networkHistory = networkHistory[network.name];
-
-				// Remove our previous data that we don't need anymore.
-				for (var i = 0; i < _networkHistory.length; i++) {
-                    delete _networkHistory[i].info;
-
-                    if (_networkHistory[i].result) {
-                    	delete _networkHistory[i].result.favicon;
-                    }
-				}
-
-				_networkHistory.push({
-					error: err,
-					result: res,
-					timestamp: util.getCurrentTimeMs(),
-                    info: {
-                        ip: network.ip,
-                        port: network.port,
-                        type: network.type,
-                        name: network.name
-                    }
-				});
-
-				// Make sure we never log too much.
-				if (_networkHistory.length > 72) { // 60/2.5 = 24, so 24 is one minute
-					_networkHistory.shift();
-				}
-
-				// Log it to the database if needed.
-				if (config.logToDatabase) {
-					db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
-				}
-
-				// Push it to our graphs.
-				var timeMs = util.getCurrentTimeMs();
-
-				// The same mechanic from trimUselessPings is seen here.
-				// If we dropped the ping, then to avoid destroying the graph, ignore it.
-				// However if it's been too long since the last successful ping, we'll send it anyways.
-				if (config.logToDatabase) {
-					if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
-						lastGraphPush[network.ip] = timeMs;
-
-						// Don't have too much data!
-						util.trimOldPings(graphData);
-
-							graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
-
-						// Send the update.
-						server.io.sockets.emit('updateHistoryGraph', {
-							ip: network.ip,
-							players: (res ? res.players.online : 0),
-							timestamp: timeMs
-						});
-					}
-				}
+				handlePing(network, res, err);
 			});
 		})(servers[i]);
+	}
+}
+
+// This is where the result of a ping is feed.
+// This stores it and converts it to ship to the frontend.
+function handlePing(network, res, err) {
+	var networkSnapshot = {
+		info: {
+			name: network.name,
+			timestamp: util.getCurrentTimeMs()
+		}
+	};
+
+	if (res) {
+		networkSnapshot.result = res;
+	} else if (err) {
+		networkSnapshot.error = err;
+	}
+
+	server.io.sockets.emit('update', networkSnapshot);
+
+	// Log our response.
+	if (!networkHistory[network.name]) {
+		networkHistory[network.name] = [];
+	}
+
+	var _networkHistory = networkHistory[network.name];
+
+	// Remove our previous data that we don't need anymore.
+	for (var i = 0; i < _networkHistory.length; i++) {
+        delete _networkHistory[i].info;
+
+        if (_networkHistory[i].result) {
+        	delete _networkHistory[i].result.favicon;
+        }
+	}
+
+	_networkHistory.push({
+		error: err,
+		result: res,
+		timestamp: util.getCurrentTimeMs(),
+        info: {
+            ip: network.ip,
+            port: network.port,
+            type: network.type,
+            name: network.name
+        }
+	});
+
+	// Make sure we never log too much.
+	if (_networkHistory.length > 72) { // 60/2.5 = 24, so 24 is one minute
+		_networkHistory.shift();
+	}
+
+	// Log it to the database if needed.
+	if (config.logToDatabase) {
+		db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
+	}
+
+	// Push it to our graphs.
+	var timeMs = util.getCurrentTimeMs();
+
+	// The same mechanic from trimUselessPings is seen here.
+	// If we dropped the ping, then to avoid destroying the graph, ignore it.
+	// However if it's been too long since the last successful ping, we'll send it anyways.
+	if (config.logToDatabase) {
+		if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
+			lastGraphPush[network.ip] = timeMs;
+
+			// Don't have too much data!
+			util.trimOldPings(graphData);
+
+				graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
+
+			// Send the update.
+			server.io.sockets.emit('updateHistoryGraph', {
+				ip: network.ip,
+				players: (res ? res.players.online : 0),
+				timestamp: timeMs
+			});
+		}
 	}
 }
 
