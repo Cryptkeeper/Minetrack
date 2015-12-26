@@ -123,55 +123,48 @@ function startMainLoop() {
 }
 
 function startServices() {
-	server.start(function() {
-		// Track how many people are currently connected.
-		server.io.on('connect', function(client) {
-	        // If we haven't sent out at least one round of pings, disconnect them for now.
-	        if (Object.keys(networkHistory).length < config.servers.length) {
-	            client.disconnect();
+	server.start();
 
-	            return;
-	        }
+	// Track how many people are currently connected.
+	server.io.on('connect', function(client) {
+		// We're good to connect them!
+		connectedClients += 1;
 
-			// We're good to connect them!
-			connectedClients += 1;
+		logger.log('info', '%s connected, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
-			logger.log('info', 'Accepted connection: %s, total clients: %d', client.request.connection.remoteAddress, connectedClients);
+		setTimeout(function() {
+			client.emit('setGraphDuration', config.graphDuration);
 
-			setTimeout(function() {
-				client.emit('setGraphDuration', config.graphDuration);
+			// Send them our previous data, so they have somewhere to start.
+			client.emit('updateMojangServices', mojang.toMessage());
 
-				// Send them our previous data, so they have somewhere to start.
-				client.emit('updateMojangServices', mojang.toMessage());
+			// Remap our associative array into just an array.
+			var networkHistoryKeys = Object.keys(networkHistory);
 
-				// Remap our associative array into just an array.
-				var networkHistoryKeys = Object.keys(networkHistory);
+			networkHistoryKeys.sort();
 
-				networkHistoryKeys.sort();
+			// Send each individually, this should look cleaner than waiting for one big array to transfer.
+			for (var i = 0; i < networkHistoryKeys.length; i++) {
+				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
+			}
+		}, 1);
 
-				// Send each individually, this should look cleaner than waiting for one big array to transfer.
-				for (var i = 0; i < networkHistoryKeys.length; i++) {
-					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
-				}
-			}, 1);
+		// Attach our listeners.
+		client.on('disconnect', function() {
+			connectedClients -= 1;
 
-			// Attach our listeners.
-			client.on('disconnect', function() {
-				connectedClients -= 1;
-
-				logger.log('info', 'Client disconnected, total clients: %d', connectedClients);
-			});
-
-			client.on('requestHistoryGraph', function() {
-				if (config.logToDatabase) {
-					// Send them the big 24h graph.
-					client.emit('historyGraph', graphData);
-				}
-			});
+			logger.log('info', '%s disconnected, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 		});
 
-		startMainLoop();
+		client.on('requestHistoryGraph', function() {
+			if (config.logToDatabase) {
+				// Send them the big 24h graph.
+				client.emit('historyGraph', graphData);
+			}
+		});
 	});
+
+	startMainLoop();
 }
 
 logger.log('info', 'Booting, please wait...');
