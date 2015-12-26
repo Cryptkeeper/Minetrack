@@ -22,7 +22,7 @@ function pingAll() {
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
-					logger.log('error', 'Failed to ping ' + network.ip + ': ' + JSON.stringify(err));
+					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err.message);
 				}
 
 				// If we have favicon override specified, use it.
