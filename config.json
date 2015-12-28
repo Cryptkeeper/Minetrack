@@ -71,9 +71,9 @@
 			"type": "PE"
 		},
 		{
-			"name": "Lifeboat",
-			"ip": "play.lbsg.net",
-			"type": "PE"
+			"name": "Cosmic PVP",
+			"ip": "cosmicpvp.me",
+			"type": "PC"
 		},
 		{
 			"name": "PartyZone",
@@ -168,13 +168,11 @@
 		"/js/util.js": "assets/js/util.js",
 		"/css/main.css": "assets/css/main.css",
 		"/favicons/hypixelpe.png": "assets/images/favicons/hypixelpe.png",
-		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
 		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
 		"/favicons/mobcrush.png": "assets/images/favicons/mobcrush.png"
 	},
 	"faviconOverride": {
 		"Hypixel PE": "/favicons/hypixelpe.png",
-		"Lifeboat": "/favicons/lifeboat.png",
 		"Mineplex": "/favicons/mineplex.png",
 		"Mobcrush Land": "/favicons/mobcrush.png"
 	},
