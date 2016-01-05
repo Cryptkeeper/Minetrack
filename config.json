@@ -81,11 +81,6 @@
 			"type": "PC"
 		},
 		{
-			"name": "The Chunk",
-			"ip": "hub.thechunk.net",
-			"type": "PC"
-		},
-		{
 			"name": "Shock Network",
 			"ip": "play.snw.io",
 			"type": "PC"
