@@ -159,6 +159,11 @@
 			"name": "Mobcrush Land",
 			"ip": "play.mobcrush.com",
 			"type": "PE"
+		},
+		{
+			"name": "Epicube",
+			"ip": "play.epicube.fr",
+			"type": "PC"
 		}
 	],
 	"routes": {
