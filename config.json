@@ -177,7 +177,7 @@
 		"Mobcrush Land": "/favicons/mobcrush.png"
 	},
 	"site": {
-		"port": 80,
+		"port": 1337,
 		"ip": "0.0.0.0"
 	},
 	"rates": {
@@ -186,6 +186,7 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-	"logToDatabase": false,
-	"graphDuration": 86400000
+	"logToDatabase": true,
+	"graphDuration": 86400000,
+	"apiTimestampQuery": 60000
 }
