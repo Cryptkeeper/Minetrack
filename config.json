@@ -177,7 +177,7 @@
 		"Mobcrush Land": "/favicons/mobcrush.png"
 	},
 	"site": {
-		"port": 1337,
+		"port": 80,
 		"ip": "0.0.0.0"
 	},
 	"rates": {
