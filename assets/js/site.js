@@ -19,8 +19,7 @@ var smallChartOptions = {
         font: {
             color: "#E3E3E3"
         },
-        labelWidth: -10,
-        min: 0
+        labelWidth: -10
     },
     grid: {
         hoverable: true,
