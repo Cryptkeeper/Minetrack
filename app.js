@@ -89,7 +89,7 @@ function handlePing(network, res, err) {
 
 	// Log it to the database if needed.
 	if (config.logToDatabase) {
-		db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
+		db.log(network.name, network.ip, network.type, util.getCurrentTimeMs(), res ? res.players.online : 0, res ? res.players.max : 0, res ? res.version : 0, res ? res.latency : 0, res ? res.favicon : util.MISSING_FAVICON_BASE64);
 	}
 
 	// Push it to our graphs.
