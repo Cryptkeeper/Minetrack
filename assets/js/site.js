@@ -350,18 +350,18 @@ $(document).ready(function() {
             $('<div/>', {
                 id: safeName(info.name),
                 class: 'server',
-                html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
+                html: '<div id="server-' + safeName(info.name) + '" class="column left-column">\
                             <img id="favicon_' + safeName(info.name) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
-                        <div class="column" style="width: 220px;">\
+                        <div class="column middle-column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
                             <span class="color-gray">' + info.ip + '</span>\
                             <br />\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\
                         </div>\
-                        <div class="column" style="float: right;">\
+                        <div class="column right-column">\
                             <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
                         </div>'
             }).appendTo("#server-container");
@@ -465,4 +465,30 @@ $(document).ready(function() {
 
         historyPlot.draw();
     });
+
+
+    var switcher = $("[data-toggle-header]").first();
+    var displayBigHeader = function(){
+        switcher.html("&#8593;")
+        $("[data-small-header]").hide();
+        $("[data-big-header]").show();
+    };
+    var displaySmallHeader = function(){
+        switcher.html("&#8595;")
+        $("[data-big-header]").hide();
+        $("[data-small-header]").show();
+    };
+    displayBigHeader();
+    var  bigHeader = true;
+    switcher.click(function(){
+        if(bigHeader) {
+            displaySmallHeader();
+            bigHeader = false;
+        } else {
+            displayBigHeader();
+            bigHeader = true;
+        }
+
+    });
+
 });

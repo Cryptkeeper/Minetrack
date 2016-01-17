@@ -9,7 +9,7 @@ body {
 	background: #3B3738;
 	color: #FFF;
 	font-family: "Open Sans", sans-serif;
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 300 !important;
 }
 
@@ -23,13 +23,19 @@ html, body {
     min-height: 100%;
 }
 
+#footer {
+    padding: 20px 0;
+}
+
+#header {
+    padding: 10px 0;
+}
 /* Header, footer */
 #header, #footer {
     background: #EBEBEB;
     color: #3B3738;
-    padding: 20px 0;
     text-align: center;
-    width: 1540px;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -45,15 +51,35 @@ html, body {
 
 #header > .slogan {
     letter-spacing: 2px;
-    font-size: 20px;
+    font-size: 14px;
 }
 
 #header > .info {
-    font-size: 17px;
+    font-size: 14px;
+}
+
+#header > .small-header {
+    text-align: left;
+    padding-left: 4%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#header > .small-header > small {
+    font-weight: normal;
+}
+
+#header > .toggler {
+    cursor: pointer;
+    font-size: 30px;
+    padding-right: 10px;
+    text-align: right;
+    float: right;
+    margin-top: -7px
 }
 
 #header > h1 {
-    font-size: 42px;
+    font-size: 38px;
 }
 
 #footer {
@@ -65,9 +91,11 @@ html, body {
 
 /* Tagline */
 #tagline {
-    padding: 10px 0;
+    padding-top: 4px;
+    font-size: 18px;
+    padding-bottom: 4px;
     text-align: center;
-    width: 1540px;
+    width: 100%;
     margin: 0 auto;
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
@@ -94,16 +122,15 @@ html, body {
 
 /* Server listing */
 #server-container {
-    width: 1540px;
     margin: 10px auto;
-    overflow: auto;
+
 }
 
 .server {
-    overflow: auto;
+    overflow: hidden;
     padding: 5px 10px;
     margin: 0 5px;
-    width: 740px;
+    width: 30%;
     display: inline-block;
 }
 
@@ -130,12 +157,25 @@ html, body {
     margin-bottom: 2px;
 }
 
+.server > .left-column {
+    width: 13%;
+}
+
+.server > .middle-column {
+    width: 33%;
+}
+
+.server > .right-column {
+    width: 47%;
+}
+
 /* Charts */
 .chart {
     height: 100px;
-    width: 400px;
+    width: 100%;
     margin-right: -3px;
     margin-bottom: 5px;
+    position: relative;
 }
 
 #tooltip {
@@ -239,4 +279,12 @@ h3 {
     background: #ecf0f1;
     color: #3498db;
     cursor: pointer;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
 }
