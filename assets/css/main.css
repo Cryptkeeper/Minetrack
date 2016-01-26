@@ -128,7 +128,6 @@ html, body {
 
 .server {
     overflow: hidden;
-    width: 50%;
     min-width: 400px;
     display: inline-flex;
     text-align: left;
