@@ -257,7 +257,7 @@ h3 {
 
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
-    margin: 15px 5px 0 45px;
+    margin: 15px 5px 0 50px;
 }
 
 #big-graph-checkboxes > table {
