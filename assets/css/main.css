@@ -260,8 +260,6 @@ h3 {
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
     margin: 15px auto 0 auto;
-    padding-left: 10%;
-    padding-right: 10%;
 }
 
 #big-graph-checkboxes > table {
@@ -270,7 +268,6 @@ h3 {
 
 #big-graph {
     margin-top: 20px;
-
 }
 
 #big-graph-controls {
