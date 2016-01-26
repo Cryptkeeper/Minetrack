@@ -258,7 +258,7 @@ h3 {
 
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
-    width: 1540px;
+    width: 90%;
     margin: 15px auto 0 auto;
 }
 
