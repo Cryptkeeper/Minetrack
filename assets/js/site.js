@@ -25,9 +25,6 @@ var smallChartOptions = {
         hoverable: true,
         color: "#696969"
     },
-    colors: [
-        "#E9E581"
-    ]
 };
 
 var bigChartOptions = {
@@ -378,7 +375,7 @@ $(document).ready(function() {
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeName(info.name), [listing], smallChartOptions)
+                plot: $.plot('#chart_' + safeName(info.name), [{data: listing, color: stringToColor(info.ip)}], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
@@ -412,7 +409,7 @@ $(document).ready(function() {
                 graph.listing.shift();
             }
 
-            graph.plot.setData([graph.listing]);
+            graph.plot.setData([{data: graph.listing, color: stringToColor(update.info.ip)}]);
             graph.plot.setupGrid();
 
             graph.plot.draw();
