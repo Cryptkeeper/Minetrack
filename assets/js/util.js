@@ -15,7 +15,14 @@ function safeName(name) {
 }
 
 function renderTooltip(x, y, html) {
-	tooltip.html(html).css({
+    tooltip.html(html);
+	var toolTipWidth = tooltip.width();
+    // Ginger math be ginger
+    var overFlowCaused = (($(window).innerWidth() - (x + toolTipWidth)) * -1) + 40; // +ve is overflow.
+    if(overFlowCaused >= 0) {
+        x = x - 0.9*(overFlowCaused);
+    }
+	tooltip.css({
 		top: y,
 		left: x
 	}).fadeIn(0);
