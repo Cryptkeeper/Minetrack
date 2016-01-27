@@ -467,28 +467,44 @@ $(document).ready(function() {
     });
 
 
+    var  bigHeader = true;
     var switcher = $("[data-toggle-header]").first();
     var displayBigHeader = function(){
         switcher.html("&#8593;")
         $("[data-small-header]").hide();
         $("[data-big-header]").show();
+        bigHeader = true;
     };
     var displaySmallHeader = function(){
         switcher.html("&#8595;")
         $("[data-big-header]").hide();
         $("[data-small-header]").show();
+        bigHeader = false;
     };
-    displayBigHeader();
-    var  bigHeader = true;
+
     switcher.click(function(){
         if(bigHeader) {
             displaySmallHeader();
-            bigHeader = false;
         } else {
             displayBigHeader();
-            bigHeader = true;
         }
-
+    });
+    var w = $(window).width();
+    if(w > 960) {
+        displayBigHeader();
+    } else {
+        displaySmallHeader();
+    }
+    var one_column_switch_width = 960;
+    $(window).resize(function () {
+        var newWidth = $(window).width();
+        if(w > one_column_switch_width && newWidth < one_column_switch_width) {
+            displaySmallHeader();
+        }
+        if(w < one_column_switch_width && newWidth > one_column_switch_width) {
+            displayBigHeader();
+        }
+        w = newWidth;
     });
 
 });
