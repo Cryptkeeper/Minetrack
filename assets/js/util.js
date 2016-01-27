@@ -100,18 +100,6 @@ function convertGraphData(rawData) {
     return data;
 }
 
-function stringToColor(base) {
-    var hash;
-
-    for (var i = 0, hash = 0; i < base.length; i++) {
-        hash = base.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-
-    return '#' + Array(6 - color.length + 1).join('0') + color;
-}
-
 function msToTime(timer) {
 	var milliseconds = timer % 1000;
 	timer = (timer - milliseconds) / 1000;

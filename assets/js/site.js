@@ -320,7 +320,7 @@ $(document).ready(function() {
         }
     });
 
-    var nameToIP = {};
+    var nameToColor = {};
 
 	socket.on('add', function(servers) {
         for (var i = 0; i < servers.length; i++) {
@@ -376,14 +376,14 @@ $(document).ready(function() {
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeName(info.name), [{data: listing, color: stringToColor(info.ip)}], smallChartOptions)
+                plot: $.plot('#chart_' + safeName(info.name), [{data: listing, color: info.color}], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
 
             $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
 
-            nameToIP[info.name] = info.ip;
+            nameToColor[info.name] = info.color;
         }
 
         sortServers();
@@ -412,7 +412,7 @@ $(document).ready(function() {
                 graph.listing.shift();
             }
 
-            graph.plot.setData([{data: graph.listing, color: stringToColor(nameToIP[update.info.name])}]);
+            graph.plot.setData([{data: graph.listing, color: nameToColor[update.info.name]}]);
             graph.plot.setupGrid();
 
             graph.plot.draw();

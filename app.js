@@ -78,7 +78,8 @@ function handlePing(network, res, err) {
             ip: network.ip,
             port: network.port,
             type: network.type,
-            name: network.name
+            name: network.name,
+			color: ((/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(network.color)) ? network.color : util.stringToColor(network.ip))
         }
 	});
 
