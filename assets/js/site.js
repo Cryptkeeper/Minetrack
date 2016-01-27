@@ -320,11 +320,12 @@ $(document).ready(function() {
         }
     });
 
+    var nameToIP = {};
+
 	socket.on('add', function(servers) {
         for (var i = 0; i < servers.length; i++) {
             var history = servers[i];
             var listing = [];
-
             for (var x = 0; x < history.length; x++) {
                 var point = history[x];
 
@@ -381,6 +382,8 @@ $(document).ready(function() {
             updateServerStatus(lastEntry);
 
             $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
+
+            nameToIP[info.name] = info.ip;
         }
 
         sortServers();
@@ -409,7 +412,7 @@ $(document).ready(function() {
                 graph.listing.shift();
             }
 
-            graph.plot.setData([{data: graph.listing, color: stringToColor(update.info.ip)}]);
+            graph.plot.setData([{data: graph.listing, color: stringToColor(nameToIP[update.info.name])}]);
             graph.plot.setupGrid();
 
             graph.plot.draw();
