@@ -128,7 +128,6 @@ html, body {
 
 .server {
     overflow: hidden;
-    min-width: 400px;
     display: inline-flex;
     text-align: left;
 }
@@ -291,8 +290,20 @@ h3 {
     float: left;
 }
 
+@media screen and (max-width: 500px) {
+    .server {
+        display: block;
+    }
+    .server > .right-column {
+        padding: 0 5px 0 50px;
+        width: 100%;
+        box-sizing: border-box;
+        clear: left;
+        float: left;
+    }
+}
 
-@media screen and (max-width: 930px) {
+@media screen and (min-width: 500px) {
     .server {
         width: 100%;
     }
