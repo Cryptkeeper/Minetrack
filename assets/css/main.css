@@ -172,25 +172,6 @@ html, body {
 }
 
 
-
-@media screen and (max-width: 930px) {
-    .server {
-        width: 100%;
-    }
-}
-
-@media screen and (min-width: 960px) {
-    .server {
-        width: 50%;
-    }
-}
-
-@media screen and (min-width: 1900px) {
-    .server {
-        width: 33%;
-    }
-}
-
 /* Charts */
 .chart {
     height: 100px;
@@ -308,4 +289,26 @@ h3 {
 
 .float-left {
     float: left;
+}
+
+
+@media screen and (max-width: 930px) {
+    .server {
+        width: 100%;
+    }
+    #tagline {
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 960px) {
+    .server {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 1900px) {
+    .server {
+        width: 33%;
+    }
 }
