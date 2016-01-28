@@ -160,6 +160,16 @@
 			"ip": "play.epicube.fr",
 			"type": "PC"
 		}
+		{
+			"name": "DusDavidGames",
+			"ip": "play.dusdavidgames.nl",
+			"type": "PC"
+		}
+		{
+			"name": "DagelijksHaaDee",
+			"ip": "play.dagelijkshaadee.nl",
+			"type": "PC"
+		}		
 	],
 	"routes": {
 		"/": "assets/html/index.html",
