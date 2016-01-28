@@ -49,7 +49,7 @@ function trimOldPings(data, graphDuration) {
 	var timeMs = new Date().getTime();
 
 	for (var x = 0; x < keys.length; x++) {
-		var listing = data[keys[x]];
+		var listing = data[keys[x]].data;
 
 		var toSplice = [];
 
@@ -83,17 +83,17 @@ function handlePlotHover(event, pos, item) {
     }
 }
 
-function convertGraphData(rawData) {
+function convertGraphData(rawData, colors) {
     var data = [];
 
     var keys = Object.keys(rawData);
 
     for (var i = 0; i < keys.length; i++) {
         data.push({
-            data: rawData[keys[i]],
+            data: rawData[keys[i]].data,
             yaxis: 1,
             label: keys[i],
-            color: stringToColor(keys[i])
+            color: rawData[keys[i]].color
         });
     }
 

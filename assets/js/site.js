@@ -271,7 +271,7 @@ $(document).ready(function() {
 
         $('#big-graph').css('height', '400px');
 
-        historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
+        historyPlot = $.plot('#big-graph', convertGraphData(rawData, nameToColor), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);
 
@@ -309,7 +309,7 @@ $(document).ready(function() {
 
         trimOldPings(targetGraphData, graphDuration);
 
-        targetGraphData[rawData.ip].push([rawData.timestamp, rawData.players]);
+        targetGraphData[rawData.ip].data.push([rawData.timestamp, rawData.players]);
 
         // Redraw if we need to.
         if (displayedGraphData[rawData.ip]) {
