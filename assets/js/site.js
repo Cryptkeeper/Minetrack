@@ -236,6 +236,8 @@ $(document).ready(function() {
 
         if (!isMobileBrowser()) {
             socket.emit('requestHistoryGraph');
+        } else {
+            $('#graph-request').show();
         }
 	});
 
@@ -466,6 +468,22 @@ $(document).ready(function() {
         historyPlot.draw();
     });
 
+    var preventClick = false;
+    $("[data-request-graph]").first().click(function() {
+        if(preventClick) return;
+        $(this)
+            .css('cursor', 'default')
+            .css('text-decoration', 'none')
+            .css('color', 'green')
+            .css('border-bottom', 'none')
+            .text('Loading...');
+        socket.emit('requestHistoryGraph');
+        preventClick = true;
+        var temp = this;
+        window.setTimeout(function() {
+            $(temp).css('color', 'red').text("If nothing happens graphs may be disabled for this Minetrack! (logToDatabase must be enabled!)");
+        }, 2000);
+    });
 
     var  bigHeader = true;
     var switcher = $("[data-toggle-header]").first();
