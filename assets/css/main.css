@@ -303,12 +303,15 @@ h3 {
     }
 }
 
+@media screen and (max-width: 960px) {
+    #tagline {
+        font-size: 14px;
+    }
+}
+
 @media screen and (min-width: 500px) {
     .server {
         width: 100%;
-    }
-    #tagline {
-        font-size: 14px;
     }
 }
 
