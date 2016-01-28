@@ -13,7 +13,7 @@
 		{
 			"name": "CubeCraft",
 			"ip": "play.cubecraft.net",
-			"color": "#176093",
+			"color": "#34709A",
 			"type": "PC"
 		},
 		{
@@ -139,7 +139,8 @@
 		{
 			"name": "GommeHD",
 			"ip": "gommehd.net",
-			"type": "PC"
+			"type": "PC",
+			"color": "#D7AF0A"
 		},
 		{
 			"name": "Island Clash",
