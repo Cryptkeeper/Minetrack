@@ -159,6 +159,11 @@
 			"name": "Epicube",
 			"ip": "play.epicube.fr",
 			"type": "PC"
+		},
+		{
+			"name": "Empire Minecraft",
+			"ip": "play.emc.gs",
+			"type": "PC"
 		}
 	],
 	"routes": {
