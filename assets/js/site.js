@@ -280,23 +280,15 @@ $(document).ready(function() {
         var keys = Object.keys(rawData);
 
         var sinceBreak = 0;
-        var html = '<table><tr>';
+        var html = '';
 
         keys.sort();
 
         for (var i = 0; i < keys.length; i++) {
-            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></td>';
-
-            if (sinceBreak >= 7) {
-                sinceBreak = 0;
-
-                html += '</tr><tr>';
-            } else {
-                sinceBreak++;
-            }
+            html += '<div class="graph-control-option"><p><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></p></div>';
         }
 
-        $('#big-graph-checkboxes').append(html + '</tr></table>');
+        $('#big-graph-checkboxes').append(html);
         $('#big-graph-controls').css('display', 'block');
     });
 

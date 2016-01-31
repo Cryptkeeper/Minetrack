@@ -274,6 +274,43 @@ h3 {
     cursor: pointer;
 }
 
+.graph-control-option {
+    display: inline-flex;
+    overflow: hidden;
+}
+
+/* Media Queries for Graph Control */
+
+@media screen and (max-width: 500px) {
+    .graph-control-option {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    .graph-control-option {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .graph-control-option {
+        width: 33%;
+    }
+}
+
+@media screen and (min-width: 960px) {
+    .graph-control-option {
+        width: 25%;
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    .graph-control-option {
+        width: 20%;
+    }
+}
+
 /* Basic elements */
 .button {
     background: #3498db;
