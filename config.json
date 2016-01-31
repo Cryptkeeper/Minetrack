@@ -159,6 +159,11 @@
 			"name": "Epicube",
 			"ip": "play.epicube.fr",
 			"type": "PC"
+		},
+		{
+			"name": "MineHeroes",
+			"ip": "mineheroes.net",
+			"type": "PC"
 		}
 	],
 	"routes": {
