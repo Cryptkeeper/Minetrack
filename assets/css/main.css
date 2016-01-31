@@ -101,6 +101,15 @@ html, body {
     border-bottom-right-radius: 2px;
 }
 
+#tagline > #toggle-sticky {
+    cursor: pointer;
+    padding-left: 10px;
+    font-size: 25px;
+    margin-top: -7px;
+    text-align: right;
+    float: left;
+}
+
 /* Colors used by the Mojang service's status bar */
 .status-online {
     background: #87D37C;
@@ -301,6 +310,16 @@ h3 {
     border-bottom: 1px dashed #e9e9ea;
 }
 
+.pin-down {
+    -o-transform: rotate(315deg);
+    -khtml-transform: rotate(315deg);
+    -ms-transform: rotate(315deg);
+    -webkit-transform: rotate(315deg);
+    -moz-transform: rotate(315deg);
+    transform: rotate(315deg);
+    margin-top: 20px;
+}
+
 @media screen and (max-width: 500px) {
     .server {
         display: block;
@@ -317,6 +336,10 @@ h3 {
 @media screen and (max-width: 960px) {
     #tagline {
         font-size: 14px;
+        position: relative;
+    }
+    #tagline > #toggle-sticky {
+        font-size: 20px;
     }
 }
 

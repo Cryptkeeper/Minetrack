@@ -525,4 +525,34 @@ $(document).ready(function() {
         w = newWidth;
     });
 
+    var stickyToggler = $("[data-toggle-sticky]");
+    var tagline = $("#tagline").first();
+    var sticky;
+    var header = $("#header").first();
+    var makeSticky = function (toState){
+        if(toState == sticky) return;
+        if(toState) { //Become Stick
+            header.before(tagline.detach());
+            header.css('padding-top', '42px');
+            tagline.css('position', 'fixed');
+            tagline.css('z-index', '100');
+            stickyToggler.addClass("pin-down");
+            stickyToggler.css('margin-top', '-4px');
+            stickyToggler.css('margin-bottom', '-3px');
+        } else  {
+            header.after(tagline.detach());
+            header.css('padding-top', '');
+            tagline.css('position', '');
+            tagline.css('z-index', '');
+            stickyToggler.removeClass("pin-down");
+            stickyToggler.css('margin-top', '');
+            stickyToggler.css('margin-bottom', '');
+        }
+        sticky = toState;
+    };
+    makeSticky(!isMobileBrowser());
+    stickyToggler.click(function(){
+        makeSticky(!sticky);
+
+    })
 });
