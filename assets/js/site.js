@@ -335,7 +335,7 @@ $(document).ready(function() {
 
     socket.on('updateHistoryGraph', function(rawData) {
         // Prevent race conditions.
-        if (!graphDuration) {
+        if (!graphDuration || !displayedGraphData || !hiddenGraphData) {
             return;
         }
 
