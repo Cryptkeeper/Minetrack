@@ -6,6 +6,7 @@ var util = require('./lib/util');
 var db = require('./lib/database');
 
 var config = require('./config.json');
+var servers = require('./servers.json');
 
 var networkHistory = [];
 var connectedClients = 0;
@@ -14,8 +15,6 @@ var graphData = [];
 var lastGraphPush = [];
 
 function pingAll() {
-	var servers = config.servers;
-
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
