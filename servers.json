@@ -154,6 +154,11 @@
 		"ip": "mc.beanblockz.com",
 		"type": "PC"
 	},
+		{
+		"name": "GuildCraft",
+		"ip": "play.guildcraft.org",
+		"type": "PC"
+	},
 	{
  		"name": "Empire MC",
  		"ip": "play.emc.gs",
