@@ -153,5 +153,10 @@
 		"name": "BeanBlockz",
 		"ip": "mc.beanblockz.com",
 		"type": "PC"
-	}
+	},
+	{
+ 		"name": "Empire Minecraft",
+ 		"ip": "play.emc.gs",
+ 		"type": "PC"
+  	}
 ]
