@@ -20,6 +20,12 @@ function loadGraphControls() {
 	}
 }
 
+function resetGraphControls() {
+	if (typeof(localStorage) !== undefined) {
+		localStorage.removeItem('displayedServers');
+	}
+}
+
 function getTimestamp(ms, timeOnly) {
     var date = new Date(0);
 

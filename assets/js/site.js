@@ -216,7 +216,11 @@ function setAllGraphVisibility(visible) {
     historyPlot.draw();
 
     // Update our localStorage
-    saveGraphControls(Object.keys(displayedGraphData));
+    if (visible) {
+        resetGraphControls();
+    } else {
+        saveGraphControls(Object.keys(displayedGraphData));
+    }
 }
 
 function toggleControlsDrawer() {
@@ -470,6 +474,10 @@ $(document).ready(function() {
         historyPlot.draw();
 
         // Update our localStorage
-        saveGraphControls(Object.keys(displayedGraphData));
+        if (Object.keys(hiddenGraphData).length === 0) {
+            resetGraphControls();
+        } else {
+            saveGraphControls(Object.keys(displayedGraphData));
+        }
     });
 });
