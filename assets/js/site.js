@@ -277,11 +277,27 @@ $(document).ready(function() {
     });
 
     socket.on('historyGraph', function(rawData) {
-        displayedGraphData = rawData;
+        var shownServers = loadGraphControls();
+
+        if (shownServers) {
+            var keys = Object.keys(rawData);
+
+            for (var i = 0; i < keys.length; i++) {
+                var name = keys[i];
+
+                if (shownServers.indexOf(name) !== -1) {
+                    displayedGraphData[name] = rawData[name];
+                } else {
+                    hiddenGraphData[name] = rawData[name];
+                }
+            }
+        } else {
+            displayedGraphData = rawData;
+        }
 
         $('#big-graph').css('height', '400px');
 
-        historyPlot = $.plot('#big-graph', convertGraphData(rawData), bigChartOptions);
+        historyPlot = $.plot('#big-graph', convertGraphData(displayedGraphData), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);
 
@@ -293,7 +309,13 @@ $(document).ready(function() {
         keys.sort();
 
         for (var i = 0; i < keys.length; i++) {
-            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></td>';
+            var checkedString = '';
+
+            if (displayedGraphData[keys[i]]) {
+                checkedString = 'checked=checked';
+            }
+
+            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" ' + checkedString + '> ' + keys[i] + '</input></td>';
 
             if (sinceBreak >= 7) {
                 sinceBreak = 0;
