@@ -460,9 +460,13 @@ $(document).ready(function() {
             delete hiddenGraphData[serverIp];
         }
 
+        // Redraw the graph
         historyPlot.setData(convertGraphData(displayedGraphData));
         historyPlot.setupGrid();
 
         historyPlot.draw();
+
+        // Update our localStorage
+        saveGraphControls();
     });
 });
