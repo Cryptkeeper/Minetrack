@@ -6,9 +6,10 @@ Built to be lightweight and durable, you can easily adapt it to monitor BungeeCo
 You can see an up-to-date copy of the master branch running on http://minetrack.me
 
 #### Usage
-1. Customize it by editing the ```config.json``` file.
-2. Run ```npm install```.
-2. Run ```node app.js``` to boot the system (may need sudo!)
+1. Make sure everything is correct in ```config.json```.
+2. Add/remove servers by editing the ```servers.json``` file.
+3. Run ```npm install```.
+4. Run ```node app.js``` to boot the system (may need sudo!)
 
 (There's also ```install.sh``` and ```start.sh```, but they may not work for your OS.)
 
@@ -17,6 +18,10 @@ This requires sqlite3 drivers to be installed.
 
 #### How do I get added?
 At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak for **PC** servers, and 100 players at peak for **PE** servers. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```config.json```.
+
+Minetrack is designed to be flexible, you're more than welcome to fork/clone it and start your own listing focusing on different networks.
+
+*Smaller networks currently listed have been grandfathered in.*
 
 #### TODO
 - Add public API (similiar to old server.json)
