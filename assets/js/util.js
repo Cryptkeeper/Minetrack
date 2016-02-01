@@ -96,7 +96,7 @@ function convertGraphData(rawData) {
 function stringToColor(base) {
     var hash;
 
-    for (var i = 0, hash = 0; i < base.length; i++) {
+    for (var i = base.length - 1, hash = 0; i >= 0; i--) {
         hash = base.charCodeAt(i) + ((hash << 5) - hash);
     }
 
