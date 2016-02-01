@@ -120,11 +120,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "VikkCraft",
-		"ip": "hub.vikkcraft.com",
-		"type": "PC"
-	},
-	{
 		"name": "MCMagic",
 		"ip": "mcmagic.us",
 		"type": "PC"
