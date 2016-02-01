@@ -16,7 +16,7 @@ Database logging is disabled by default. You can enable it in ```config.json``` 
 This requires sqlite3 drivers to be installed.
 
 #### How do I get added?
-At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```config.json```.
+At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak for **PC** servers, and 100 players at peak for **PE** servers. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```config.json```.
 
 #### TODO
 - Add public API (similiar to old server.json)
