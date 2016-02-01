@@ -308,14 +308,14 @@ $(document).ready(function() {
         }
 
         // If it's not in our display group, use the hidden group instead.
-        var targetGraphData = displayedGraphData[rawData.ip] ? displayedGraphData : hiddenGraphData;
+        var targetGraphData = displayedGraphData[rawData.name] ? displayedGraphData : hiddenGraphData;
 
         trimOldPings(targetGraphData, graphDuration);
 
-        targetGraphData[rawData.ip].push([rawData.timestamp, rawData.players]);
+        targetGraphData[rawData.name].push([rawData.timestamp, rawData.players]);
 
         // Redraw if we need to.
-        if (displayedGraphData[rawData.ip]) {
+        if (displayedGraphData[rawData.name]) {
             historyPlot.setData(convertGraphData(displayedGraphData));
             historyPlot.setupGrid();
 

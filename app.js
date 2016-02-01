@@ -113,6 +113,7 @@ function handlePing(network, res, err) {
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
 				ip: network.ip,
+				name: network.name,
 				players: (res ? res.players.online : 0),
 				timestamp: timeMs
 			});
