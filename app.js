@@ -104,15 +104,16 @@ function handlePing(network, res, err) {
 			// Don't have too much data!
 			util.trimOldPings(graphData);
 
-			if (!graphData[network.ip]) {
-				graphData[network.ip] = [];
+			if (!graphData[network.name]) {
+				graphData[network.name] = [];
 			}
 
-			graphData[network.ip].push([timeMs, res ? res.players.online : 0]);
+			graphData[network.name].push([timeMs, res ? res.players.online : 0]);
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
 				ip: network.ip,
+				name: network.name,
 				players: (res ? res.players.online : 0),
 				timestamp: timeMs
 			});
