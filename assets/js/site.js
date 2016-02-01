@@ -214,6 +214,9 @@ function setAllGraphVisibility(visible) {
     historyPlot.setupGrid();
 
     historyPlot.draw();
+
+    // Update our localStorage
+    saveGraphControls(Object.keys(displayedGraphData));
 }
 
 function toggleControlsDrawer() {
@@ -467,6 +470,6 @@ $(document).ready(function() {
         historyPlot.draw();
 
         // Update our localStorage
-        saveGraphControls();
+        saveGraphControls(Object.keys(displayedGraphData));
     });
 });
