@@ -160,6 +160,11 @@
 			"ip": "play.epicube.fr",
 			"type": "PC"
 		}
+			{
+			"name": "BeanBlockz",
+			"ip": "mc.beanblockz.com",
+			"type": "PC"
+		}
 	],
 	"routes": {
 		"/": "assets/html/index.html",
