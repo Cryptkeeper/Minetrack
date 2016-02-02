@@ -6,6 +6,7 @@ var util = require('./lib/util');
 var db = require('./lib/database');
 
 var config = require('./config.json');
+var servers = require('./servers.json');
 
 var networkHistory = [];
 var connectedClients = 0;
@@ -14,8 +15,6 @@ var graphData = [];
 var lastGraphPush = [];
 
 function pingAll() {
-	var servers = config.servers;
-
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
@@ -79,7 +78,7 @@ function handlePing(network, res, err) {
             port: network.port,
             type: network.type,
             name: network.name,
-			color: (util.serverColorFromIP(network.ip))
+			color: (util.serverColorFromName(network.name))
         }
 	});
 
@@ -106,16 +105,18 @@ function handlePing(network, res, err) {
 			// Don't have too much data!
 			util.trimOldPings(graphData);
 
-			if (!graphData[network.ip]) {
-				graphData[network.ip] = {};
-                graphData[network.ip].data = [];
+			if (!graphData[network.name]) {
+				graphData[network.name] = {};
+				graphData[network.name].data = [];
 			}
 
-			graphData[network.ip].data.push([timeMs, res ? res.players.online : 0]);
+			graphData[network.name].data.push([timeMs, res ? res.players.online : 0]);
+
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
 				ip: network.ip,
+				name: network.name,
 				players: (res ? res.players.online : 0),
 				timestamp: timeMs
 			});

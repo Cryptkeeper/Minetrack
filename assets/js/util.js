@@ -2,6 +2,30 @@ var MISSING_FAVICON_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
 
 var tooltip = $('#tooltip');
 
+function saveGraphControls(displayedServers) {
+	if (typeof(localStorage) !== undefined) {
+		var json = JSON.stringify(displayedServers);
+
+		localStorage.setItem('displayedServers', json);
+	}
+}
+
+function loadGraphControls() {
+	if (typeof(localStorage) !== undefined) {
+		var item = localStorage.getItem('displayedServers');
+
+		if (item) {
+			return JSON.parse(item);
+		}
+	}
+}
+
+function resetGraphControls() {
+	if (typeof(localStorage) !== undefined) {
+		localStorage.removeItem('displayedServers');
+	}
+}
+
 function getTimestamp(ms, timeOnly) {
     var date = new Date(0);
 
@@ -83,7 +107,7 @@ function handlePlotHover(event, pos, item) {
     }
 }
 
-function convertGraphData(rawData, colors) {
+function convertGraphData(rawData) {
     var data = [];
 
     var keys = Object.keys(rawData);

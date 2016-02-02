@@ -211,6 +211,13 @@ function setAllGraphVisibility(visible) {
     historyPlot.setupGrid();
 
     historyPlot.draw();
+
+    // Update our localStorage
+    if (visible) {
+        resetGraphControls();
+    } else {
+        saveGraphControls(Object.keys(displayedGraphData));
+    }
 }
 
 function toggleControlsDrawer() {
@@ -269,11 +276,30 @@ $(document).ready(function() {
     });
 
     socket.on('historyGraph', function(rawData) {
-        displayedGraphData = rawData;
+        var shownServers = loadGraphControls();
+
+        if (shownServers) {
+            var keys = Object.keys(rawData);
+
+            hiddenGraphData = [];
+            displayedGraphData = [];
+
+            for (var i = 0; i < keys.length; i++) {
+                var name = keys[i];
+
+                if (shownServers.indexOf(name) !== -1) {
+                    displayedGraphData[name] = rawData[name];
+                } else {
+                    hiddenGraphData[name] = rawData[name];
+                }
+            }
+        } else {
+            displayedGraphData = rawData;
+        }
 
         $('#big-graph').css('height', '400px');
 
-        historyPlot = $.plot('#big-graph', convertGraphData(rawData, nameToColor), bigChartOptions);
+        historyPlot = $.plot('#big-graph', convertGraphData(displayedGraphData), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);
 
@@ -285,7 +311,12 @@ $(document).ready(function() {
         keys.sort();
 
         for (var i = 0; i < keys.length; i++) {
-            html += '<div class="graph-control-option"><p><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" checked=checked> ' + keys[i] + '</input></p></div>';
+            var checkedString = '';
+
+            if (displayedGraphData[keys[i]]) {
+                checkedString = 'checked=checked';
+            }
+            html += '<div class="graph-control-option"><p><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" '+checkedString+'> ' + keys[i] + '</input></p></div>';
         }
 
         $('#big-graph-checkboxes').append(html);
@@ -294,19 +325,19 @@ $(document).ready(function() {
 
     socket.on('updateHistoryGraph', function(rawData) {
         // Prevent race conditions.
-        if (!graphDuration) {
+        if (!graphDuration || !displayedGraphData || !hiddenGraphData) {
             return;
         }
 
         // If it's not in our display group, use the hidden group instead.
-        var targetGraphData = displayedGraphData[rawData.ip] ? displayedGraphData : hiddenGraphData;
+        var targetGraphData = displayedGraphData[rawData.name] ? displayedGraphData : hiddenGraphData;
 
         trimOldPings(targetGraphData, graphDuration);
 
-        targetGraphData[rawData.ip].data.push([rawData.timestamp, rawData.players]);
+        targetGraphData[rawData.name].data.push([rawData.timestamp, rawData.players]);
 
         // Redraw if we need to.
-        if (displayedGraphData[rawData.ip]) {
+        if (displayedGraphData[rawData.name]) {
             historyPlot.setData(convertGraphData(displayedGraphData));
             historyPlot.setupGrid();
 
@@ -454,10 +485,18 @@ $(document).ready(function() {
             delete hiddenGraphData[serverIp];
         }
 
+        // Redraw the graph
         historyPlot.setData(convertGraphData(displayedGraphData));
         historyPlot.setupGrid();
 
         historyPlot.draw();
+
+        // Update our localStorage
+        if (Object.keys(hiddenGraphData).length === 0) {
+            resetGraphControls();
+        } else {
+            saveGraphControls(Object.keys(displayedGraphData));
+        }
     });
 
     var preventClick = false;
