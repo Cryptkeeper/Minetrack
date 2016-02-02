@@ -78,7 +78,7 @@ function handlePing(network, res, err) {
             port: network.port,
             type: network.type,
             name: network.name,
-			color: (util.serverColorFromName(network.name))
+            color: (util.serverColorFromName(network.name))
         }
 	});
 
@@ -111,7 +111,6 @@ function handlePing(network, res, err) {
 			}
 
 			graphData[network.name].data.push([timeMs, res ? res.players.online : 0]);
-
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
