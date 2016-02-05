@@ -158,5 +158,10 @@
  		"name": "Empire MC",
  		"ip": "play.emc.gs",
  		"type": "PC"
+  	},
+  	{
+ 		"name": "Timolia",
+ 		"ip": "play.timolia.de",
+ 		"type": "PC"
   	}
 ]
