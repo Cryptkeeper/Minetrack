@@ -93,7 +93,7 @@ html, body {
 }
 
 /* Server listing */
-#server-container {
+.server-container {
     width: 1540px;
     margin: 10px auto;
     overflow: auto;
@@ -128,6 +128,12 @@ html, body {
     border: 1px solid #A09E9E;
     font-size: 14px;
     margin-bottom: 2px;
+}
+
+.category-header {
+    text-align: center;
+    display: block;
+    margin-bottom: 15px;
 }
 
 /* Charts */
@@ -167,30 +173,6 @@ h3 {
 
 .text-center-align {
     text-align: center;
-}
-
-/* Icon Quick jump */
-#quick-jump-container {
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    overflow: auto;
-    display: none;
-}
-
-.quick-jump-icon {
-    height: 24px;
-    width: 24px;
-    display: block;
-    margin-bottom: 2px;
-    border-radius: 2px;
-    transition: all 0.1s;
-}
-
-.quick-jump-icon:hover {
-    cursor: pointer;
-    height: 42px;
-    width: 42px;
 }
 
 /* The big graph */

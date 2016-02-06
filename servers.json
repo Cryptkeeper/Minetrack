@@ -2,171 +2,205 @@
 	{
 		"name": "Hypixel",
 		"ip": "mc.hypixel.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "HiveMC",
 		"ip": "play.hivemc.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "Overcast",
 		"ip": "us.oc.tc",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "Shotbow",
 		"ip": "us.shotbow.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Badlion",
 		"ip": "na.badlion.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "MCGamer",
 		"ip": "play.mcgamer.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Olimpocraft",
 		"ip": "olimpo.me",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Minecade",
 		"ip": "mineca.de",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "The Nexus",
 		"ip": "hub.thenexusmc.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Kohi",
 		"ip": "kohi.us",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Wynncraft",
 		"ip": "play.wynncraft.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "Mineplex",
 		"ip": "us.mineplex.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "Hypixel PE",
 		"ip": "pe.hypixel.net",
-		"type": "PE"
+		"type": "PE",
+		"category": "major"
 	},
 	{
 		"name": "Cosmic PVP",
 		"ip": "cosmicpvp.me",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "PartyZone",
 		"ip": "play.mcpz.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "Brawl",
 		"ip": "brawl.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "SaicoPvP",
 		"ip": "saicopvp.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "TheArchon",
 		"ip": "pvp.thearchon.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "GotPvP",
 		"ip": "play.gotpvp.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Rewinside",
 		"ip": "mc.rewinside.tv",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Woodycraft",
 		"ip": "woodycraft.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Battlemine",
 		"ip": "mc.battlemine.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "Arkham",
 		"ip": "mc.arkhamnetwork.org",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "MCMagic",
 		"ip": "mcmagic.us",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "GommeHD",
 		"ip": "gommehd.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "Island Clash",
 		"ip": "play.islandclash.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "small"
 	},
 	{
 		"name": "Playminity",
 		"ip": "mc.playminity.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
 		"name": "Mobcrush Land",
 		"ip": "play.mobcrush.com",
-		"type": "PE"
+		"type": "PE",
+		"category": "small"
 	},
 	{
 		"name": "Epicube",
 		"ip": "play.epicube.fr",
-		"type": "PC"
+		"type": "PC",
+		"category": "major"
 	},
 	{
 		"name": "BeanBlockz",
 		"ip": "mc.beanblockz.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 		{
 		"name": "GuildCraft",
 		"ip": "play.guildcraft.org",
-		"type": "PC"
+		"type": "PC",
+		"category": "midsized"
 	},
 	{
  		"name": "Empire MC",
  		"ip": "play.emc.gs",
- 		"type": "PC"
+ 		"type": "PC",
+		"category": "small"
   	},
   	{
  		"name": "Timolia",
  		"ip": "play.timolia.de",
- 		"type": "PC"
+ 		"type": "PC",
+		"category": "midsized"
   	}
 ]

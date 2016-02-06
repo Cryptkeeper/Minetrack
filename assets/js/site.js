@@ -1,126 +1,9 @@
-var smallChartOptions = {
-    series: {
-        shadowSize: 0
-    },
-    xaxis: {
-        font: {
-            color: "#E3E3E3"
-        },
-        show: false
-    },
-    yaxis: {
-        minTickSize: 75,
-        tickDecimals: 0,
-        show: true,
-        tickLength: 10,
-        tickFormatter: function(value) {
-            return formatNumber(value);
-        },
-        font: {
-            color: "#E3E3E3"
-        },
-        labelWidth: -10
-    },
-    grid: {
-        hoverable: true,
-        color: "#696969"
-    },
-    colors: [
-        "#E9E581"
-    ]
-};
-
-var bigChartOptions = {
-    series: {
-        shadowSize: 0
-    },
-    xaxis: {
-        font: {
-            color: "#E3E3E3"
-        },
-        show: false
-    },
-    yaxis: {
-        show: true,
-        tickSize: 2000,
-        tickLength: 10,
-        tickFormatter: function(value) {
-            return formatNumber(value);
-        },
-        font: {
-            color: "#E3E3E3"
-        },
-        labelWidth: -5,
-        min: 0
-    },
-    grid: {
-        hoverable: true,
-        color: "#696969"
-    },
-    legend: {
-        show: false
-    }
-};
-
-var lastMojangServiceUpdate;
-
 var graphs = {};
 var lastPlayerEntries = {};
 
 var historyPlot;
 var displayedGraphData;
 var hiddenGraphData = [];
-
-// Generate (and set) the HTML that displays Mojang status.
-function updateMojangServices() {
-    if (!lastMojangServiceUpdate) {
-        return;
-    }
-
-	var keys = Object.keys(lastMojangServiceUpdate);
-    var newStatus = 'Mojang Services: ';
-    var serviceCountByType = {
-        Online: 0,
-        Unstable: 0,
-        Offline: 0
-    };
-
-    for (var i = 0; i < keys.length; i++) {
-        var entry = lastMojangServiceUpdate[keys[i]];
-
-        serviceCountByType[entry.title] += 1;
-    }
-
-    if (serviceCountByType['Online'] === keys.length) {
-        $('#tagline').attr('class', 'status-online');
-
-        newStatus += 'All systems operational.';
-    } else {
-        if (serviceCountByType['Unstable'] > serviceCountByType['Offline']) {
-            $('#tagline').attr('class', 'status-unstable');
-        } else {
-            $('#tagline').attr('class', 'status-offline');
-        }
-
-        for (var i = 0; i < keys.length; i++) {
-            var entry = lastMojangServiceUpdate[keys[i]];
-
-            if (entry.startTime) {
-                newStatus += entry.name + ' ' + entry.title.toLowerCase() + ' for ' + msToTime((new Date()).getTime() - entry.startTime + ' ');
-            }
-        }
-    }
-
-	$('#tagline-text').text(newStatus);
-}
-
-function findErrorMessage(error) {
-    if (error.description) {
-        return error.description;
-    } else if (error.errno) {
-        return error.errno;
-    }
-}
 
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
@@ -171,19 +54,30 @@ function updateServerStatus(lastEntry) {
 }
 
 function sortServers() {
-    var keys = Object.keys(lastPlayerEntries);
-    var nameList = [];
+    var byCategories = getServersByCategory();
 
-    keys.sort(function(a, b) {
-        return lastPlayerEntries[b] - lastPlayerEntries[a];
-    });
+    var categories = Object.keys(byCategories);
 
-    keys.reverse();
+    for (var i = 0; i < categories.length; i++) {
+        var relevantPlayers = [];
 
-    for (var i = 0; i < keys.length; i++) {
-        $('#' + safeName(keys[i])).prependTo('#server-container');
+        for (var x = 0; x < byCategories[categories[i]].length; x++) {
+            var server = byCategories[categories[i]][x];
 
-        $('#ranking_' + safeName(keys[i])).text('#' + (keys.length - i));
+            relevantPlayers[server.name] = lastPlayerEntries[server.name];
+        }
+
+        var keys = Object.keys(relevantPlayers);
+
+        keys.sort(function(a, b) {
+            return relevantPlayers[b] - relevantPlayers[a];
+        });
+
+        for (var x = 0; x < keys.length; x++) {
+            $('#' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
+
+            $('#ranking_' + safeName(keys[x])).text('#' + (x + 1));
+        }
     }
 }
 
@@ -223,12 +117,6 @@ function setAllGraphVisibility(visible) {
     }
 }
 
-function toggleControlsDrawer() {
-    var div = $('#big-graph-controls-drawer');
-
-    div.css('display', div.css('display') !== 'none' ? 'none' : 'block');
-}
-
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -238,8 +126,6 @@ $(document).ready(function() {
 
     var mojangServicesUpdater;
     var sortServersTask;
-
-    var graphDuration;
 
 	socket.on('connect', function() {
         $('#tagline-text').text('Loading...');
@@ -264,16 +150,13 @@ $(document).ready(function() {
         lastPlayerEntries = {};
         graphs = {};
 
-        $('#server-container').html('');
-        $('#quick-jump-container').html('');
+        $('#server-container-list').html('');
+
+        createdCategories = false;
 
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
-    });
-
-    socket.on('setGraphDuration', function(value) {
-        graphDuration = value;
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -335,14 +218,14 @@ $(document).ready(function() {
 
     socket.on('updateHistoryGraph', function(rawData) {
         // Prevent race conditions.
-        if (!graphDuration || !displayedGraphData || !hiddenGraphData) {
+        if (!displayedGraphData || !hiddenGraphData) {
             return;
         }
 
         // If it's not in our display group, use the hidden group instead.
         var targetGraphData = displayedGraphData[rawData.name] ? displayedGraphData : hiddenGraphData;
 
-        trimOldPings(targetGraphData, graphDuration);
+        trimOldPings(targetGraphData, publicConfig.graphDuration);
 
         targetGraphData[rawData.name].push([rawData.timestamp, rawData.players]);
 
@@ -356,6 +239,8 @@ $(document).ready(function() {
     });
 
 	socket.on('add', function(servers) {
+        createCategories();
+
         for (var i = 0; i < servers.length; i++) {
             var history = servers[i];
             var listing = [];
@@ -396,7 +281,7 @@ $(document).ready(function() {
                         <div class="column" style="float: right;">\
                             <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
                         </div>'
-            }).appendTo("#server-container");
+            }).appendTo("#server-container-" + getServerByIp(info.ip).category);
 
             var favicon = MISSING_FAVICON_BASE64;
 
@@ -405,8 +290,6 @@ $(document).ready(function() {
             }
 
             $('#favicon_' + safeName(info.name)).attr('src', favicon);
-
-            $('#quick-jump-container').append('<img id="quick-jump-' + safeName(info.name) + '" data-target-network="' + safeName(info.name) + '" title="' + info.name + '" alt="' + info.name + '" class="quick-jump-icon" src="' + favicon + '">');
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
@@ -430,7 +313,6 @@ $(document).ready(function() {
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
             $('#favicon_' + safeName(update.info.name)).attr('src', update.result.favicon);
-            $('#quick-jump-' + safeName(update.info.name)).attr('src', update.result.favicon);
         }
 
         var graph = graphs[update.info.name];
@@ -451,31 +333,11 @@ $(document).ready(function() {
         }
 	});
 
-	socket.on('updateMojangServices', function(data) {
-		// Store the update and force an update.
-		lastMojangServiceUpdate = data;
-
-		updateMojangServices();
-	});
+	socket.on('updateMojangServices', updateMojangServices);
 
 	// Start any special updating tasks.
-	mojangServicesUpdater = setInterval(function() {
-		updateMojangServices();
-	}, 1000);
-
-    sortServersTask = setInterval(function() {
-        sortServers();
-    }, 10 * 1000);
-
-    // Our super fancy scrolly thing!
-    $(document).on('click', '.quick-jump-icon', function(e) {
-        var serverName = $(this).attr('data-target-network');
-        var target = $('#server-' + serverName);
-
-        $('html, body').animate({
-            scrollTop: target.offset().top
-        }, 100);
-    });
+	mojangServicesUpdater = setInterval(updateMojangServices, 1000);
+    sortServersTask = setInterval(sortServers, 10000);
 
     $(document).on('click', '.graph-control', function(e) {
         var serverIp = $(this).attr('data-target-network');

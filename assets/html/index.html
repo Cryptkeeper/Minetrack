@@ -18,52 +18,52 @@
 
 		<div id="push">
 
-		<div id="header">
+			<div id="header">
 
-			<h1 class="text-uppercase">Minetrack</h1>
-			<p class="slogan text-uppercase">All your favorite Minecraft servers, right now.</p>
-			<p class="info text-uppercase">Made with <span style="color: #e74c3c;">&#9829;</span> by <a href="http://cryptkpr.me">Cryptkeeper</a> &middot; Open source'd on <a href="https://github.com/Cryptkeeper/Minetrack">Github</a></p>
-
-			<br />
-
-			<p class="info text-uppercase">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
-
-		</div>
-
-		<div id="tagline" class="status-connecting">
-			
-			<span id="tagline-text" class="text-uppercase">Connecting...</span>
-
-		</div>
-
-		<div id="big-graph"></div>
-
-		<div id="big-graph-controls" style="display: none;">
-
-			<span style="text-align: center; display: block;">
-
-				<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a>
-
-			</span>
-			
-			<div id="big-graph-controls-drawer" style="display: none;">
-
-				<div id="big-graph-checkboxes"></div>
+				<h1 class="text-uppercase">Minetrack</h1>
+				<p class="slogan text-uppercase">All your favorite Minecraft servers, right now.</p>
+				<p class="info text-uppercase">Made with <span style="color: #e74c3c;">&#9829;</span> by <a href="http://cryptkpr.me">Cryptkeeper</a> &middot; Open source'd on <a href="https://github.com/Cryptkeeper/Minetrack">Github</a></p>
 
 				<br />
 
-				<span style="text-align: center; display: block; margin-bottom: 15px;">
-
-					<span onclick="setAllGraphVisibility(true);" class="button">Show All</span>
-					<span onclick="setAllGraphVisibility(false);" class="button">Hide All</span>
-
-				</span>
+				<p class="info text-uppercase">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
 
 			</div>
 
-		</div>
+			<div id="tagline" class="status-connecting">
+				
+				<span id="tagline-text" class="text-uppercase">Connecting...</span>
 
-        <div id="server-container" class="container"></div>
+			</div>
+
+			<div id="big-graph"></div>
+
+			<div id="big-graph-controls" style="display: none;">
+
+				<span style="text-align: center; display: block;">
+
+					<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a>
+
+				</span>
+				
+				<div id="big-graph-controls-drawer" style="display: none;">
+
+					<div id="big-graph-checkboxes"></div>
+
+					<br />
+
+					<span style="text-align: center; display: block; margin-bottom: 15px;">
+
+						<span onclick="setAllGraphVisibility(true);" class="button">Show All</span>
+						<span onclick="setAllGraphVisibility(false);" class="button">Hide All</span>
+
+					</span>
+
+				</div>
+
+			</div>
+
+			<div id="server-container-list"></div>
 
         </div>
 
@@ -72,8 +72,6 @@
         	Copyright &copy; 2016. All rights reserved. Logo copyrights belong to their respective owners.
 
         </div>
-
-        <div id="quick-jump-container"></div>
 
         <!-- External JS assets -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -84,7 +82,10 @@
 
         <!-- Internal JS assets -->
         <script src="js/util.js"></script>
+        <script src="js/graph.js"></script>
 		<script src="js/site.js"></script>
+
+		<script src="publicConfig.json"></script>
 
 		<script>
 

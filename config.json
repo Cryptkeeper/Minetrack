@@ -4,6 +4,7 @@
 		"/images/compass.png": "assets/images/compass.png",
 		"/js/site.js": "assets/js/site.js",
 		"/js/util.js": "assets/js/util.js",
+		"/js/config.js": "assets/js/config.js",
 		"/css/main.css": "assets/css/main.css",
 		"/favicons/hypixelpe.png": "assets/images/favicons/hypixelpe.png",
 		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
@@ -25,5 +26,10 @@
 		"connectTimeout": 2500
 	},
 	"logToDatabase": false,
-	"graphDuration": 86400000
+	"graphDuration": 86400000,
+	"serverCategories": {
+		"major": "Major Networks",
+		"midsized": "Midsized Networks",
+		"small": "Small Networks"
+	}
 }
