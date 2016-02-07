@@ -170,8 +170,27 @@ function startServices() {
 			networkHistoryKeys.sort();
 
 			// Send each individually, this should look cleaner than waiting for one big array to transfer.
-			for (var i = 0; i < networkHistoryKeys.length; i++) {
-				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
+			for (var i = 0; i < servers.length; i++) {
+				var server = servers[i];
+
+				if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
+					// This server hasn't been ping'd yet. Send a hacky placeholder.
+					client.emit('add', [[{
+						error: {
+							description: 'Waiting'
+						},
+						result: null,
+						timestamp: util.getCurrentTimeMs(),
+						info: {
+							ip: server.ip,
+							port: server.port,
+							type: server.type,
+							name: server.name
+						}
+					}]]);
+				} else {
+					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
+				}
 			}
 		});
 	});
