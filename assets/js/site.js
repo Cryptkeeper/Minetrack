@@ -1,9 +1,14 @@
-var graphs = {};
-var lastPlayerEntries = {};
+var graphs = [];
+var lastPlayerEntries = [];
 
 var historyPlot;
 var displayedGraphData;
 var hiddenGraphData = [];
+
+var isConnected = false;
+
+var mojangServicesUpdater;
+var sortServersTask;
 
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
@@ -117,6 +122,37 @@ function setAllGraphVisibility(visible) {
     }
 }
 
+function validateBootTime(bootTime, socket) {
+    $('#tagline-text').text('Validating...');
+
+    console.log('Remote bootTime is ' + bootTime + ', local is ' + publicConfig.bootTime);
+
+    if (bootTime === publicConfig.bootTime) {
+        $('#tagline-text').text('Loading...');
+
+        socket.emit('requestListing');
+
+        if (!isMobileBrowser()) socket.emit('requestHistoryGraph');
+
+        isConnected = true;
+
+        // Start any special updating tasks.
+        mojangServicesUpdater = setInterval(updateMojangServices, 1000);
+        sortServersTask = setInterval(sortServers, 10000);
+    } else {
+        $('#tagline-text').text('Updating...');
+
+        $.getScript('/publicConfig.json', function(data, textStatus, xhr) {
+            if (xhr.status === 200) {
+                validateBootTime(publicConfig.bootTime, socket);
+            } else {
+                $('#tagline').attr('class', 'status-offline');
+                $('#tagline-text').text('Failed to update! Refresh?');
+            }
+        });
+    }
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -124,25 +160,13 @@ $(document).ready(function() {
         reconnectionAttempts: 10
     });
 
-    var mojangServicesUpdater;
-    var sortServersTask;
-
-	socket.on('connect', function() {
-        $('#tagline-text').text('Loading...');
-
-        if (!isMobileBrowser()) {
-            socket.emit('requestHistoryGraph');
-        }
-	});
+    socket.on('bootTime', function(bootTime) {
+        validateBootTime(bootTime, socket);
+    });
 
     socket.on('disconnect', function() {
-        if (mojangServicesUpdater) {
-            clearInterval(mojangServicesUpdater);
-        }
-
-        if (sortServersTask) {
-            clearInterval(sortServersTask);
-        }
+        if (mojangServicesUpdater) clearInterval(mojangServicesUpdater);
+        if (sortServersTask) clearInterval(sortServersTask);
 
         $('#tagline').attr('class', 'status-offline');
         $('#tagline-text').text('Disconnected! Refresh?');
@@ -157,6 +181,8 @@ $(document).ready(function() {
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
+
+        isConnected = false;
     });
 
     socket.on('historyGraph', function(rawData) {
@@ -333,11 +359,11 @@ $(document).ready(function() {
         }
 	});
 
-	socket.on('updateMojangServices', updateMojangServices);
-
-	// Start any special updating tasks.
-	mojangServicesUpdater = setInterval(updateMojangServices, 1000);
-    sortServersTask = setInterval(sortServers, 10000);
+	socket.on('updateMojangServices', function(data) {
+        if (isConnected) {
+            updateMojangServices(data);
+        }
+    });
 
     $(document).on('click', '.graph-control', function(e) {
         var serverIp = $(this).attr('data-target-network');

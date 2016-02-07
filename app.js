@@ -142,22 +142,9 @@ function startServices() {
 
 		logger.log('info', '%s connected, total clients: %d', client.request.connection.remoteAddress, connectedClients);
 
-		setTimeout(function() {
-			client.emit('setGraphDuration', config.graphDuration);
-
-			// Send them our previous data, so they have somewhere to start.
-			client.emit('updateMojangServices', mojang.toMessage());
-
-			// Remap our associative array into just an array.
-			var networkHistoryKeys = Object.keys(networkHistory);
-
-			networkHistoryKeys.sort();
-
-			// Send each individually, this should look cleaner than waiting for one big array to transfer.
-			for (var i = 0; i < networkHistoryKeys.length; i++) {
-				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
-			}
-		}, 1);
+		// We send the boot time (also sent in publicConfig.json) to the frontend to validate they have the same config.
+		// If so, they'll send back "requestListing" event, otherwise they will pull the new config and retry.
+		client.emit('bootTime', util.getBootTime());
 
 		// Attach our listeners.
 		client.on('disconnect', function() {
@@ -170,6 +157,21 @@ function startServices() {
 			if (config.logToDatabase) {
 				// Send them the big 24h graph.
 				client.emit('historyGraph', graphData);
+			}
+		});
+
+		client.on('requestListing', function() {
+			// Send them our previous data, so they have somewhere to start.
+			client.emit('updateMojangServices', mojang.toMessage());
+
+			// Remap our associative array into just an array.
+			var networkHistoryKeys = Object.keys(networkHistory);
+
+			networkHistoryKeys.sort();
+
+			// Send each individually, this should look cleaner than waiting for one big array to transfer.
+			for (var i = 0; i < networkHistoryKeys.length; i++) {
+				client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
 			}
 		});
 	});

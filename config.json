@@ -4,7 +4,7 @@
 		"/images/compass.png": "assets/images/compass.png",
 		"/js/site.js": "assets/js/site.js",
 		"/js/util.js": "assets/js/util.js",
-		"/js/config.js": "assets/js/config.js",
+		"/js/graph.js": "assets/js/graph.js",
 		"/css/main.css": "assets/css/main.css",
 		"/favicons/hypixelpe.png": "assets/images/favicons/hypixelpe.png",
 		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
@@ -16,7 +16,7 @@
 		"Mobcrush Land": "/favicons/mobcrush.png"
 	},
 	"site": {
-		"port": 80,
+		"port": 8080,
 		"ip": "0.0.0.0"
 	},
 	"rates": {
