@@ -63,7 +63,7 @@
 		"name": "Kohi",
 		"ip": "kohi.us",
 		"type": "PC",
-		"category": "midsized"
+		"category": "major"
 	},
 	{
 		"name": "Wynncraft",
@@ -108,12 +108,6 @@
 		"category": "midsized"
 	},
 	{
-		"name": "TheArchon",
-		"ip": "pvp.thearchon.net",
-		"type": "PC",
-		"category": "midsized"
-	},
-	{
 		"name": "GotPvP",
 		"ip": "play.gotpvp.com",
 		"type": "PC",
@@ -148,12 +142,6 @@
 		"ip": "mcmagic.us",
 		"type": "PC",
 		"category": "small"
-	},
-	{
-		"name": "GommeHD",
-		"ip": "gommehd.net",
-		"type": "PC",
-		"category": "major"
 	},
 	{
 		"name": "Island Clash",
