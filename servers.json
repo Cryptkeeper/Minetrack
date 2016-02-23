@@ -90,11 +90,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "TheArchon",
-		"ip": "pvp.thearchon.net",
-		"type": "PC"
-	},
-	{
 		"name": "GotPvP",
 		"ip": "play.gotpvp.com",
 		"type": "PC"
@@ -122,11 +117,6 @@
 	{
 		"name": "MCMagic",
 		"ip": "mcmagic.us",
-		"type": "PC"
-	},
-	{
-		"name": "GommeHD",
-		"ip": "gommehd.net",
 		"type": "PC"
 	},
 	{
