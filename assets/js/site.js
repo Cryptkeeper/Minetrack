@@ -290,7 +290,7 @@ $(document).ready(function() {
     });
 
 	socket.on('add', function(servers) {
-        if (Object.keys(publicConfig.categories).length > 0) {
+        if (Object.keys(publicConfig.categories).length > 1) {
             $('#category-controller').css('display', 'block');
         }
 
