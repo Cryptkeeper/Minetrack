@@ -3,7 +3,7 @@ Minetrack is a Minecraft PC/PE server tracker that lets you focus on what's happ
 Built to be lightweight and durable, you can easily adapt it to monitor BungeeCord or server instances.
 
 #### Try it out!
-You can see an up-to-date copy of the master branch running on http://minetrack.me
+You can see an up-to-date copy of the master branch running on https://minetrack.me
 
 #### Usage
 1. Make sure everything is correct in ```config.json```.
@@ -19,8 +19,8 @@ This requires sqlite3 drivers to be installed.
 #### What's being changed?
 For the changelog, check out the [CHANGELOG](CHANGELOG.md) file.
 
-#### How do I get added?
-At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak for **PC** servers, and 100 players at peak for **PE** servers. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```config.json```.
+#### How do I get added to minetrack.me?
+At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak for **PC** servers, and 100 players at peak for **PE** servers. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```servers.json```.
 
 Minetrack is designed to be flexible, you're more than welcome to fork/clone it and start your own listing focusing on different networks.
 
