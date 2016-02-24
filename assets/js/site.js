@@ -10,6 +10,8 @@ var isConnected = false;
 var mojangServicesUpdater;
 var sortServersTask;
 
+var categoriesVisible = true;
+
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
     var div = $('#status_' + safeName(info.name));
@@ -59,30 +61,63 @@ function updateServerStatus(lastEntry) {
 }
 
 function sortServers() {
-    var byCategories = getServersByCategory();
+    if (categoriesVisible) {
+        var byCategories = getServersByCategory();
 
-    var categories = Object.keys(byCategories);
+        var categories = Object.keys(byCategories);
 
-    for (var i = 0; i < categories.length; i++) {
-        var relevantPlayers = [];
+        for (var i = 0; i < categories.length; i++) {
+            var relevantPlayers = [];
 
-        for (var x = 0; x < byCategories[categories[i]].length; x++) {
-            var server = byCategories[categories[i]][x];
+            for (var x = 0; x < byCategories[categories[i]].length; x++) {
+                var server = byCategories[categories[i]][x];
 
-            relevantPlayers[server.name] = lastPlayerEntries[server.name];
+                relevantPlayers[server.name] = lastPlayerEntries[server.name];
+            }
+
+            var keys = Object.keys(relevantPlayers);
+
+            keys.sort(function(a, b) {
+                return relevantPlayers[b] - relevantPlayers[a];
+            });
+
+            for (var x = 0; x < keys.length; x++) {
+                $('#' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
+
+                $('#ranking_' + safeName(keys[x])).text('#' + (x + 1));
+            }
+        }
+    } else {
+        var serverNames = [];
+
+        var keys = Object.keys(lastPlayerEntries);
+
+        for (var i = 0; i < keys.length; i++) {
+            serverNames.push(keys[i]);
         }
 
-        var keys = Object.keys(relevantPlayers);
-
-        keys.sort(function(a, b) {
-            return relevantPlayers[b] - relevantPlayers[a];
+        serverNames.sort(function(a, b) {
+            return (lastPlayerEntries[b] || 0) - (lastPlayerEntries[a] || 0);
         });
 
-        for (var x = 0; x < keys.length; x++) {
-            $('#' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
+        for (var i = 0; i < serverNames.length; i++) {
+            $('#' + safeName(serverNames[i])).appendTo('#server-container-all');
 
-            $('#ranking_' + safeName(keys[x])).text('#' + (x + 1));
+            $('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
         }
+    }
+}
+
+function setCategoriesVisible(newCategoriesVisible) {
+    categoriesVisible = newCategoriesVisible;
+
+    $('.category-header').css('display', (categoriesVisible ? 'block' : 'none'));
+    $('.server-container').css('margin', (categoriesVisible ? '10px auto' : '0 auto'));
+
+    sortServers();
+
+    if (typeof(localStorage)) {
+        localStorage.setItem('categoriesVisible', categoriesVisible);
     }
 }
 
@@ -182,6 +217,11 @@ $(document).ready(function() {
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
 
+        $('#category-controller').css('display', 'none');
+
+        $("#stat_totalPlayers").text(0);
+        $("#stat_networks").text(0);
+
         isConnected = false;
     });
 
@@ -266,6 +306,10 @@ $(document).ready(function() {
 
 	socket.on('add', function(servers) {
         createCategories();
+
+        if (Object.keys(publicConfig.categories).length > 0) {
+            $('#category-controller').css('display', 'block');
+        }
 
         for (var i = 0; i < servers.length; i++) {
             var history = servers[i];

@@ -22,6 +22,8 @@ function createCategories() {
 
 			$('#server-container-list').append('<div id="server-container-' + keys[i] + '" class="container server-container"><h3 class="category-header">' + title + '</h3></div>');
 		}
+
+		$('#server-container-list').append('<div id="server-container-all" class="container server-container"></div>');
 	}
 }
 

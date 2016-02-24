@@ -18,19 +18,34 @@ html, body {
     height: 100%;
 }
 
+a {
+    cursor: pointer;
+}
+
 #push {
     position: relative;
     min-height: 100%;
 }
 
-/* Header, footer */
-#header, #footer {
+/* Header */
+#header, #tagline {
+    width: 1540px;
+    margin: 0 auto;
+}
+
+#header {
     background: #EBEBEB;
     color: #3B3738;
     padding: 20px 0;
-    text-align: center;
-    width: 1540px;
-    margin: 0 auto;
+    overflow: auto;
+}
+
+#header .slogan {
+    font-size: 20px;
+}
+
+#header .subslogan {
+    font-size: 19px;
 }
 
 #header a {
@@ -43,34 +58,46 @@ html, body {
     border-bottom: 1px dashed transparent;
 }
 
-#header > .slogan {
-    letter-spacing: 2px;
-    font-size: 20px;
-}
-
-#header > .info {
-    font-size: 17px;
-}
-
 #header > h1 {
     font-size: 42px;
 }
 
+#header > #column-center {
+    width: 1480px;
+    margin: 0 auto;
+}
+
+#header > #column-center > .column {
+    width: 740px;
+    display: inline-block;
+    float: left;
+}
+
+/* Category controls */
+#category-controller {
+    display: none;
+}
+
+/* Footer */
 #footer {
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    width: 1540px;
     font-size: 16px;
     text-transform: uppercase;
+    background: #EBEBEB;
+    color: #3B3738;
+    padding: 15px 0;
+    margin: 0 auto;
+    text-align: center;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
 }
 
 /* Tagline */
 #tagline {
     padding: 10px 0;
     text-align: center;
-    width: 1540px;
-    margin: 0 auto;
-    border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 /* Colors used by the Mojang service's status bar */
@@ -132,7 +159,6 @@ html, body {
 
 .category-header {
     text-align: center;
-    display: block;
     margin-bottom: 15px;
 }
 
@@ -203,7 +229,6 @@ h3 {
 
 #big-graph-controls a:hover {
     border-bottom: 1px dashed transparent;
-    cursor: pointer;
 }
 
 /* Basic elements */
@@ -220,5 +245,4 @@ h3 {
 .button:hover {
     background: #ecf0f1;
     color: #3498db;
-    cursor: pointer;
 }

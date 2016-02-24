@@ -71,7 +71,7 @@ function toggleControlsDrawer() {
 }
 
 function saveGraphControls(displayedServers) {
-	if (typeof(localStorage) !== undefined) {
+	if (typeof(localStorage)) {
 		var json = JSON.stringify(displayedServers);
 
 		localStorage.setItem('displayedServers', json);
@@ -79,7 +79,7 @@ function saveGraphControls(displayedServers) {
 }
 
 function loadGraphControls() {
-	if (typeof(localStorage) !== undefined) {
+	if (typeof(localStorage)) {
 		var item = localStorage.getItem('displayedServers');
 
 		if (item) {
@@ -89,7 +89,7 @@ function loadGraphControls() {
 }
 
 function resetGraphControls() {
-	if (typeof(localStorage) !== undefined) {
+	if (typeof(localStorage)) {
 		localStorage.removeItem('displayedServers');
 	}
 }
