@@ -3,7 +3,9 @@ Minetrack is a Minecraft PC/PE server tracker that lets you focus on what's happ
 Built to be lightweight and durable, you can easily adapt it to monitor BungeeCord or server instances.
 
 #### Try it out!
-You can see an up-to-date copy of the master branch running on https://minetrack.me
+You can see an up-to-date copy of the production branch running on https://minetrack.me
+
+"master" branch contains everything you need to start your own copy. "production" branch is what's used in the production environment of the minetrack.me site.
 
 #### Usage
 1. Make sure everything is correct in ```config.json```.
