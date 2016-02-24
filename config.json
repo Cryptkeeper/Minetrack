@@ -28,9 +28,8 @@
 	"logToDatabase": false,
 	"graphDuration": 86400000,
 	"serverCategories": {
-		"major": "Major Networks",
-		"midsized": "Midsized Networks",
-		"small": "Small Networks"
+		"minigames": "Minigame Networks",
+		"pocket": "Pocket Edition Networks"
 	},
 	"categoriesVisible": true
 }
