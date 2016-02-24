@@ -31,5 +31,6 @@
 		"major": "Major Networks",
 		"midsized": "Midsized Networks",
 		"small": "Small Networks"
-	}
+	},
+	"categoriesVisible": true
 }

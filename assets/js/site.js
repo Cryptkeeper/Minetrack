@@ -10,8 +10,6 @@ var isConnected = false;
 var mojangServicesUpdater;
 var sortServersTask;
 
-var categoriesVisible = true;
-
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
     var div = $('#status_' + safeName(info.name));
@@ -105,19 +103,6 @@ function sortServers() {
 
             $('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
         }
-    }
-}
-
-function setCategoriesVisible(newCategoriesVisible) {
-    categoriesVisible = newCategoriesVisible;
-
-    $('.category-header').css('display', (categoriesVisible ? 'block' : 'none'));
-    $('.server-container').css('margin', (categoriesVisible ? '10px auto' : '0 auto'));
-
-    sortServers();
-
-    if (typeof(localStorage)) {
-        localStorage.setItem('categoriesVisible', categoriesVisible);
     }
 }
 
@@ -305,8 +290,6 @@ $(document).ready(function() {
     });
 
 	socket.on('add', function(servers) {
-        createCategories();
-
         if (Object.keys(publicConfig.categories).length > 0) {
             $('#category-controller').css('display', 'block');
         }

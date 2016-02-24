@@ -6,9 +6,26 @@ var lastMojangServiceUpdate;
 var publicConfig;
 
 var createdCategories = false;
+var categoriesVisible;
 
 function setPublicConfig(json) {
     publicConfig = json;
+
+    $('#server-container-list').html('');
+
+    createdCategories = false;
+
+    createCategories();
+    setCategoriesVisible(publicConfig.categoriesVisible);
+}
+
+function setCategoriesVisible(newCategoriesVisible) {
+    categoriesVisible = newCategoriesVisible;
+
+    $('.category-header').css('display', (categoriesVisible ? 'block' : 'none'));
+    $('.server-container').css('margin', (categoriesVisible ? '10px auto' : '0 auto'));
+
+    sortServers();
 }
 
 function createCategories() {
