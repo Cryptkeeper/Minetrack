@@ -190,5 +190,11 @@
  		"ip": "play.timolia.de",
  		"type": "PC",
 		"category": "midsized"
+  	},
+  	{
+ 		"name": "PrimeMC",
+ 		"ip": "play.primemc.org",
+ 		"type": "PC",
+		"category": "midsized"
   	}
 ]
