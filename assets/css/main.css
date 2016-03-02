@@ -1,16 +1,16 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300,400);
 
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-	background: #3B3738;
-	color: #FFF;
-	font-family: "Open Sans", sans-serif;
-	font-size: 18px;
-	font-weight: 300 !important;
+    background: #3B3738;
+    color: #FFF;
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 300 !important;
 }
 
 /* Page layout */
@@ -158,12 +158,12 @@ a {
 }
 
 .server > .column > .versions {
-	min-height: 22px;
-	padding-bottom: 3px;
+    min-height: 22px;
+    padding-bottom: 3px;
 }
 
 .server > .column > .versions > .version {
-	padding: 1px 5px;
+    padding: 1px 5px;
     border-radius: 2px;
     border: 1px solid #A09E9E;
     font-size: 12px;
