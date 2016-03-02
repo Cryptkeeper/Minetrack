@@ -145,7 +145,7 @@ a {
 }
 
 .server > .column > .rank {
-    width: 64px; 
+    width: 64px;
     padding-top: 3px;
 }
 
@@ -155,6 +155,18 @@ a {
     border: 1px solid #A09E9E;
     font-size: 14px;
     margin-bottom: 2px;
+}
+
+.server > .column > .versions {
+	min-height: 22px;
+	padding-bottom: 3px;
+}
+
+.server > .column > .versions > .version {
+	padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid #A09E9E;
+    font-size: 12px;
 }
 
 .category-header {
