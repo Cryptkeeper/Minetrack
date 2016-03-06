@@ -11,6 +11,12 @@ var servers = require('./servers.json');
 var networkHistory = [];
 var connectedClients = 0;
 
+var currentVersionIndex = {
+	'PC': 0,
+	'PE': 0
+};
+var networkVersions = [];
+
 var graphData = [];
 var lastGraphPush = [];
 
@@ -18,6 +24,7 @@ function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
+			var attemptedVersion = config.versions[network.type][currentVersionIndex[network.type]];
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
@@ -29,20 +36,62 @@ function pingAll() {
 					res.favicon = config.faviconOverride[network.name];
 				}
 
-				handlePing(network, res, err);
-			});
+				handlePing(network, res, err, attemptedVersion);
+			}, attemptedVersion);
 		})(servers[i]);
+	}
+
+	currentVersionIndex['PC']++;
+	currentVersionIndex['PE']++;
+
+	if (currentVersionIndex['PC'] >= config.versions['PC'].length) {
+		// Loop around
+		currentVersionIndex['PC'] = 0;
+	}
+
+	if (currentVersionIndex['PE'] >= config.versions['PE'].length) {
+		// Loop around
+		currentVersionIndex['PE'] = 0;
 	}
 }
 
 // This is where the result of a ping is feed.
 // This stores it and converts it to ship to the frontend.
-function handlePing(network, res, err) {
+function handlePing(network, res, err, attemptedVersion) {
+	// Log our response.
+	if (!networkHistory[network.name]) {
+		networkHistory[network.name] = [];
+	}
+
+	// Update the version list
+	if (!networkVersions[network.name]) {
+		networkVersions[network.name] = [];
+	}
+
+	// If the result version matches the attempted version, the version is supported
+	var _networkVersions = networkVersions[network.name];
+	if (res) {
+		if (res.version == attemptedVersion) {
+			if (_networkVersions.indexOf(res.version) == -1) {
+				_networkVersions.push(res.version);
+			}
+		} else {
+			// Mismatch, so remove the version from the supported version list
+			var index = _networkVersions.indexOf(attemptedVersion);
+			if (index != -1) {
+				_networkVersions.splice(index, 1);
+			}
+		}
+	}
+
+	// Update the clients
 	var networkSnapshot = {
 		info: {
 			name: network.name,
-			timestamp: util.getCurrentTimeMs()
-		}
+			timestamp: util.getCurrentTimeMs(),
+			type: network.type
+		},
+		versions: _networkVersions
 	};
 
 	if (res) {
@@ -52,11 +101,6 @@ function handlePing(network, res, err) {
 	}
 
 	server.io.sockets.emit('update', networkSnapshot);
-
-	// Log our response.
-	if (!networkHistory[network.name]) {
-		networkHistory[network.name] = [];
-	}
 
 	var _networkHistory = networkHistory[network.name];
 
@@ -72,12 +116,13 @@ function handlePing(network, res, err) {
 	_networkHistory.push({
 		error: err,
 		result: res,
+		versions: _networkVersions,
 		timestamp: util.getCurrentTimeMs(),
         info: {
             ip: network.ip,
             port: network.port,
             type: network.type,
-            name: network.name
+            name: network.name,
         }
 	});
 

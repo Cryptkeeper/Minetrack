@@ -5,6 +5,15 @@ var historyPlot;
 var displayedGraphData;
 var hiddenGraphData = [];
 
+var mcVersions = {
+    'PC': {
+        4: '1.7.2',
+        5: '1.7.10',
+        47: '1.8',
+        107: '1.9'
+    }
+};
+
 var isConnected = false;
 
 var mojangServicesUpdater;
@@ -12,11 +21,25 @@ var sortServersTask;
 
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
+
     var div = $('#status_' + safeName(info.name));
+    var versionDiv = $('#version_' + safeName(info.name));
+
+    if (lastEntry.versions) {
+        var versions = '';
+
+        for (var i = 0; i < lastEntry.versions.length; i++) {
+            versions += '<span class="version">' + mcVersions[lastEntry.info.type][lastEntry.versions[i]] + '</span>&nbsp;';
+        }
+
+        versionDiv.html(versions);
+    } else {
+        versionDiv.html('');
+    }
 
     if (lastEntry.result) {
         var result = lastEntry.result;
-        var newStatus = '<br />Players: ' + formatNumber(result.players.online);
+        var newStatus = 'Players: ' + formatNumber(result.players.online);
 
         var listing = graphs[lastEntry.info.name].listing;
 
@@ -36,7 +59,7 @@ function updateServerStatus(lastEntry) {
 
         div.html(newStatus);
     } else {
-        var newStatus = '<br /><span class="color-red">';
+        var newStatus = '<span class="color-red">';
 
         if (findErrorMessage(lastEntry.error)) {
             newStatus += findErrorMessage(lastEntry.error);
@@ -327,8 +350,8 @@ $(document).ready(function() {
                         </div>\
                         <div class="column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
-                            <span class="color-gray">' + info.ip + '</span>\
-                            <br />\
+                            <span class="color-gray url">' + info.ip + '</span>\
+                            <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\
                         </div>\
                         <div class="column" style="float: right;">\
