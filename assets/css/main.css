@@ -1,16 +1,16 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300,400);
 
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-	background: #3B3738;
-	color: #FFF;
-	font-family: "Open Sans", sans-serif;
-	font-size: 18px;
-	font-weight: 300 !important;
+    background: #3B3738;
+    color: #FFF;
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 300 !important;
 }
 
 /* Page layout */
@@ -145,8 +145,12 @@ a {
 }
 
 .server > .column > .rank {
-    width: 64px; 
-    padding-top: 3px;
+    width: 64px;
+    padding-top: 4px;
+}
+
+.server > .column > .url {
+    font-size: 16px;
 }
 
 .server > .column > h3 > .type {
@@ -155,6 +159,18 @@ a {
     border: 1px solid #A09E9E;
     font-size: 14px;
     margin-bottom: 2px;
+}
+
+.server > .column > .versions {
+    min-height: 23px;
+    padding-bottom: 1px;
+}
+
+.server > .column > .versions > .version {
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid #636363;
+    font-size: 12px;
 }
 
 .category-header {

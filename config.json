@@ -31,5 +31,16 @@
 		"minigames": "Minigame Networks",
 		"pocket": "Pocket Edition Networks"
 	},
+	"versions": {
+		"PC": [
+			4,
+			5,
+			47,
+			107
+		],
+		"PE": [
+			0
+		]
+	},
 	"categoriesVisible": true
 }
