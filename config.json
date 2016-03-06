@@ -25,16 +25,8 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-<<<<<<< HEAD
 	"logToDatabase": true,
-	"graphDuration": 86400000
-=======
-	"logToDatabase": false,
 	"graphDuration": 86400000,
-	"serverCategories": {
-		"minigames": "Minigame Networks",
-		"pocket": "Pocket Edition Networks"
-	},
 	"versions": {
 		"PC": [
 			4,
@@ -45,7 +37,5 @@
 		"PE": [
 			0
 		]
-	},
-	"categoriesVisible": true
->>>>>>> master
+	}
 }
