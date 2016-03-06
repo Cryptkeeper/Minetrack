@@ -26,11 +26,5 @@
 		"connectTimeout": 2500
 	},
 	"logToDatabase": false,
-	"graphDuration": 86400000,
-	"serverCategories": {
-		"major": "Major Networks",
-		"midsized": "Midsized Networks",
-		"small": "Small Networks"
-	},
-	"categoriesVisible": true
+	"graphDuration": 86400000
 }
