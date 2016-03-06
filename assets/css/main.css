@@ -146,7 +146,11 @@ a {
 
 .server > .column > .rank {
     width: 64px;
-    padding-top: 3px;
+    padding-top: 4px;
+}
+
+.server > .column > .url {
+    font-size: 16px;
 }
 
 .server > .column > h3 > .type {
@@ -158,14 +162,14 @@ a {
 }
 
 .server > .column > .versions {
-    min-height: 22px;
-    padding-bottom: 3px;
+    min-height: 23px;
+    padding-bottom: 1px;
 }
 
 .server > .column > .versions > .version {
     padding: 1px 5px;
     border-radius: 2px;
-    border: 1px solid #A09E9E;
+    border: 1px solid #636363;
     font-size: 12px;
 }
 
