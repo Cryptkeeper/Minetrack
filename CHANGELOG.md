@@ -21,3 +21,7 @@
 - New endpoint (```publicConfig.json```) allows the browser to know system details before the socket connection is established.
 - New header design to make it less annoying.
 - Various bug fixes.
+
+**2.2.0** *(Mar 6th 2016)*
+- Added supported versions per network (courtesy of [@forairan](https://github.com/forairan))
+- Updated dependency version of ```mc-ping-updated``` to 0.1.0
