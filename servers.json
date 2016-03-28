@@ -158,5 +158,10 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
+  	},
+  	{
+  		"name": "Avicus",
+  		"ip": "avic.us",
+  		"type": "PC"
   	}
 ]
