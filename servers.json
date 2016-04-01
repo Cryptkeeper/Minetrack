@@ -40,16 +40,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "Minecade",
-		"ip": "mineca.de",
-		"type": "PC"
-	},
-	{
-		"name": "The Nexus",
-		"ip": "hub.thenexusmc.com",
-		"type": "PC"
-	},
-	{
 		"name": "Kohi",
 		"ip": "kohi.us",
 		"type": "PC"
@@ -85,18 +75,8 @@
 		"type": "PC"
 	},
 	{
-		"name": "GotPvP",
-		"ip": "play.gotpvp.com",
-		"type": "PC"
-	},
-	{
 		"name": "Rewinside",
 		"ip": "mc.rewinside.tv",
-		"type": "PC"
-	},
-	{
-		"name": "Woodycraft",
-		"ip": "woodycraft.net",
 		"type": "PC"
 	},
 	{
