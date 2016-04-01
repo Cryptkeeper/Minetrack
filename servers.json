@@ -100,11 +100,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "Battlemine",
-		"ip": "mc.battlemine.net",
-		"type": "PC"
-	},
-	{
 		"name": "Arkham",
 		"ip": "mc.arkhamnetwork.org",
 		"type": "PC"
@@ -112,11 +107,6 @@
 	{
 		"name": "MCMagic",
 		"ip": "mcmagic.us",
-		"type": "PC"
-	},
-	{
-		"name": "Island Clash",
-		"ip": "play.islandclash.com",
 		"type": "PC"
 	},
 	{
@@ -130,20 +120,10 @@
 		"type": "PC"
 	},
 	{
-		"name": "BeanBlockz",
-		"ip": "mc.beanblockz.com",
-		"type": "PC"
-	},
-		{
 		"name": "GuildCraft",
 		"ip": "play.guildcraft.org",
 		"type": "PC"
 	},
-	{
- 		"name": "Empire MC",
- 		"ip": "play.emc.gs",
- 		"type": "PC"
-  	},
   	{
  		"name": "Timolia",
  		"ip": "play.timolia.de",
