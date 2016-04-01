@@ -65,11 +65,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "Hypixel PE",
-		"ip": "pe.hypixel.net",
-		"type": "PE"
-	},
-	{
 		"name": "Cosmic PVP",
 		"ip": "cosmicpvp.me",
 		"type": "PC"
@@ -128,11 +123,6 @@
 		"name": "Playminity",
 		"ip": "mc.playminity.com",
 		"type": "PC"
-	},
-	{
-		"name": "Mobcrush Land",
-		"ip": "play.mobcrush.com",
-		"type": "PE"
 	},
 	{
 		"name": "Epicube",
