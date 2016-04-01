@@ -18,7 +18,7 @@
 	"rates": {
 		"upateMojangStatus": 5000,
 		"mojangStatusTimeout": 3500,
-		"pingAll": 3000,
+		"pingAll": 2000,
 		"connectTimeout": 2500
 	},
 	"logToDatabase": true,
