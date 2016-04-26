@@ -210,6 +210,8 @@ $(document).ready(function() {
     socket.on('disconnect', function() {
         if (mojangServicesUpdater) clearInterval(mojangServicesUpdater);
         if (sortServersTask) clearInterval(sortServersTask);
+        
+        lastMojangServiceUpdate = undefined;
 
         $('#tagline').attr('class', 'status-offline');
         $('#tagline-text').text('Disconnected! Refresh?');
