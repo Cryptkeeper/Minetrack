@@ -2,7 +2,8 @@
 	{
 		"name": "Hypixel",
 		"ip": "mc.hypixel.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "minigames"
 	},
 	{
 		"name": "HiveMC",
@@ -13,151 +14,13 @@
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
 		"color": "#34709A",
-		"type": "PC"
-	},
-	{
-		"name": "Overcast",
-		"ip": "us.oc.tc",
-		"type": "PC"
-	},
-	{
-		"name": "Shotbow",
-		"ip": "us.shotbow.net",
-		"type": "PC"
-	},
-	{
-		"name": "Badlion",
-		"ip": "na.badlion.net",
-		"type": "PC"
-	},
-	{
-		"name": "MCGamer",
-		"ip": "play.mcgamer.net",
-		"type": "PC"
-	},
-	{
-		"name": "Olimpocraft",
-		"ip": "olimpo.me",
-		"type": "PC"
-	},
-	{
-		"name": "Minecade",
-		"ip": "mineca.de",
-		"type": "PC"
-	},
-	{
-		"name": "The Nexus",
-		"ip": "hub.thenexusmc.com",
-		"type": "PC"
-	},
-	{
-		"name": "Kohi",
-		"ip": "kohi.us",
-		"type": "PC"
-	},
-	{
-		"name": "Wynncraft",
-		"ip": "play.wynncraft.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "minigames"
 	},
 	{
 		"name": "Mineplex",
 		"ip": "us.mineplex.com",
-		"type": "PC"
-	},
-	{
-		"name": "Hypixel PE",
-		"ip": "pe.hypixel.net",
-		"type": "PE"
-	},
-	{
-		"name": "Cosmic PVP",
-		"ip": "cosmicpvp.me",
-		"type": "PC"
-	},
-	{
-		"name": "PartyZone",
-		"ip": "play.mcpz.net",
-		"type": "PC"
-	},
-	{
-		"name": "Brawl",
-		"ip": "brawl.com",
-		"type": "PC"
-	},
-	{
-		"name": "SaicoPvP",
-		"ip": "saicopvp.com",
-		"type": "PC"
-	},
-	{
-		"name": "TheArchon",
-		"ip": "pvp.thearchon.net",
-		"type": "PC"
-	},
-	{
-		"name": "GotPvP",
-		"ip": "play.gotpvp.com",
-		"type": "PC"
-	},
-	{
-		"name": "Rewinside",
-		"ip": "mc.rewinside.tv",
-		"type": "PC"
-	},
-	{
-		"name": "Woodycraft",
-		"ip": "woodycraft.net",
-		"type": "PC"
-	},
-	{
-		"name": "Battlemine",
-		"ip": "mc.battlemine.net",
-		"type": "PC"
-	},
-	{
-		"name": "Arkham",
-		"ip": "mc.arkhamnetwork.org",
-		"type": "PC"
-	},
-	{
-		"name": "MCMagic",
-		"ip": "mcmagic.us",
-		"type": "PC"
-	},
-	{
-		"name": "GommeHD",
-		"ip": "gommehd.net",
-		"type": "PC"
-	},
-	{
-		"name": "Island Clash",
-		"ip": "play.islandclash.com",
-		"type": "PC"
-	},
-	{
-		"name": "Playminity",
-		"ip": "mc.playminity.com",
-		"type": "PC"
-	},
-	{
-		"name": "Mobcrush Land",
-		"ip": "play.mobcrush.com",
-		"type": "PE"
-	},
-	{
-		"name": "Epicube",
-		"ip": "play.epicube.fr",
-		"type": "PC"
-	},
-	{
-		"name": "BeanBlockz",
-		"ip": "mc.beanblockz.com",
-		"type": "PC"
-	},
-	{
- 		"name": "Empire MC",
- 		"ip": "play.emc.gs",
- 		"type": "PC"
-  	}
+		"type": "PC",
+		"category": "minigames"
+	}
 ]

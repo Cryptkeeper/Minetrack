@@ -1,8 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300,400);
 
 * {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 body {
@@ -16,6 +16,10 @@ body {
 /* Page layout */
 html, body {
     height: 100%;
+}
+
+a {
+    cursor: pointer;
 }
 
 #push {
@@ -81,7 +85,26 @@ html, body {
 #header > h1 {
     font-size: 38px;
 }
+/*
 
+#header > #column-center {
+    width: 1480px;
+    margin: 0 auto;
+}
+
+#header > #column-center > .column {
+    width: 740px;
+    display: inline-block;
+    float: left;
+}
+*/
+
+/* Category controls */
+#category-controller {
+    display: none;
+}
+
+/* Footer */
 #footer {
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
@@ -130,7 +153,7 @@ html, body {
 }
 
 /* Server listing */
-#server-container {
+.server-container {
     margin: 10px auto;
     text-align: center;
 }
@@ -152,8 +175,12 @@ html, body {
 }
 
 .server > .column > .rank {
-    width: 64px; 
-    padding-top: 3px;
+    width: 64px;
+    padding-top: 4px;
+}
+
+.server > .column > .url {
+    font-size: 16px;
 }
 
 .server > .column > h3 > .type {
@@ -179,6 +206,23 @@ html, body {
     float: right;
 }
 
+.server > .column > .versions {
+    min-height: 23px;
+    padding-bottom: 1px;
+}
+
+.server > .column > .versions > .version {
+    padding: 1px 5px;
+    border-radius: 2px;
+    border: 1px solid #636363;
+    font-size: 12px;
+}
+
+.category-header {
+    margin-bottom: 10px;
+    margin-left: 15px;
+    text-align: left;
+}
 
 /* Charts */
 .chart {
@@ -271,7 +315,6 @@ h3 {
 
 #big-graph-controls a:hover {
     border-bottom: 1px dashed transparent;
-    cursor: pointer;
 }
 
 .graph-control-option {

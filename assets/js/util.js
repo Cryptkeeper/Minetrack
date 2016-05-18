@@ -2,28 +2,130 @@ var MISSING_FAVICON_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
 
 var tooltip = $('#tooltip');
 
-function saveGraphControls(displayedServers) {
-	if (typeof(localStorage) !== undefined) {
-		var json = JSON.stringify(displayedServers);
+var lastMojangServiceUpdate;
+var publicConfig;
 
-		localStorage.setItem('displayedServers', json);
+var createdCategories = false;
+var categoriesVisible;
+
+function setPublicConfig(json) {
+    publicConfig = json;
+
+    $('#server-container-list').html('');
+
+    createdCategories = false;
+
+    createCategories();
+    setCategoriesVisible(publicConfig.categoriesVisible);
+}
+
+function setCategoriesVisible(newCategoriesVisible) {
+    categoriesVisible = newCategoriesVisible;
+
+    $('.category-header').css('display', (categoriesVisible ? 'block' : 'none'));
+    $('.server-container').css('margin', (categoriesVisible ? '10px auto' : '0 auto'));
+
+    sortServers();
+}
+
+function createCategories() {
+	if (!createdCategories) {
+		createdCategories = true;
+
+		var keys = Object.keys(publicConfig.categories);
+
+		for (var i = 0; i < keys.length; i++) {
+			var title = publicConfig.categories[keys[i]];
+
+			$('#server-container-list').append('<div id="server-container-' + keys[i] + '" class="container server-container"><h3 class="category-header">' + title + '</h3></div>');
+		}
+
+		$('#server-container-list').append('<div id="server-container-all" class="container server-container"></div>');
 	}
 }
 
-function loadGraphControls() {
-	if (typeof(localStorage) !== undefined) {
-		var item = localStorage.getItem('displayedServers');
+function getServersByCategory() {
+	var byCategory = {};
 
-		if (item) {
-			return JSON.parse(item);
+	for (var i = 0; i < publicConfig.servers.length; i++) {
+		var entry = publicConfig.servers[i];
+
+		if (!byCategory[entry.category]) {
+			byCategory[entry.category] = [];
+		}
+
+		byCategory[entry.category].push(entry);
+	}
+
+	return byCategory;
+}
+
+function getServerByIp(ip) {
+	for (var i = 0; i < publicConfig.servers.length; i++) {
+		var entry = publicConfig.servers[i];
+
+		if (entry.ip === ip) {
+			return entry;
 		}
 	}
 }
 
-function resetGraphControls() {
-	if (typeof(localStorage) !== undefined) {
-		localStorage.removeItem('displayedServers');
-	}
+// Generate (and set) the HTML that displays Mojang status.
+// If nothing is passed, re-render the last update.
+// If something is passed, update and then re-render.
+function updateMojangServices(currentUpdate) {
+    if (currentUpdate) {
+    	lastMojangServiceUpdate = currentUpdate;
+    }
+
+    if (!lastMojangServiceUpdate) {
+    	return;
+    }
+
+	var keys = Object.keys(lastMojangServiceUpdate);
+    var newStatus = 'Mojang Services: ';
+
+    var serviceCountByType = {
+        Online: 0,
+        Unstable: 0,
+        Offline: 0
+    };
+
+    for (var i = 0; i < keys.length; i++) {
+        var entry = lastMojangServiceUpdate[keys[i]];
+
+        serviceCountByType[entry.title] += 1;
+    }
+
+    if (serviceCountByType['Online'] === keys.length) {
+        $('#tagline').attr('class', 'status-online');
+
+        newStatus += 'All systems operational.';
+    } else {
+        if (serviceCountByType['Unstable'] > serviceCountByType['Offline']) {
+            $('#tagline').attr('class', 'status-unstable');
+        } else {
+            $('#tagline').attr('class', 'status-offline');
+        }
+
+        for (var i = 0; i < keys.length; i++) {
+            var entry = lastMojangServiceUpdate[keys[i]];
+
+            if (entry.startTime) {
+                newStatus += entry.name + ' ' + entry.title.toLowerCase() + ' for ' + msToTime((new Date()).getTime() - entry.startTime + ' ');
+            }
+        }
+    }
+
+	$('#tagline-text').text(newStatus);
+}
+
+function findErrorMessage(error) {
+    if (error.description) {
+        return error.description;
+    } else if (error.errno) {
+        return error.errno;
+    }
 }
 
 function getTimestamp(ms, timeOnly) {
@@ -91,38 +193,6 @@ function trimOldPings(data, graphDuration) {
 	}
 }
 
-function handlePlotHover(event, pos, item) {
-    if (item) {
-        var text = getTimestamp(item.datapoint[0] / 1000) + '\
-            <br />\
-            ' + formatNumber(item.datapoint[1]) + ' Players';
-
-        if (item.series && item.series.label) {
-            text = item.series.label + '<br />' + text;
-        }
-
-        renderTooltip(item.pageX + 5, item.pageY + 5, text);
-    } else {
-        hideTooltip();
-    }
-}
-
-function convertGraphData(rawData) {
-    var data = [];
-
-    var keys = Object.keys(rawData);
-
-    for (var i = 0; i < keys.length; i++) {
-        data.push({
-            data: rawData[keys[i]].data,
-            yaxis: 1,
-            label: keys[i],
-            color: rawData[keys[i]].color
-        });
-    }
-
-    return data;
-}
 
 function msToTime(timer) {
 	var milliseconds = timer % 1000;
