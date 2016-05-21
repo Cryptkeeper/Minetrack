@@ -176,7 +176,13 @@ function validateBootTime(bootTime, socket) {
 
         socket.emit('requestListing');
 
-        if (!isMobileBrowser()) socket.emit('requestHistoryGraph');
+        $('#category-toggler').show();
+
+        if (!isMobileBrowser()) {
+            socket.emit('requestHistoryGraph');
+        } else {
+            $('#graph-request').show();
+        }
 
         isConnected = true;
 
@@ -198,26 +204,12 @@ function validateBootTime(bootTime, socket) {
 }
 
 $(document).ready(function() {
-	var socket = io.connect({
+    var socket = io.connect({
         reconnect: true,
         reconnectDelay: 1000,
         reconnectionAttempts: 10
     });
 
-    var mojangServicesUpdater;
-    var sortServersTask;
-
-    var graphDuration;
-
-	socket.on('connect', function() {
-        $('#tagline-text').text('Loading...');
-
-        if (!isMobileBrowser()) {
-            socket.emit('requestHistoryGraph');
-        } else {
-            $('#graph-request').show();
-        }
-	});
     socket.on('bootTime', function(bootTime) {
         validateBootTime(bootTime, socket);
     });
@@ -296,6 +288,8 @@ $(document).ready(function() {
 
         $('#big-graph-checkboxes').append(html);
         $('#big-graph-controls').css('display', 'block');
+        $('#graph-request').hide();
+        $('#category-toggler').hide();
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
@@ -322,7 +316,7 @@ $(document).ready(function() {
 
     var nameToColor = {};
 
-	socket.on('add', function(servers) {
+    socket.on('add', function(servers) {
         if (Object.keys(publicConfig.categories).length > 1) {
             $('#category-controller').css('display', 'block');
         }
@@ -389,9 +383,9 @@ $(document).ready(function() {
         }
 
         sortServers();
-	});
+    });
 
-	socket.on('update', function(update) {
+    socket.on('update', function(update) {
         // Prevent weird race conditions.
         if (!graphs[update.info.name]) {
             return;
@@ -418,9 +412,9 @@ $(document).ready(function() {
 
             graph.plot.draw();
         }
-	});
+    });
 
-	socket.on('updateMojangServices', function(data) {
+    socket.on('updateMojangServices', function(data) {
         if (isConnected) {
             updateMojangServices(data);
         }
@@ -542,4 +536,5 @@ $(document).ready(function() {
         makeSticky(!sticky);
 
     })
+    registerToggler();
 });

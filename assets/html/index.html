@@ -2,68 +2,76 @@
 
 <html>
 
-<head>
+	<head>
 
-    <link rel="stylesheet" type="text/css" href="css/main.css">
-    <link rel="icon" type="image/png" href="images/compass.png">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 
-    <title>Minetrack</title>
+		<link rel="icon" type="image/png" href="images/compass.png">
 
-    <meta name="viewport" content="width=device-width">
+		<title>Minetrack</title>
 
-    <meta name="viewport" content="initial-scale=1.0">
+		<meta name="viewport" content="width=device-width">
 
-</head>
+		<meta name="viewport" content="initial-scale=1.0">
 
-<body>
+	</head>
 
-<div id="tooltip"></div>
+	<body>
 
-<div id="push">
+		<div id="tooltip"></div>
 
-    <div id="tagline" class="status-connecting">
-        <span id="toggle-sticky" data-toggle-sticky>&#x1f4cc;</span>
-        <span id="tagline-text" class="text-uppercase">Connecting...</span> <span id="stat_totalPlayers">0</span>
-        players on <span id="stat_networks">0</span> networks.
-    </div>
+		<div id="push">
 
-    <div id="header">
-        <p class="text-uppercase toggler" style="" data-toggle-header></p>
-        <h1 class="text-uppercase" data-big-header>Minetrack</h1>
-        <p class="text-uppercase small-header" data-small-header>Minetrack
-            <small>by <a href="http://cryptkpr.me">Cryptkeeper</a></small>
-        </p>
-        <p class="slogan text-uppercase" data-big-header>All your favorite Minecraft servers, right now.</p>
-        <p class="info text-uppercase" data-big-header>Made with <span style="color: #e74c3c;">&#9829;</span> by <a
-                href="http://cryptkpr.me">Cryptkeeper</a> &middot; Open source'd on <a
-                href="https://github.com/Cryptkeeper/Minetrack">Github</a></p>
-    </div>
+			<div id="tagline" class="status-connecting">
 
+				<span id="toggle-sticky" data-toggle-sticky>&#x1f4cc;</span>
 
-    <div id="big-graph">
-        <div id="graph-request"><a href="javascript:void(0);" data-request-graph>Click to request graph</a></div>
-    </div>
+				<span id="tagline-text" class="text-uppercase">Connecting...</span>
 
-    <div id="category-controller">
-        <a class="text-uppercase" onclick="setCategoriesVisible(true);">Show Categories</a> // <a class="text-uppercase"
-                                                                                                  onclick="setCategoriesVisible(false);">Hide
-        Categories</a>
-    </div>
+				<span id="stat_totalPlayers">0</span>players on <span id="stat_networks">0</span> networks.
 
+			</div>
 
-    <div id="big-graph-controls" style="display: none;">
+			<div id="header">
 
-				<span style="text-align: center; display: block;">
+				<p class="text-uppercase toggler" style="" data-toggle-header></p>
 
-					<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a>
+				<h1 class="text-uppercase" data-big-header>Minetrack</h1>
 
-				</span>
+				<p class="text-uppercase small-header" data-small-header>Minetrack
+					<small>by <a href="http://cryptkpr.me">Cryptkeeper</a></small>
+				</p>
 
-        <div id="big-graph-controls-drawer" style="display: none;">
+				<p class="slogan text-uppercase" data-big-header>All your favorite Minecraft servers, right now.</p>
 
-            <div id="big-graph-checkboxes"></div>
+				<p class="info text-uppercase" data-big-header>Made with <span style="color: #e74c3c;">&#9829;</span> by <a
+						href="http://cryptkpr.me">Cryptkeeper</a> &middot; Open source'd on <a
+						href="https://github.com/Cryptkeeper/Minetrack">Github</a></p>
 
-            <br/>
+				<p></p>
+
+			</div>
+
+			<div id="graph-request"><a href="javascript:void(0);" data-request-graph>Click to request graph</a></div>
+
+			<div id="category-toggler" style="text-align: center"><a class="text-uppercase" href="javascript:void(0);" data-category-switcher>Toggle Categories</a></div>
+
+			<div id="big-graph"></div>
+
+			<div id="big-graph-controls" style="display: none;">
+
+						<span style="text-align: center; display: block;">
+
+							<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a> //
+                            <a class="text-uppercase" href="javascript:void(0);" data-category-switcher>Toggle Categories</a>
+
+						</span>
+
+				<div id="big-graph-controls-drawer" style="display: none;">
+
+					<div id="big-graph-checkboxes"></div>
+
+					<br/>
 
 					<span style="text-align: center; display: block; margin-bottom: 15px;">
 
@@ -72,56 +80,55 @@
 
 					</span>
 
-        </div>
+				</div>
 
-    </div>
+			</div>
 
-    <div id="server-container-list"></div>
+			<div id="server-container-list"></div>
 
+			<div id="footer">
 
-    <div id="footer">
+				Copyright &copy; 2016. All rights reserved. Logo copyrights belong to their respective owners.
 
-        Copyright &copy; 2016. All rights reserved. Logo copyrights belong to their respective owners.
+			</div>
 
-    </div>
+		</div>
 
-</div>
+	<!-- External JS assets -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
-<!-- External JS assets -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
+	<!-- Internal JS assets -->
+	<script src="js/util.js"></script>
+	<script src="js/graph.js"></script>
+	<script src="js/site.js"></script>
 
-<!-- Internal JS assets -->
-<script src="js/util.js"></script>
-<script src="js/graph.js"></script>
-<script src="js/site.js"></script>
+	<script src="publicConfig.json"></script>
 
-<script src="publicConfig.json"></script>
+		<script>
 
-<script>
+			(function (i, s, o, g, r, a, m) {
+				i['GoogleAnalyticsObject'] = r;
+				i[r] = i[r] || function () {
+							(i[r].q = i[r].q || []).push(arguments)
+						}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+						m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
-    (function (i, s, o, g, r, a, m) {
-        i['GoogleAnalyticsObject'] = r;
-        i[r] = i[r] || function () {
-                    (i[r].q = i[r].q || []).push(arguments)
-                }, i[r].l = 1 * new Date();
-        a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m)
-    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+			ga('create', 'UA-60103580-2', 'auto');
+			ga('send', 'pageview');
 
-    ga('create', 'UA-60103580-2', 'auto');
-    ga('send', 'pageview');
+		</script>
 
-</script>
-
-</body>
+	</body>
 
 </html>

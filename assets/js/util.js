@@ -19,6 +19,12 @@ function setPublicConfig(json) {
     setCategoriesVisible(publicConfig.categoriesVisible);
 }
 
+function registerToggler(){
+	$("[data-category-switcher]").click(function () {
+		setCategoriesVisible(!categoriesVisible);
+	})
+}
+
 function setCategoriesVisible(newCategoriesVisible) {
     categoriesVisible = newCategoriesVisible;
 

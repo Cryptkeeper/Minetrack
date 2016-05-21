@@ -8,14 +8,15 @@
 	{
 		"name": "HiveMC",
 		"ip": "play.hivemc.com",
-		"type": "PC"
+		"type": "PC",
+		"category": "minigames"
 	},
 	{
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
 		"color": "#34709A",
 		"type": "PC",
-		"category": "minigames"
+		"category": "special"
 	},
 	{
 		"name": "Mineplex",
