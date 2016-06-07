@@ -98,5 +98,10 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
+  	},
+  	{
+  		"name": "Treasure Wars",
+  		"ip": "treasurewars.net",
+  		"type": "PC"
   	}
 ]
