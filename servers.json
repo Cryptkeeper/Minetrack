@@ -80,11 +80,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "MCMagic",
-		"ip": "mcmagic.us",
-		"type": "PC"
-	},
-	{
 		"name": "Playminity",
 		"ip": "mc.playminity.com",
 		"type": "PC"
