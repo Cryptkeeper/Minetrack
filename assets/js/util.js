@@ -19,6 +19,12 @@ function setPublicConfig(json) {
     setCategoriesVisible(publicConfig.categoriesVisible);
 }
 
+function registerToggler(){
+	$("[data-category-switcher]").click(function () {
+		setCategoriesVisible(!categoriesVisible);
+	})
+}
+
 function setCategoriesVisible(newCategoriesVisible) {
     categoriesVisible = newCategoriesVisible;
 
@@ -141,7 +147,14 @@ function safeName(name) {
 }
 
 function renderTooltip(x, y, html) {
-	tooltip.html(html).css({
+    tooltip.html(html);
+	var toolTipWidth = tooltip.width();
+    // Ginger math be ginger
+    var overFlowCaused = (($(window).innerWidth() - (x + toolTipWidth)) * -1) + 40; // +ve is overflow.
+    if(overFlowCaused >= 0) {
+        x = x - 0.9*(overFlowCaused);
+    }
+	tooltip.css({
 		top: y,
 		left: x
 	}).fadeIn(0);
@@ -168,7 +181,7 @@ function trimOldPings(data, graphDuration) {
 	var timeMs = new Date().getTime();
 
 	for (var x = 0; x < keys.length; x++) {
-		var listing = data[keys[x]];
+		var listing = data[keys[x]].data;
 
 		var toSplice = [];
 
@@ -186,17 +199,6 @@ function trimOldPings(data, graphDuration) {
 	}
 }
 
-function stringToColor(base) {
-    var hash;
-
-    for (var i = base.length - 1, hash = 0; i >= 0; i--) {
-        hash = base.charCodeAt(i) + ((hash << 5) - hash);
-    }
-
-    color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-
-    return '#' + Array(6 - color.length + 1).join('0') + color;
-}
 
 function msToTime(timer) {
 	var milliseconds = timer % 1000;

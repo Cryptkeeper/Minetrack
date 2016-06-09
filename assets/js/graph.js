@@ -26,9 +26,6 @@ var smallChartOptions = {
         hoverable: true,
         color: "#696969"
     },
-    colors: [
-        "#E9E581"
-    ]
 };
 
 // Used by the one chart to rule them all
@@ -71,27 +68,27 @@ function toggleControlsDrawer() {
 }
 
 function saveGraphControls(displayedServers) {
-	if (typeof(localStorage)) {
-		var json = JSON.stringify(displayedServers);
+    if (typeof(localStorage)) {
+        var json = JSON.stringify(displayedServers);
 
-		localStorage.setItem('displayedServers', json);
-	}
+        localStorage.setItem('displayedServers', json);
+    }
 }
 
 function loadGraphControls() {
-	if (typeof(localStorage)) {
-		var item = localStorage.getItem('displayedServers');
+    if (typeof(localStorage)) {
+        var item = localStorage.getItem('displayedServers');
 
-		if (item) {
-			return JSON.parse(item);
-		}
-	}
+        if (item) {
+            return JSON.parse(item);
+        }
+    }
 }
 
 function resetGraphControls() {
-	if (typeof(localStorage)) {
-		localStorage.removeItem('displayedServers');
-	}
+    if (typeof(localStorage)) {
+        localStorage.removeItem('displayedServers');
+    }
 }
 
 // Called by flot.js when they hover over a data point.
@@ -119,10 +116,10 @@ function convertGraphData(rawData) {
 
     for (var i = 0; i < keys.length; i++) {
         data.push({
-            data: rawData[keys[i]],
+            data: rawData[keys[i]].data,
             yaxis: 1,
             label: keys[i],
-            color: stringToColor(keys[i])
+            color:rawData[keys[i]].color
         });
     }
 

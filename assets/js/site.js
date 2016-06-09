@@ -1,3 +1,4 @@
+
 var graphs = [];
 var lastPlayerEntries = [];
 
@@ -176,7 +177,13 @@ function validateBootTime(bootTime, socket) {
 
         socket.emit('requestListing');
 
-        if (!isMobileBrowser()) socket.emit('requestHistoryGraph');
+        $('#category-toggler').show();
+
+        if (!isMobileBrowser()) {
+            socket.emit('requestHistoryGraph');
+        } else {
+            $('#graph-request').show();
+        }
 
         isConnected = true;
 
@@ -198,7 +205,7 @@ function validateBootTime(bootTime, socket) {
 }
 
 $(document).ready(function() {
-	var socket = io.connect({
+    var socket = io.connect({
         reconnect: true,
         reconnectDelay: 1000,
         reconnectionAttempts: 10
@@ -267,7 +274,7 @@ $(document).ready(function() {
         var keys = Object.keys(rawData);
 
         var sinceBreak = 0;
-        var html = '<table><tr>';
+        var html = '';
 
         keys.sort();
 
@@ -277,20 +284,13 @@ $(document).ready(function() {
             if (displayedGraphData[keys[i]]) {
                 checkedString = 'checked=checked';
             }
-
-            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" ' + checkedString + '> ' + keys[i] + '</input></td>';
-
-            if (sinceBreak >= 7) {
-                sinceBreak = 0;
-
-                html += '</tr><tr>';
-            } else {
-                sinceBreak++;
-            }
+            html += '<div class="graph-control-option"><p><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" '+checkedString+'> ' + keys[i] + '</input></p></div>';
         }
 
-        $('#big-graph-checkboxes').append(html + '</tr></table>');
+        $('#big-graph-checkboxes').append(html);
         $('#big-graph-controls').css('display', 'block');
+        $('#graph-request').hide();
+        $('#category-toggler').hide();
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
@@ -304,7 +304,7 @@ $(document).ready(function() {
 
         trimOldPings(targetGraphData, publicConfig.graphDuration);
 
-        targetGraphData[rawData.name].push([rawData.timestamp, rawData.players]);
+        targetGraphData[rawData.name].data.push([rawData.timestamp, rawData.players]);
 
         // Redraw if we need to.
         if (displayedGraphData[rawData.name]) {
@@ -315,7 +315,9 @@ $(document).ready(function() {
         }
     });
 
-	socket.on('add', function(servers) {
+    var nameToColor = {};
+
+    socket.on('add', function(servers) {
         if (Object.keys(publicConfig.categories).length > 1) {
             $('#category-controller').css('display', 'block');
         }
@@ -323,7 +325,6 @@ $(document).ready(function() {
         for (var i = 0; i < servers.length; i++) {
             var history = servers[i];
             var listing = [];
-
             for (var x = 0; x < history.length; x++) {
                 var point = history[x];
 
@@ -346,18 +347,18 @@ $(document).ready(function() {
             $('<div/>', {
                 id: safeName(info.name),
                 class: 'server',
-                html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
+                html: '<div id="server-' + safeName(info.name) + '" class="column left-column">\
                             <img id="favicon_' + safeName(info.name) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
                         </div>\
-                        <div class="column" style="width: 220px;">\
+                        <div class="column middle-column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
                             <span class="color-gray url">' + info.ip + '</span>\
                             <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\
                         </div>\
-                        <div class="column" style="float: right;">\
+                        <div class="column right-column">\
                             <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
                         </div>'
             }).appendTo("#server-container-" + getServerByIp(info.ip).category);
@@ -372,18 +373,20 @@ $(document).ready(function() {
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeName(info.name), [listing], smallChartOptions)
+                plot: $.plot('#chart_' + safeName(info.name), [{data: listing, color: info.color}], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
 
             $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
+
+            nameToColor[info.name] = info.color;
         }
 
         sortServers();
-	});
+    });
 
-	socket.on('update', function(update) {
+    socket.on('update', function(update) {
         // Prevent weird race conditions.
         if (!graphs[update.info.name]) {
             return;
@@ -405,14 +408,14 @@ $(document).ready(function() {
                 graph.listing.shift();
             }
 
-            graph.plot.setData([graph.listing]);
+            graph.plot.setData([{data: graph.listing, color: nameToColor[update.info.name]}]);
             graph.plot.setupGrid();
 
             graph.plot.draw();
         }
-	});
+    });
 
-	socket.on('updateMojangServices', function(data) {
+    socket.on('updateMojangServices', function(data) {
         if (isConnected) {
             updateMojangServices(data);
         }
@@ -446,4 +449,93 @@ $(document).ready(function() {
             saveGraphControls(Object.keys(displayedGraphData));
         }
     });
+
+    var preventClick = false;
+    $("[data-request-graph]").first().click(function() {
+        if(preventClick) return;
+        $(this)
+            .css('cursor', 'default')
+            .css('text-decoration', 'none')
+            .css('color', 'green')
+            .css('border-bottom', 'none')
+            .text('Loading...');
+        socket.emit('requestHistoryGraph');
+        preventClick = true;
+        var temp = this;
+        window.setTimeout(function() {
+            $(temp).css('color', 'red').text("If nothing happens graphs may be disabled for this Minetrack! (logToDatabase must be enabled!)");
+        }, 2000);
+    });
+
+    var  bigHeader = true;
+    var switcher = $("[data-toggle-header]").first();
+    var displayBigHeader = function(){
+        switcher.html("&#8593;")
+        $("[data-small-header]").hide();
+        $("[data-big-header]").show();
+        bigHeader = true;
+    };
+    var displaySmallHeader = function(){
+        switcher.html("&#8595;")
+        $("[data-big-header]").hide();
+        $("[data-small-header]").show();
+        bigHeader = false;
+    };
+
+    switcher.click(function(){
+        if(bigHeader) {
+            displaySmallHeader();
+        } else {
+            displayBigHeader();
+        }
+    });
+    var w = $(window).width();
+    if(w > 960) {
+        displayBigHeader();
+    } else {
+        displaySmallHeader();
+    }
+    var one_column_switch_width = 960;
+    $(window).resize(function () {
+        var newWidth = $(window).width();
+        if(w > one_column_switch_width && newWidth < one_column_switch_width) {
+            displaySmallHeader();
+        }
+        if(w < one_column_switch_width && newWidth > one_column_switch_width) {
+            displayBigHeader();
+        }
+        w = newWidth;
+    });
+
+    var stickyToggler = $("[data-toggle-sticky]");
+    var tagline = $("#tagline").first();
+    var sticky;
+    var header = $("#header").first();
+    var makeSticky = function (toState){
+        if(toState == sticky) return;
+        if(toState) { //Become Stick
+            header.before(tagline.detach());
+            header.css('padding-top', '42px');
+            tagline.css('position', 'fixed');
+            tagline.css('z-index', '100');
+            stickyToggler.addClass("pin-down");
+            stickyToggler.css('margin-top', '-4px');
+            stickyToggler.css('margin-bottom', '-3px');
+        } else  {
+            header.after(tagline.detach());
+            header.css('padding-top', '');
+            tagline.css('position', '');
+            tagline.css('z-index', '');
+            stickyToggler.removeClass("pin-down");
+            stickyToggler.css('margin-top', '');
+            stickyToggler.css('margin-bottom', '');
+        }
+        sticky = toState;
+    };
+    makeSticky(!isMobileBrowser());
+    stickyToggler.click(function(){
+        makeSticky(!sticky);
+
+    })
+    registerToggler();
 });

@@ -9,7 +9,7 @@ body {
     background: #3B3738;
     color: #FFF;
     font-family: "Open Sans", sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300 !important;
 }
 
@@ -27,25 +27,16 @@ a {
     min-height: 100%;
 }
 
-/* Header */
-#header, #tagline {
-    width: 1540px;
-    margin: 0 auto;
-}
-
 #header {
+    padding: 10px 0;
+}
+/* Header, footer */
+#header, #footer {
     background: #EBEBEB;
     color: #3B3738;
-    padding: 20px 0;
-    overflow: auto;
-}
-
-#header .slogan {
-    font-size: 20px;
-}
-
-#header .subslogan {
-    font-size: 19px;
+    text-align: center;
+    width: 100%;
+    margin: 0 auto;
 }
 
 #header a {
@@ -58,9 +49,39 @@ a {
     border-bottom: 1px dashed transparent;
 }
 
-#header > h1 {
-    font-size: 42px;
+#header > .slogan {
+    letter-spacing: 2px;
+    font-size: 14px;
 }
+
+#header > .info {
+    font-size: 14px;
+}
+
+#header > .small-header {
+    text-align: left;
+    padding-left: 4%;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#header > .small-header > small {
+    font-weight: normal;
+}
+
+#header > .toggler {
+    cursor: pointer;
+    font-size: 30px;
+    padding-right: 10px;
+    text-align: right;
+    float: right;
+    margin-top: -7px
+}
+
+#header > h1 {
+    font-size: 38px;
+}
+/*
 
 #header > #column-center {
     width: 1480px;
@@ -72,6 +93,7 @@ a {
     display: inline-block;
     float: left;
 }
+*/
 
 /* Category controls */
 #category-controller {
@@ -80,24 +102,32 @@ a {
 
 /* Footer */
 #footer {
-    width: 1540px;
-    font-size: 16px;
-    text-transform: uppercase;
-    background: #EBEBEB;
-    color: #3B3738;
-    padding: 15px 0;
-    margin: 0 auto;
-    text-align: center;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
+    font-size: 16px;
+    text-transform: uppercase;
+    padding: 20px 0;
 }
 
 /* Tagline */
 #tagline {
-    padding: 10px 0;
+    padding-top: 4px;
+    font-size: 18px;
+    padding-bottom: 4px;
     text-align: center;
-    border-bottom-right-radius: 2px;
+    width: 100%;
+    margin: 0 auto;
     border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+#tagline > #toggle-sticky {
+    cursor: pointer;
+    padding-left: 10px;
+    font-size: 25px;
+    margin-top: -7px;
+    text-align: right;
+    float: left;
 }
 
 /* Colors used by the Mojang service's status bar */
@@ -121,17 +151,13 @@ a {
 
 /* Server listing */
 .server-container {
-    width: 1540px;
     margin: 10px auto;
-    overflow: auto;
+    text-align: left;
 }
 
 .server {
-    overflow: auto;
-    padding: 5px 10px;
-    margin: 0 5px;
-    width: 740px;
-    display: inline-block;
+    overflow: hidden;
+    display: inline-flex;
 }
 
 .server > .column > img {
@@ -161,6 +187,21 @@ a {
     margin-bottom: 2px;
 }
 
+.server > .left-column {
+    padding-left: 10px;
+    width: 73px;
+
+}
+
+.server > .middle-column {
+    width: 200px;
+}
+
+.server > .right-column {
+    width: calc(100% - 283px);
+    float: right;
+}
+
 .server > .column > .versions {
     min-height: 23px;
     padding-bottom: 1px;
@@ -176,15 +217,16 @@ a {
 .category-header {
     margin-bottom: 10px;
     margin-left: 15px;
-    text-align: left;
+    text-align: center;
 }
 
 /* Charts */
 .chart {
     height: 100px;
-    width: 400px;
+    width: 100%;
     margin-right: -3px;
     margin-bottom: 5px;
+    position: relative;
 }
 
 #tooltip {
@@ -218,10 +260,33 @@ h3 {
     text-align: center;
 }
 
+/* Icon Quick jump */
+#quick-jump-container {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    overflow: auto;
+    display: none;
+}
+
+.quick-jump-icon {
+    height: 24px;
+    width: 24px;
+    display: block;
+    margin-bottom: 2px;
+    border-radius: 2px;
+    transition: all 0.1s;
+}
+
+.quick-jump-icon:hover {
+    cursor: pointer;
+    height: 42px;
+    width: 42px;
+}
+
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
-    width: 1540px;
-    margin: 15px auto 0 auto;
+    margin: 15px 5px 0 50px;
 }
 
 #big-graph-checkboxes > table {
@@ -248,6 +313,43 @@ h3 {
     border-bottom: 1px dashed transparent;
 }
 
+.graph-control-option {
+    display: inline-flex;
+    overflow: hidden;
+}
+
+/* Media Queries for Graph Control */
+
+@media screen and (max-width: 500px) {
+    .graph-control-option {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    .graph-control-option {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 800px) {
+    .graph-control-option {
+        width: 33%;
+    }
+}
+
+@media screen and (min-width: 960px) {
+    .graph-control-option {
+        width: 25%;
+    }
+}
+
+@media screen and (min-width: 1300px) {
+    .graph-control-option {
+        width: 20%;
+    }
+}
+
 /* Basic elements */
 .button {
     background: #3498db;
@@ -262,4 +364,91 @@ h3 {
 .button:hover {
     background: #ecf0f1;
     color: #3498db;
+    cursor: pointer;
+}
+
+.float-right {
+    float: right;
+}
+
+.float-left {
+    float: left;
+}
+
+#graph-request {
+    width: 100%;
+    text-align: center;
+    display: none;
+}
+#graph-request a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px dashed #e9e9ea;
+}
+
+.pin-down {
+    -o-transform: rotate(315deg);
+    -khtml-transform: rotate(315deg);
+    -ms-transform: rotate(315deg);
+    -webkit-transform: rotate(315deg);
+    -moz-transform: rotate(315deg);
+    transform: rotate(315deg);
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 500px) {
+    .server {
+        display: block;
+    }
+    .server > .right-column {
+        padding: 0 5px 0 50px;
+        width: 100%;
+        box-sizing: border-box;
+        clear: left;
+        float: left;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    #tagline {
+        font-size: 14px;
+        position: relative;
+    }
+    #tagline > #toggle-sticky {
+        font-size: 20px;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    .server {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 960px) {
+    .server {
+        width: 50%;
+    }
+}
+
+@media screen and (min-width: 1900px) {
+    .server {
+        width: 33%;
+    }
+}
+
+#category-toggler {
+    margin: 10px auto;
+}
+
+#category-toggler a {
+    text-decoration: none;
+    color: inherit;
+    text-transform: uppercase;
+    border-bottom: 1px dashed #FFF;
+    font-size: 16px;
+}
+
+#category-toggler a:hover {
+    border-bottom: 1px dashed transparent;
 }

@@ -12,9 +12,16 @@
 		"category": "minigames"
 	},
 	{
-		"name": "Hypixel PE",
-		"ip": "pe.hypixel.net",
-		"type": "PE",
-		"category": "pocket"
+		"name": "CubeCraft",
+		"ip": "play.cubecraft.net",
+		"color": "#34709A",
+		"type": "PC",
+		"category": "special"
+	},
+	{
+		"name": "Mineplex",
+		"ip": "us.mineplex.com",
+		"type": "PC",
+		"category": "minigames"
 	}
 ]

@@ -123,6 +123,7 @@ function handlePing(network, res, err, attemptedVersion) {
             port: network.port,
             type: network.type,
             name: network.name,
+            color: (util.serverColorFromName(network.name))
         }
 	});
 
@@ -150,10 +151,11 @@ function handlePing(network, res, err, attemptedVersion) {
 			util.trimOldPings(graphData);
 
 			if (!graphData[network.name]) {
-				graphData[network.name] = [];
+				graphData[network.name] = {};
+				graphData[network.name].data = [];
 			}
 
-			graphData[network.name].push([timeMs, res ? res.players.online : 0]);
+			graphData[network.name].data.push([timeMs, res ? res.players.online : 0]);
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
@@ -244,7 +246,7 @@ function startServices() {
 }
 
 logger.log('info', 'Booting, please wait...');
-
+util.loadServerColors();
 if (config.logToDatabase) {
 	// Setup our database.
 	db.setup();
