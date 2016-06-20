@@ -72,11 +72,6 @@ a {
     float: left;
 }
 
-/* Category controls */
-#category-controller {
-    display: none;
-}
-
 /* Footer */
 #footer {
     width: 1540px;
