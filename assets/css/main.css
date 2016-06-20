@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #3B3738;
+    background: #252525;
     color: #FFF;
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
@@ -81,7 +81,6 @@ a {
     color: #3B3738;
     padding: 15px 0;
     margin: 0 auto;
-    text-align: center;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
 }
