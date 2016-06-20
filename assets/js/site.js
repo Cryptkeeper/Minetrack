@@ -211,6 +211,8 @@ $(document).ready(function() {
     socket.on('disconnect', function() {
         if (mojangServicesUpdater) clearInterval(mojangServicesUpdater);
         if (sortServersTask) clearInterval(sortServersTask);
+        
+        lastMojangServiceUpdate = undefined;
 
         $('#tagline').attr('class', 'status-offline');
         $('#tagline-text').text('Disconnected! Refresh?');
@@ -225,8 +227,6 @@ $(document).ready(function() {
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
-
-        $('#category-controller').css('display', 'none');
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
@@ -314,10 +314,6 @@ $(document).ready(function() {
     });
 
 	socket.on('add', function(servers) {
-        if (Object.keys(publicConfig.categories).length > 1) {
-            $('#category-controller').css('display', 'block');
-        }
-
         for (var i = 0; i < servers.length; i++) {
             var history = servers[i];
             var listing = [];

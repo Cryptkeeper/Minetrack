@@ -16,16 +16,13 @@ function setPublicConfig(json) {
     createdCategories = false;
 
     createCategories();
-    setCategoriesVisible(publicConfig.categoriesVisible);
-}
 
-function setCategoriesVisible(newCategoriesVisible) {
-    categoriesVisible = newCategoriesVisible;
+    if (publicConfig.categoriesVisible) {
+    	$('.category-header').css('display', 'block');
+	    $('.server-container').css('margin', '10px auto');
 
-    $('.category-header').css('display', (categoriesVisible ? 'block' : 'none'));
-    $('.server-container').css('margin', (categoriesVisible ? '10px auto' : '0 auto'));
-
-    sortServers();
+	    sortServers();
+    }
 }
 
 function createCategories() {

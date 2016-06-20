@@ -22,7 +22,7 @@ This requires sqlite3 drivers to be installed.
 For the changelog, check out the [CHANGELOG](CHANGELOG.md) file.
 
 #### How do I get added to minetrack.me?
-At the moment, the main "minetrack.me" site is only accepting networks that average roughly 1,000 players at peak for **PC** servers, and 100 players at peak for **PE** servers. This is due to limited capacity and it's functionality. If you fit this description, you're welcome to open a Pull Request adding the network to ```servers.json```.
+Networks that get added to the main "minetrack.me" are purely at my discretion. This is due to limited capacity and it's functionality.
 
 Minetrack is designed to be flexible, you're more than welcome to fork/clone it and start your own listing focusing on different networks.
 
