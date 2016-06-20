@@ -29,8 +29,7 @@ a {
 
 /* Header */
 #header, #tagline {
-    width: 1540px;
-    margin: 0 auto;
+    
 }
 
 #header {
@@ -96,8 +95,6 @@ a {
 #tagline {
     padding: 10px 0;
     text-align: center;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
 }
 
 /* Colors used by the Mojang service's status bar */
