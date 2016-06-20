@@ -47,13 +47,13 @@ a {
     font-size: 19px;
 }
 
-#header a {
+#header a, #footer a {
     text-decoration: none;
     color: inherit;
     border-bottom: 1px dashed #3B3738;
 }
 
-#header a:hover {
+#header a:hover, #footer a:hover {
     border-bottom: 1px dashed transparent;
 }
 
