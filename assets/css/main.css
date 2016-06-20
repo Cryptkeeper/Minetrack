@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #252525;
+    background: #2E2B2C;
     color: #FFF;
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
@@ -28,15 +28,12 @@ a {
 }
 
 /* Header */
-#header, #tagline {
-    
-}
-
 #header {
     background: #EBEBEB;
     color: #3B3738;
     padding: 20px 0;
     overflow: auto;
+    margin-top: 44px;
 }
 
 #header .slogan {
@@ -88,7 +85,16 @@ a {
 /* Tagline */
 #tagline {
     padding: 10px 0;
-    text-align: center;
+    width: 100%;
+    z-index: 999999; /* I'm so sorry. */
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+#tagline-center {
+    width: 1480px;
+    margin: 0 auto;
 }
 
 /* Colors used by the Mojang service's status bar */
