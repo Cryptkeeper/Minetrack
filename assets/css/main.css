@@ -61,6 +61,7 @@ a {
 #header > #column-center {
     width: 1480px;
     margin: 0 auto;
+    text-align: center;
 }
 
 /* Footer */
