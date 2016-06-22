@@ -93,11 +93,6 @@ a {
     margin: 0 auto;
 }
 
-#tagline-text {
-    float: right;
-    margin-right: -25px;
-}
-
 /* Colors used by the Mojang service's status bar */
 .status-online {
     background: #87D37C;
