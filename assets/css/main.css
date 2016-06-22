@@ -61,12 +61,7 @@ a {
 #header > #column-center {
     width: 1480px;
     margin: 0 auto;
-}
-
-#header > #column-center > .column {
-    width: 740px;
-    display: inline-block;
-    float: left;
+    text-align: center;
 }
 
 /* Footer */
@@ -80,6 +75,7 @@ a {
     margin: 0 auto;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
+    text-align: center;
 }
 
 /* Tagline */
@@ -95,6 +91,11 @@ a {
 #tagline-center {
     width: 1480px;
     margin: 0 auto;
+}
+
+#tagline-text {
+    float: right;
+    margin-right: -25px;
 }
 
 /* Colors used by the Mojang service's status bar */
