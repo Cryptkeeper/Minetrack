@@ -13,5 +13,10 @@
 		"name": "InPvP",
 		"ip": "play.inpvp.net",
 		"type": "PE"
+	},
+	{
+		"name": "Mobcrush Land",
+		"ip": "play.mobcrush.com",
+		"type": "PE"
 	}
 ]
