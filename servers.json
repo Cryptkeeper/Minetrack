@@ -18,5 +18,15 @@
 		"name": "CookieBuild",
 		"ip": "pe.cookie-build.com",
 		"type": "PE"
+	},
+	{
+		"name": "Leet CC",
+		"ip": "pe.leet.cc",
+		"type": "PE"
+	},
+	{
+		"name": "PigRaid",
+		"ip": "pvp.pigraid.com",
+		"type": "PE"
 	}
 ]
