@@ -8,5 +8,10 @@
 		"name": "Lifeboat",
 		"ip": "play.lbsg.net",
 		"type": "PE"
+	},
+	{
+		"name": "InPvP",
+		"ip": "play.inpvp.net",
+		"type": "PE"
 	}
 ]
