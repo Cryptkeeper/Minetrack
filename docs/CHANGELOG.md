@@ -1,3 +1,6 @@
+**2.2.2** *(Jul 5 2016)*
+- Now builds against mcpe-ping-fixed (requires a ```npm install```)!
+
 **2.2.1** *(Jun 20 2016)*
 - Design tweaks (sticky bar at top, updated header/footer)
 - New favicon 
