@@ -10,14 +10,16 @@
 		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
 		"/favicons/inpvp.png": "assets/images/favicons/inpvp.png",
 		"/favicons/mobcrush.png": "assets/images/favicons/mobcrush.png",
-		"/favicons/cosmicpe.png": "assets/images/favicons/cosmicpe.png"
+		"/favicons/cosmicpe.png": "assets/images/favicons/cosmicpe.png",
+		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png"
 	},
 	"faviconOverride": {
 		"Mineplex PE": "/favicons/mineplex.png",
 		"Lifeboat": "/favicons/lifeboat.png",
 		"InPvP": "/favicons/inpvp.png",
 		"Mobcrush Land": "/favicons/mobcrush.png",
-		"CosmicPE": "/favicons/cosmicpe.png"
+		"CosmicPE": "/favicons/cosmicpe.png",
+		"CookieBuild": "/favicons/cookie_build.png"
 	},
 	"site": {
 		"port": 80,
