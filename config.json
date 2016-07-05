@@ -15,7 +15,7 @@
 	},
 	"site": {
 		"port": 80,
-		"ip": "minetrack.me"
+		"ip": "0.0.0.0"
 	},
 	"rates": {
 		"upateMojangStatus": 5000,
