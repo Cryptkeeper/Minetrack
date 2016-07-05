@@ -6,10 +6,12 @@
 		"/js/util.js": "assets/js/util.js",
 		"/js/graph.js": "assets/js/graph.js",
 		"/css/main.css": "assets/css/main.css",
-		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png"
+		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
+		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png"
 	},
 	"faviconOverride": {
-		"Mineplex": "/favicons/mineplex.png"
+		"Mineplex PE": "/favicons/mineplex.png",
+		"Lifeboat": "/favicons/lifeboat.png"
 	},
 	"site": {
 		"port": 80,
