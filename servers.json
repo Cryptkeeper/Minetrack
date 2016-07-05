@@ -15,11 +15,6 @@
 		"type": "PE"
 	},
 	{
-		"name": "CosmicPE",
-		"ip": "play.cosmicpe.me",
-		"type": "PE"
-	},
-	{
 		"name": "CookieBuild",
 		"ip": "pe.cookie-build.com",
 		"type": "PE"
