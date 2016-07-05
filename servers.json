@@ -18,5 +18,10 @@
 		"name": "Mobcrush Land",
 		"ip": "play.mobcrush.com",
 		"type": "PE"
+	},
+	{
+		"name": "CosmicPE",
+		"ip": "play.cosmicpe.me",
+		"type": "PE"
 	}
 ]
