@@ -20,7 +20,7 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-	"logToDatabase": false,
+	"logToDatabase": true,
 	"graphDuration": 86400000,
 	"serverCategories": {
 		"minigames": "Minigame Networks",
