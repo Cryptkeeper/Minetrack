@@ -197,6 +197,14 @@ function validateBootTime(bootTime, socket) {
     }
 }
 
+function printPort(port) {
+  if(port == undefined || port == 25565) {
+    return "";
+  } else {
+    return ":" + port;
+  }
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -347,7 +355,7 @@ $(document).ready(function() {
                         </div>\
                         <div class="column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
-                            <span class="color-gray url">' + info.ip + '</span>\
+                            <span class="color-gray url">' + info.ip + printPort(info.port) + '</span>\
                             <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\
                         </div>\
