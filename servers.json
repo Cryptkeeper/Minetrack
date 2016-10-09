@@ -16,5 +16,11 @@
 		"ip": "pe.hypixel.net",
 		"type": "PE",
 		"category": "pocket"
+	},
+	{
+		"name": "LuckyCraftPE",
+		"ip": "a59827.leet.cc",
+		"type": "PE",
+		"category": "pocket"
 	}
 ]
