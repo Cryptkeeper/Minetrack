@@ -359,7 +359,7 @@ $(document).ready(function() {
                             <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
                             <span id="status_' + safeName(info.name) + '">Waiting</span>\
                         </div>\
-                        <div class="column" style="float: right;">\
+                        <div class="column" style="padding-left: 30px;">\
                             <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
                         </div>'
             }).appendTo("#server-container-" + getServerByIp(info.ip).category);
