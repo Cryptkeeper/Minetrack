@@ -44,7 +44,7 @@ function updateServerStatus(lastEntry) {
         var result = lastEntry.result;
         var newStatus = 'Players: ' + formatNumber(result.players.online);
 
-        var listing = graphs[lastEntry.info.name].listing;
+        var listing = graphs[safeName(lastEntry.info.name)].listing;
 
         if (listing.length > 0) {
             newStatus += '<span class="color-gray"> (';
