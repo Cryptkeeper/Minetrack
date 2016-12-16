@@ -58,5 +58,10 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
+  	},
+  	{
+ 		"name": "Cytooxien",
+ 		"ip": "cytooxien.de",
+ 		"type": "PC"
   	}
 ]
