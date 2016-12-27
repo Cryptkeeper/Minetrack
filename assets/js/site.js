@@ -5,6 +5,8 @@ var historyPlot;
 var displayedGraphData;
 var hiddenGraphData = [];
 
+var body;
+
 var mcVersions = {
     'PC': {
         4: '1.7.2',
@@ -43,7 +45,7 @@ function updateServerStatus(lastEntry) {
         var result = lastEntry.result;
         var newStatus = 'Players: ' + formatNumber(result.players.online);
 
-        var listing = graphs[lastEntry.info.name].listing;
+        var listing = graphs[safeName(lastEntry.info.name)].listing;
 
         if (listing.length > 0) {
             newStatus += '<span class="color-gray"> (';
@@ -265,11 +267,16 @@ $(document).ready(function() {
             displayedGraphData = rawData;
         }
 
-        $('#big-graph').css('height', '400px');
+        body = $('body');
+
+        var bigGraph = $('#big-graph').css({
+            height: 400,
+            width: getGraphWidth()
+        });
 
         historyPlot = $.plot('#big-graph', convertGraphData(displayedGraphData), bigChartOptions);
 
-        $('#big-graph').bind('plothover', handlePlotHover);
+        bigGraph.bind('plothover', handlePlotHover);
 
         var keys = Object.keys(rawData);
 
@@ -298,6 +305,15 @@ $(document).ready(function() {
 
         $('#big-graph-checkboxes').append(html + '</tr></table>');
         $('#big-graph-controls').css('display', 'block');
+
+        var resizeEnd;
+
+        $(window).on('resize', function() {
+            var small = $(this).width() <= 1199;
+
+            clearTimeout(resizeEnd);
+            resizeEnd = setTimeout(resizeGraphs.bind(null, bigGraph, small), 100);
+        });
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
@@ -346,24 +362,26 @@ $(document).ready(function() {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
             }
 
-            $('<div/>', {
-                id: safeName(info.name),
+            var filteredName = safeName(info.name);
+
+            var totalWidth = $('<div/>', {
+                id: filteredName,
                 class: 'server',
-                html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + safeName(info.name) + '">\
+                html: '<div id="server-' + filteredName + '" class="column column-icon">\
+                            <img id="favicon_' + filteredName + '">\
                             <br />\
-                            <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
+                            <p class="text-center-align rank" id="ranking_' + filteredName + '"></p>\
                         </div>\
-                        <div class="column" style="width: 220px;">\
+                        <div class="column column-info">\
                             <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
-                            <span class="color-gray url">' + info.ip + printPort(info.port) + '</span>\
-                            <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
-                            <span id="status_' + safeName(info.name) + '">Waiting</span>\
+                            <span class="color-gray url">' + info.ip + '</span>\
+                            <div id="version_' + filteredName + '" class="versions"><span class="version"></span></div>\
+                            <span id="status_' + filteredName + '">Waiting</span>\
                         </div>\
-                        <div class="column" style="float: right;">\
-                            <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
+                        <div class="column column-chart">\
+                            <div class="chart" id="chart_' + filteredName + '"></div>\
                         </div>'
-            }).appendTo("#server-container-" + getServerByIp(info.ip).category);
+            }).appendTo("#server-container-" + getServerByIp(info.ip).category).width();
 
             var favicon = MISSING_FAVICON_BASE64;
 
@@ -371,16 +389,21 @@ $(document).ready(function() {
                 favicon = lastEntry.result.favicon;
             }
 
-            $('#favicon_' + safeName(info.name)).attr('src', favicon);
+            $('#favicon_' + filteredName).attr('src', favicon);
 
-            graphs[lastEntry.info.name] = {
+            var id = '#chart_' + filteredName;
+
+            // Remove widths from other elems
+            $(id).css('width', totalWidth - 331);
+
+            graphs[filteredName] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeName(info.name), [listing], smallChartOptions)
+                plot: $.plot(id, [listing], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
 
-            $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
+            $('#chart_' + filteredName).bind('plothover', handlePlotHover);
         }
 
         sortServers();
@@ -388,16 +411,18 @@ $(document).ready(function() {
 
 	socket.on('update', function(update) {
         // Prevent weird race conditions.
-        if (!graphs[update.info.name]) {
+        var filtered = safeName(update.info.name);
+
+        if (!graphs[filtered]) {
             return;
         }
 
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
-            $('#favicon_' + safeName(update.info.name)).attr('src', update.result.favicon);
+            $('#favicon_' + filtered).attr('src', update.result.favicon);
         }
 
-        var graph = graphs[update.info.name];
+        var graph = graphs[filtered];
 
         updateServerStatus(update);
 

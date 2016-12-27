@@ -128,3 +128,40 @@ function convertGraphData(rawData) {
 
     return data;
 }
+
+function getGraphWidth(){
+    // Remove margin
+    return body.width() - 80;
+}
+
+function resizeGraphs(bigGraph, small) {
+    bigGraph.css('width', getGraphWidth());
+
+    historyPlot = $.plot('#big-graph', convertGraphData(displayedGraphData), bigChartOptions);
+
+    var graphWidth;
+
+    $('.server').each(function(){
+        var elem = $(this);
+        var id = elem.attr('id').replace('server-', '');
+
+        if (!graphWidth){
+            graphWidth = elem.width() - 80 - 220 - 5;
+
+            if (small){
+                graphWidth -= 30;
+            }
+        }
+
+        var graphData = graphs[id];
+
+        if (!graphData){
+            return;
+        }
+
+        id = '#chart_' + id;
+
+        $(id).css('width', graphWidth);
+        graphData.plot = $.plot(id, [graphData.listing], smallChartOptions);
+    });
+}

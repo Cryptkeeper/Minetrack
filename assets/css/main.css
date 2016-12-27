@@ -6,11 +6,13 @@
 }
 
 body {
+    overflow-x: hidden;
     background: #2E2B2C;
     color: #FFF;
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
     font-weight: 300 !important;
+    box-sizing: border-box;
 }
 
 /* Page layout */
@@ -59,14 +61,12 @@ a {
 }
 
 #header > #column-center {
-    width: 1480px;
     margin: 0 auto;
     text-align: center;
 }
 
 /* Footer */
 #footer {
-    width: 1540px;
     font-size: 16px;
     text-transform: uppercase;
     background: #EBEBEB;
@@ -89,8 +89,11 @@ a {
 }
 
 #tagline-center {
-    width: 1520px;
     margin: 0 auto;
+}
+
+#tagline-text {
+    padding-left: 15px;
 }
 
 /* Colors used by the Mojang service's status bar */
@@ -113,18 +116,49 @@ a {
 }
 
 /* Server listing */
+#server-container-list {
+    padding: 0 15px;
+}
+
 .server-container {
-    width: 1540px;
     margin: 10px auto;
-    overflow: auto;
+    text-align: center;
 }
 
 .server {
+    text-align: left;
     overflow: auto;
     padding: 5px 10px;
-    margin: 0 5px;
-    width: 740px;
-    display: inline-block;
+    width: 100%;
+}
+
+.server .column-icon {
+    width: 80px;
+}
+
+.server .column-info {
+    width: 220px;
+}
+
+.server .column-chart {
+    padding-left: 30px;
+}
+
+@media (min-width: 1199px) {
+    .server-container {
+        display: flex;
+        flex-flow: row wrap;
+    }
+
+    .server {
+        flex: 0 0 50%;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .server .column-chart {
+        padding-left: 5px;
+    }
 }
 
 .server > .column > img {
@@ -168,8 +202,7 @@ a {
 
 .category-header {
     margin-bottom: 10px;
-    margin-left: 15px;
-    text-align: left;
+    text-align: center;
     display: none;
 }
 
@@ -214,7 +247,6 @@ h3 {
 
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
-    width: 1540px;
     margin: 15px auto 0 auto;
 }
 
@@ -224,6 +256,7 @@ h3 {
 
 #big-graph {
     margin-top: 20px;
+    margin-left: 60px;
 }
 
 #big-graph-controls {
