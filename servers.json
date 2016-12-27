@@ -10,11 +10,5 @@
 		"ip": "play.hivemc.com",
 		"type": "PC",
 		"category": "minigames"
-	},
-	{
-		"name": "Hypixel PE",
-		"ip": "pe.hypixel.net",
-		"type": "PE",
-		"category": "pocket"
 	}
 ]

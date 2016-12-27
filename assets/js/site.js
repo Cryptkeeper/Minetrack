@@ -13,7 +13,8 @@ var mcVersions = {
         5: '1.7.10',
         47: '1.8',
         107: '1.9',
-        210: '1.10'
+        210: '1.10',
+        315: '1.11'
     }
 };
 
@@ -197,6 +198,14 @@ function validateBootTime(bootTime, socket) {
             }
         });
     }
+}
+
+function printPort(port) {
+  if(port == undefined || port == 25565) {
+    return "";
+  } else {
+    return ":" + port;
+  }
 }
 
 $(document).ready(function() {
