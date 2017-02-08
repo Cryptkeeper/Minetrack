@@ -58,5 +58,25 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
-  	}
+  	},
+{
+ 		"name": "MineTime",
+ 		"ip": "MineTime.com",
+ 		"type": "PC"
+  	},
+{
+ 		"name": "Minecraft Central",
+ 		"ip": "mc-central.org",
+ 		"type": "PC"
+  	},
+{
+ 		"name": "GommeHD",
+ 		"ip": "GommeHD.net",
+ 		"type": "PC"
+  	},
+{
+ 		"name": "MineHQ",
+ 		"ip": "MineHQ.com",
+ 		"type": "PC"
+  	},
 ]
