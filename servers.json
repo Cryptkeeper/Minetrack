@@ -54,6 +54,11 @@
 		"ip": "play.epicube.fr",
 		"type": "PC"
 	},
+	{
+		"name": "Funcraft",
+		"ip": "funcraft.net",
+		"type": "PC"
+	},
   	{
  		"name": "Timolia",
  		"ip": "play.timolia.de",
