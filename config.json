@@ -8,7 +8,7 @@
 		"/css/main.css": "assets/css/main.css"
 	},
 	"faviconOverride": {
-		
+
 	},
 	"site": {
 		"port": 8080,
@@ -39,5 +39,6 @@
 			0
 		]
 	},
-	"categoriesVisible": true
+	"categoriesVisible": true,
+	"serverTypesVisible": true
 }
