@@ -5,17 +5,6 @@ var historyPlot;
 var displayedGraphData;
 var hiddenGraphData = [];
 
-var mcVersions = {
-    'PC': {
-        4: '1.7.2',
-        5: '1.7.10',
-        47: '1.8',
-        107: '1.9',
-        210: '1.10',
-        315: '1.11'
-    }
-};
-
 var isConnected = false;
 
 var mojangServicesUpdater;
@@ -31,7 +20,7 @@ function updateServerStatus(lastEntry) {
         var versions = '';
 
         for (var i = 0; i < lastEntry.versions.length; i++) {
-            versions += '<span class="version">' + mcVersions[lastEntry.info.type][lastEntry.versions[i]] + '</span>&nbsp;';
+            versions += '<span class="version">' + publicConfig.minecraftVersions[lastEntry.info.type][lastEntry.versions[i]] + '</span>&nbsp;';
         }
 
         versionDiv.html(versions);
@@ -81,6 +70,10 @@ function updateServerStatus(lastEntry) {
 
     $("#stat_totalPlayers").text(formatNumber(totalPlayers));
     $("#stat_networks").text(formatNumber(keys.length));
+
+    if (lastEntry.record) {
+        $('#record_' + safeName(info.name)).html('Record: ' + formatNumber(lastEntry.record));
+    }
 }
 
 function sortServers() {
@@ -220,7 +213,7 @@ $(document).ready(function() {
     socket.on('disconnect', function() {
         if (mojangServicesUpdater) clearInterval(mojangServicesUpdater);
         if (sortServersTask) clearInterval(sortServersTask);
-        
+
         lastMojangServiceUpdate = undefined;
 
         $('#tagline').attr('class', 'status-offline');
@@ -346,22 +339,26 @@ $(document).ready(function() {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
             }
 
+            var typeString = publicConfig.serverTypesVisible ? '<span class="type">' + info.type + '</span>' : '';
+
+            var safeNameCopy = safeName(info.name);
+
             $('<div/>', {
-                id: safeName(info.name),
+                id: safeNameCopy,
                 class: 'server',
-                html: '<div id="server-' + safeName(info.name) + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + safeName(info.name) + '">\
+                html: '<div id="server-' + safeNameCopy + '" class="column" style="width: 80px;">\
+                            <img id="favicon_' + safeNameCopy + '" title="' + info.ip + printPort(info.port) + '">\
                             <br />\
-                            <p class="text-center-align rank" id="ranking_' + safeName(info.name) + '"></p>\
+                            <p class="text-center-align rank" id="ranking_' + safeNameCopy + '"></p>\
                         </div>\
                         <div class="column" style="width: 220px;">\
-                            <h3>' + info.name + '&nbsp;<span class="type">' + info.type + '</span></h3>\
-                            <span class="color-gray url">' + info.ip + printPort(info.port) + '</span>\
-                            <div id="version_' + safeName(info.name) + '" class="versions"><span class="version"></span></div>\
-                            <span id="status_' + safeName(info.name) + '">Waiting</span>\
+                            <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
+                            <span id="status_' + safeNameCopy + '">Waiting</span>\
+                            <div id="version_' + safeNameCopy + '" class="color-gray versions"><span class="version"></span></div>\
+                            <span id="record_' + safeNameCopy + '" class="color-gray"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
-                            <div class="chart" id="chart_' + safeName(info.name) + '"></div>\
+                            <div class="chart" id="chart_' + safeNameCopy + '"></div>\
                         </div>'
             }).appendTo("#server-container-" + getServerByIp(info.ip).category);
 
@@ -375,12 +372,12 @@ $(document).ready(function() {
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeName(info.name), [listing], smallChartOptions)
+                plot: $.plot('#chart_' + safeNameCopy, [listing], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
 
-            $('#chart_' + safeName(info.name)).bind('plothover', handlePlotHover);
+            $('#chart_' + safeNameCopy).bind('plothover', handlePlotHover);
         }
 
         sortServers();

@@ -18,6 +18,7 @@ var currentVersionIndex = {
 var networkVersions = [];
 
 var graphData = [];
+var highestPlayerCount = {};
 var lastGraphPush = [];
 
 function pingAll() {
@@ -91,11 +92,18 @@ function handlePing(network, res, err, attemptedVersion) {
 			timestamp: util.getCurrentTimeMs(),
 			type: network.type
 		},
-		versions: _networkVersions
+		versions: _networkVersions,
+		record: highestPlayerCount[network.ip]
 	};
 
 	if (res) {
 		networkSnapshot.result = res;
+
+		// Validate that we have logToDatabase enabled otherwise in memory pings
+		// will create a record that's only valid for the runtime duration.
+		if (config.logToDatabase && res.players.online > highestPlayerCount[network.ip]) {
+			highestPlayerCount[network.ip] = res.players.online;
+		}
 	} else if (err) {
 		networkSnapshot.error = err;
 	}
@@ -122,7 +130,7 @@ function handlePing(network, res, err, attemptedVersion) {
             ip: network.ip,
             port: network.port,
             type: network.type,
-            name: network.name,
+            name: network.name
         }
 	});
 
@@ -252,7 +260,10 @@ if (config.logToDatabase) {
 	var timestamp = util.getCurrentTimeMs();
 
 	db.queryPings(config.graphDuration, function(data) {
-		graphData = util.convertPingsToGraph(data);
+		var result = util.convertServerHistory(data);
+
+		graphData = result.graphData;
+		highestPlayerCount = result.highestPlayerCount;
 
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
 
