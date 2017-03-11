@@ -27,6 +27,7 @@ a {
 #push {
     position: relative;
     min-height: 100%;
+    margin-top: 44px;
 }
 
 /* Header */
@@ -81,6 +82,10 @@ a {
     padding: 10px 0;
     width: 100%;
     text-align: center;
+    z-index: 999999; /* I'm so sorry. */
+    position: fixed;
+    left: 0;
+    top: 0;
 }
 
 /* Colors used by the Mojang service's status bar */
