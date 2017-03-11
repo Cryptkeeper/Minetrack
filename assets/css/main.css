@@ -27,6 +27,12 @@ a {
     min-height: 100%;
 }
 
+/* Constants */
+#header, #footer, #tagline {
+    width: 1540px;
+    margin: 0 auto;
+}
+
 /* Header */
 #header {
     background: #EBEBEB;
@@ -65,13 +71,11 @@ a {
 
 /* Footer */
 #footer {
-    width: 1540px;
     font-size: 16px;
     text-transform: uppercase;
     background: #EBEBEB;
     color: #3B3738;
     padding: 15px 0;
-    margin: 0 auto;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
     text-align: center;
@@ -82,6 +86,8 @@ a {
     padding: 10px 0;
     width: 100%;
     text-align: center;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
 
 /* Colors used by the Mojang service's status bar */
