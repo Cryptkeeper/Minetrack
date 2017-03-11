@@ -109,7 +109,8 @@ function updateMojangServices(currentUpdate) {
             var entry = lastMojangServiceUpdate[keys[i]];
 
             if (entry.startTime) {
-                newStatus += entry.name + ' ' + entry.title.toLowerCase() + ' for ' + msToTime((new Date()).getTime() - entry.startTime + ' ');
+                newStatus += entry.name + ' ' + entry.title.toLowerCase() + ' for ' + msToTime((new Date()).getTime() - entry.startTime);
+                if (i < keys.length - 1) newStatus += ', ';
             }
         }
     }
