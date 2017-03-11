@@ -19,9 +19,7 @@ html, body {
 }
 
 a {
-    color: inherit;
     cursor: pointer;
-    text-decoration: none;
 }
 
 #push {
@@ -45,9 +43,11 @@ a {
     font-size: 19px;
 }
 
-#header a {
-    border-bottom: 1px dashed #3B3738;
-}
+#header a, #footer a {
+    text-decoration: none;
+    color: inherit;
+     border-bottom: 1px dashed #3B3738;
+ }
 
 #header a:hover, #footer a:hover {
     border-bottom: 1px dashed transparent;
@@ -65,15 +65,16 @@ a {
 
 /* Footer */
 #footer {
-    width: 100%;
+    width: 1540px;
     font-size: 16px;
     text-transform: uppercase;
-    padding: 15px 0 20px 0;
+    background: #EBEBEB;
+    color: #3B3738;
+    padding: 15px 0;
+    margin: 0 auto;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
     text-align: center;
-}
-
-#footer a {
-    border-bottom: 1px dashed #EBEBEB;
 }
 
 /* Tagline */
