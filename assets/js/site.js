@@ -10,6 +10,8 @@ var isConnected = false;
 var mojangServicesUpdater;
 var sortServersTask;
 
+var currentServerHover;
+
 function updateServerStatus(lastEntry) {
     var info = lastEntry.info;
 
@@ -74,6 +76,8 @@ function updateServerStatus(lastEntry) {
     if (lastEntry.record) {
         $('#record_' + safeName(info.name)).html('Record: ' + formatNumber(lastEntry.record));
     }
+
+    updatePercentageBar();
 }
 
 function sortServers() {
@@ -122,6 +126,86 @@ function sortServers() {
             $('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
         }
     }
+}
+
+function renderPercentageBarText(server) {
+    var totalPlayers = getCurrentTotalPlayers();
+    var playerCount = lastPlayerEntries[server];
+
+    $('#perc-bar-text').html('<strong>' + server + '</strong><br />' + roundToPoint(playerCount / totalPlayers * 100, 10) + '% of ' + formatNumber(totalPlayers) + ' tracked players.');
+}
+
+function updatePercentageBar() {
+    var keys = Object.keys(lastPlayerEntries);
+
+    keys.sort(function(a, b) {
+        return lastPlayerEntries[a] - lastPlayerEntries[b];
+    });
+
+    var totalPlayers = getCurrentTotalPlayers();
+
+    var parent = $('#perc-bar');
+    var leftPadding = 0;
+
+    for (var i = 0; i < keys.length; i++) {
+        (function(pos, server, length) {
+            var safeNameCopy = safeName(server);
+            var playerCount = lastPlayerEntries[server];
+
+            var div = $('#perc_bar_part_' + safeNameCopy);
+
+            // Setup the base
+            if (!div.length) {
+                $('<div/>', {
+                    id: 'perc_bar_part_' + safeNameCopy,
+                    class: 'perc-bar-part',
+                    html: '',
+                    style: 'background: ' + stringToColor(server) + ';'
+                }).appendTo(parent);
+
+                div = $('#perc_bar_part_' + safeNameCopy);
+
+                div.mouseover(function(e) {
+                    renderPercentageBarText(server);
+
+                    var text = $('#perc-bar-text');
+
+                    text.stop(true, false);
+                    text.slideDown(100);
+
+                    currentServerHover = server;
+                });
+
+                div.mouseout(function(e) {
+                    $('#perc-bar-text').slideUp(100);
+                    currentServerHover = undefined;
+                });
+            }
+
+            // Update our position/width
+            var width = (playerCount / totalPlayers) * parent.width();
+
+            div.css({
+                width: width + 'px',
+                left: leftPadding + 'px',
+                'border-top-left-radius': (pos === 0 ? '2px' : 0),
+                'border-bottom-left-radius': (pos === 0 ? '2px' : 0),
+                'border-top-right-radius': (pos === keys.length - 1 ? '2px' : 0),
+                'border-bottom-right-radius': (pos === keys.length ? '2px' : 0)
+            });
+
+            leftPadding += width;
+        })(i, keys[i], keys.length);
+    }
+
+    if (currentServerHover) renderPercentageBarText(currentServerHover);
+}
+
+function getCurrentTotalPlayers() {
+    var totalPlayers = 0;
+    var keys = Object.keys(lastPlayerEntries);
+    for (var i = 0; i < keys.length; i++) totalPlayers += lastPlayerEntries[keys[i]]
+    return totalPlayers;
 }
 
 function setAllGraphVisibility(visible) {
@@ -381,6 +465,7 @@ $(document).ready(function() {
         }
 
         sortServers();
+        updatePercentageBar();
 	});
 
 	socket.on('update', function(update) {
