@@ -265,3 +265,9 @@ h3 {
     display: inline-block;
     position: absolute;
 }
+
+#perc-bar > .perc-bar-part:hover {
+    opacity: 0.75;
+    margin-top: -5px;
+    transition: 0.2s all;
+}
