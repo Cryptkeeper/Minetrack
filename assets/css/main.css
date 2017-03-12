@@ -37,12 +37,22 @@ a {
 #header {
     background: #EBEBEB;
     color: #3B3738;
-    padding: 20px 0;
     overflow: auto;
+}
+
+#header .column {
+    display: inline-block;
+    float: left;
+    padding: 20px;
+}
+
+#header .column h1 {
+    margin: -6px 0;
 }
 
 #header .slogan {
     font-size: 20px;
+    text-align: left;
 }
 
 #header .subslogan {
@@ -78,7 +88,6 @@ a {
     padding: 15px 0;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
-    text-align: center;
 }
 
 /* Tagline */
@@ -241,4 +250,18 @@ h3 {
     background: #ecf0f1;
     color: #3498db;
     cursor: pointer;
+}
+
+/* Percentage bar */
+#perc-bar {
+    margin-top: 6px;
+    width: 650px;
+    height: 50px;
+    position: relative;
+}
+
+#perc-bar > .perc-bar-part {
+    height: 100%;
+    display: inline-block;
+    position: absolute;
 }

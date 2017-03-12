@@ -196,6 +196,10 @@ function stringToColor(base) {
     return '#' + Array(6 - color.length + 1).join('0') + color;
 }
 
+function roundToPoint(val, scale) {
+    return Math.round(val * scale) / scale;
+}
+
 function msToTime(timer) {
 	var milliseconds = timer % 1000;
 	timer = (timer - milliseconds) / 1000;
