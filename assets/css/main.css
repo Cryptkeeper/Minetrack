@@ -88,7 +88,6 @@ a {
     padding: 15px 0;
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
-    text-align: center;
 }
 
 /* Tagline */
@@ -261,13 +260,8 @@ h3 {
     position: relative;
 }
 
-#perc-bar-text {
-
-}
-
 #perc-bar > .perc-bar-part {
     height: 100%;
     display: inline-block;
     position: absolute;
-
 }
