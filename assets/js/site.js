@@ -296,9 +296,13 @@ $(document).ready(function() {
 
         createdCategories = false;
 
-        $('#big-graph').html('');
-        $('#big-graph-checkboxes').html('');
-        $('#big-graph-controls').css('display', 'none');
+        var widthCss = {width: window.innerWidth - 17};
+
+        $('#big-graph').html('').css(widthCss);
+        $('#big-graph-checkboxes').html('').css(widthCss);
+
+        widthCss['display'] = 'none';
+        $('#big-graph-controls').css(widthCss);
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
