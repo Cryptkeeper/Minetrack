@@ -256,8 +256,7 @@ function validateBootTime(bootTime, socket) {
             if (xhr.status === 200) {
                 validateBootTime(publicConfig.bootTime, socket);
             } else {
-                $('#tagline').attr('class', 'status-offline');
-                $('#tagline-text').text('Failed to update! Refresh?');
+                showCaption('Failed to update! Refresh?');
             }
         });
     }
@@ -288,8 +287,7 @@ $(document).ready(function() {
 
         lastMojangServiceUpdate = undefined;
 
-        $('#tagline').attr('class', 'status-offline');
-        $('#tagline-text').text('Disconnected! Refresh?');
+        showCaption('Disconnected! Refresh?');
 
         lastPlayerEntries = {};
         graphs = {};

@@ -100,25 +100,6 @@ a {
     text-align: center;
 }
 
-/* Colors used by the Mojang service's status bar */
-.status-online {
-    background: #87D37C;
-    color: #3B3738;
-}
-
-.status-unstable {
-    background: #E9E581;
-    color: #3B3738;
-}
-
-.status-offline {
-    background: #e74c3c;
-}
-
-.status-connecting {
-    background: #3498db;
-}
-
 /* Server listing */
 .server-container {
     overflow: auto;
