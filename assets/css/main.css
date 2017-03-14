@@ -40,8 +40,7 @@ a {
 }
 
 #header-wrapper {
-    width: 85%;
-    margin: 0 auto;
+    overflow: auto;
     min-width: 850px;
 }
 
@@ -91,11 +90,9 @@ a {
     background: #EBEBEB;
     color: #3B3738;
     padding: 15px 0;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
     text-align: center;
-    margin: 0 auto;
-    width: 950px;
+    min-width: 950px;
+    margin-top: 15px;
 }
 
 /* Tagline */
@@ -128,14 +125,11 @@ a {
 
 /* Server listing */
 .server-container {
-    width: 1540px;
-    width: 95%;
-    margin: 10px auto;
     overflow: auto;
+    display: flex; flex-wrap: wrap; justify-content: center;
 }
 
 .server {
-    //overflow: auto;
     padding: 5px 10px;
     margin: 0 5px;
     width: 738px;
