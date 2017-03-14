@@ -2,66 +2,13 @@
 	{
 		"name": "Hypixel",
 		"ip": "mc.hypixel.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "minigames"
 	},
 	{
 		"name": "HiveMC",
 		"ip": "play.hivemc.com",
-		"type": "PC"
-	},
-	{
-		"name": "CubeCraft",
-		"ip": "play.cubecraft.net",
-		"type": "PC"
-	},
-	{
-		"name": "Shotbow",
-		"ip": "us.shotbow.net",
-		"type": "PC"
-	},
-	{
-		"name": "Badlion",
-		"ip": "na.badlion.net",
-		"type": "PC"
-	},
-	{
-		"name": "Wynncraft",
-		"ip": "play.wynncraft.com",
-		"type": "PC"
-	},
-	{
-		"name": "Mineplex",
-		"ip": "us.mineplex.com",
-		"type": "PC"
-	},
-	{
-		"name": "Cosmic PVP",
-		"ip": "cosmicpvp.me",
-		"type": "PC"
-	},
-	{
-		"name": "PartyZone",
-		"ip": "play.mcpz.net",
-		"type": "PC"
-	},
-	{
-		"name": "Rewinside",
-		"ip": "mc.rewinside.tv",
-		"type": "PC"
-	},
-	{
-		"name": "Epicube",
-		"ip": "play.epicube.fr",
-		"type": "PC"
-	},
-  	{
- 		"name": "Timolia",
- 		"ip": "play.timolia.de",
- 		"type": "PC"
-  	},
-	{
-		"name": "GommeHD",
-		"ip": "gommehd.net",
-		"type": "PC"
+		"type": "PC",
+		"category": "minigames"
 	}
 ]
