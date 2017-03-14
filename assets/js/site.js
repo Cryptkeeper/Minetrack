@@ -419,7 +419,6 @@ $(document).ready(function() {
                 id: 'container_' + safeNameCopy,
                 class: 'server',
                 'server-id': safeNameCopy,
-                'is-expanded': false,
                 html: '<div id="server-' + safeNameCopy + '" class="column" style="width: 80px;">\
                             <img id="favicon_' + safeNameCopy + '" title="' + info.ip + printPort(info.port) + '">\
                             <br />\
@@ -528,5 +527,9 @@ $(document).ready(function() {
         } else {
             saveGraphControls(Object.keys(displayedGraphData));
         }
+    });
+
+    $(window).on('resize', function() {
+        updatePercentageBar();
     });
 });

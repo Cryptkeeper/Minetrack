@@ -40,8 +40,9 @@ a {
 }
 
 #header-wrapper {
-    width: 1540px;
+    width: 85%;
     margin: 0 auto;
+    min-width: 850px;
 }
 
 #header .column {
@@ -85,7 +86,7 @@ a {
 
 /* Footer */
 #footer {
-    font-size: 16px;
+    font-size: 14px;
     text-transform: uppercase;
     background: #EBEBEB;
     color: #3B3738;
@@ -93,6 +94,8 @@ a {
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
     text-align: center;
+    margin: 0 auto;
+    width: 950px;
 }
 
 /* Tagline */
@@ -126,12 +129,13 @@ a {
 /* Server listing */
 .server-container {
     width: 1540px;
+    width: 95%;
     margin: 10px auto;
     overflow: auto;
 }
 
 .server {
-    overflow: auto;
+    //overflow: auto;
     padding: 5px 10px;
     margin: 0 5px;
     width: 738px;
@@ -282,4 +286,18 @@ h3 {
 #perc-bar > .perc-bar-part:hover {
     margin-top: -5px;
     height: 45px;
+}
+
+/* Mojang Status */
+.mojang-status {
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    border-radius: 2px;
+    text-align: center;
+}
+
+.mojang-status > i {
+    line-height: 60px;
+    font-size: 22px;
 }
