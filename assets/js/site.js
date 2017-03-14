@@ -418,7 +418,7 @@ $(document).ready(function() {
                 class: 'server',
                 'server-id': safeNameCopy,
                 html: '<div id="server-' + safeNameCopy + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + safeNameCopy + '" title="' + info.ip + printPort(info.port) + '">\
+                            <img id="favicon_' + safeNameCopy + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeNameCopy + '"></p>\
                         </div>\
