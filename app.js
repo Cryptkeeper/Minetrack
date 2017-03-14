@@ -269,19 +269,19 @@ if (config.logToDatabase) {
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
 
 		for (var i = 0; i < servers.length; i++) {
-			var server = servers[i];
+			(function(server) {
+				db.getTotalRecord(server.ip, function(record) {
+					logger.log('info', 'Completed query for %s', server.ip);
 
-			db.getTotalRecord(server.ip, function(record) {
-				logger.log('info', 'Completed query for %s', server.ip);
+					highestPlayerCount[server.ip] = record;
 
-				highestPlayerCount[server.ip] = record;
+					completedQueries += 1;
 
-				completedQueries += 1;
-
-				if (completedQueries === servers.length) {
-					startServices();
-				}
-			});
+					if (completedQueries === servers.length) {
+						startServices();
+					}
+				});
+			})(servers[i]);
 		}
 	});
 } else {
