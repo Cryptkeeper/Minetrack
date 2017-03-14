@@ -133,12 +133,12 @@ a {
     display: inline-block;
 }
 
-.server:hover {
+/*.server:hover {
     background: #282828;
     border: 1px solid #444;
     cursor: pointer;
     border-radius: 2px;
-}
+}*/
 
 .server > .column > img {
     border-radius: 2px;
