@@ -29,8 +29,7 @@ a {
 
 /* Constants */
 #header, #footer, #tagline {
-    width: 1540px;
-    margin: 0 auto;
+
 }
 
 /* Header */
@@ -40,6 +39,11 @@ a {
     overflow: auto;
 <<<<<<< HEAD
 =======
+}
+
+#header-wrapper {
+    overflow: auto;
+    min-width: 850px;
 }
 
 #header .column {
@@ -65,8 +69,8 @@ a {
 #header a, #footer a {
     text-decoration: none;
     color: inherit;
-     border-bottom: 1px dashed #3B3738;
- }
+    border-bottom: 1px dashed #3B3738;
+}
 
 #header a:hover, #footer a:hover {
     border-bottom: 1px dashed transparent;
@@ -84,56 +88,41 @@ a {
 
 /* Footer */
 #footer {
-    font-size: 16px;
+    font-size: 14px;
     text-transform: uppercase;
     background: #EBEBEB;
     color: #3B3738;
     padding: 15px 0;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
+    min-width: 950px;
+    margin-top: 15px;
 }
 
 /* Tagline */
-#tagline {
-    padding: 10px 0;
+#tagline-text {
+    padding-top: 20px;
     text-align: center;
-    border-bottom-right-radius: 2px;
-    border-bottom-left-radius: 2px;
-}
-
-/* Colors used by the Mojang service's status bar */
-.status-online {
-    background: #87D37C;
-    color: #3B3738;
-}
-
-.status-unstable {
-    background: #E9E581;
-    color: #3B3738;
-}
-
-.status-offline {
-    background: #e74c3c;
-}
-
-.status-connecting {
-    background: #3498db;
 }
 
 /* Server listing */
 .server-container {
-    width: 1540px;
-    margin: 10px auto;
     overflow: auto;
+    display: flex; flex-wrap: wrap; justify-content: center;
 }
 
 .server {
-    overflow: auto;
     padding: 5px 10px;
     margin: 0 5px;
-    width: 740px;
+    width: 738px;
+    border: 1px solid transparent;
     display: inline-block;
 }
+
+/*.server:hover {
+    background: #282828;
+    border: 1px solid #444;
+    cursor: pointer;
+    border-radius: 2px;
+}*/
 
 .server > .column > img {
     border-radius: 2px;
@@ -183,7 +172,7 @@ a {
     padding: 5px;
     border-radius: 3px;
     background: rgba(0, 0, 0, 0.65);
-    z-index: 999;
+    z-index: 10000;
 }
 
 /* Existing elements */
@@ -257,9 +246,7 @@ h3 {
 
 /* Percentage bar */
 #perc-bar {
-    margin-top: 6px;
-    width: 650px;
-    height: 50px;
+    height: 35px;
     position: relative;
 }
 
@@ -267,10 +254,25 @@ h3 {
     height: 100%;
     display: inline-block;
     position: absolute;
+    transition: 0.1s all;
 }
 
 #perc-bar > .perc-bar-part:hover {
     opacity: 0.75;
-    margin-top: -5px;
-    transition: 0.2s all;
+}
+
+/* Mojang Status */
+.mojang-status {
+    width: 60px;
+    height: 60px;
+    display: inline-block;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 12px;
+}
+
+.mojang-status > i {
+    margin-top: 8px;
+    font-size: 22px;
 }
