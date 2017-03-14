@@ -130,7 +130,7 @@ function renderPercentageBarText(server) {
     var totalPlayers = getCurrentTotalPlayers();
     var playerCount = lastPlayerEntries[server];
 
-    renderTooltip(100, 100, '<strong>' + server + '</strong><br />' + roundToPoint(playerCount / totalPlayers * 100, 10) + '% of ' + formatNumber(totalPlayers) + ' tracked players.');
+    showCaption('<strong>' + server + '</strong>: ' + formatNumber(playerCount) + ' online. <strong>' + roundToPoint(playerCount / totalPlayers * 100, 10) + '%</strong> of ' + formatNumber(totalPlayers) + ' tracked players.');
 }
 
 function updatePercentageBar() {
@@ -169,7 +169,7 @@ function updatePercentageBar() {
                 });
 
                 div.mouseout(function(e) {
-                    hideTooltip();
+                    hideCaption();
                     currentServerHover = undefined;
                 });
             }
@@ -493,10 +493,10 @@ $(document).ready(function() {
     });
 
     socket.on('syncComplete', function(data) {
+        $('#tagline-text').slideUp(100);
+
         $(document).on('click', '.server', function(e) {
             var serverId = $(this).attr('server-id');
-
-
         });
     });
 

@@ -11,8 +11,21 @@ var categoriesVisible;
 var colorsByStatus = {
     'Online': '#87D37C',
     'Unstable': '#f1c40f',
-    'Offline': '#e74c3c'
+    'Offline': '#DE5749'
 };
+
+function showCaption(html) {
+    var tagline = $('#tagline-text');
+    tagline.stop(true, false);
+    tagline.html(html);
+    tagline.slideDown(100);
+}
+
+function hideCaption() {
+    var tagline = $('#tagline-text');
+    tagline.stop(true, false);
+    tagline.slideUp(100);
+}
 
 function setPublicConfig(json) {
     publicConfig = json;

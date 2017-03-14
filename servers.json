@@ -58,5 +58,10 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
-  	}
+  	},
+	{
+		"name": "GommeHD",
+		"ip": "gommehd.net",
+		"type": "PC"
+	}
 ]
