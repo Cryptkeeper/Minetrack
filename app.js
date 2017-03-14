@@ -15,6 +15,7 @@ var currentVersionIndex = {
 	'PC': 0,
 	'PE': 0
 };
+
 var networkVersions = [];
 
 var graphData = [];
@@ -262,14 +263,26 @@ if (config.logToDatabase) {
 	var timestamp = util.getCurrentTimeMs();
 
 	db.queryPings(config.graphDuration, function(data) {
-		var result = util.convertServerHistory(data);
-
-		graphData = result.graphData;
-		highestPlayerCount = result.highestPlayerCount;
+		graphData = util.convertServerHistory(data);
+		completedQueries = 0;
 
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
 
-		startServices();
+		for (var i = 0; i < servers.length; i++) {
+			var server = servers[i];
+
+			db.getTotalRecord(server.ip, function(record) {
+				logger.log('info', 'Completed query for %s', server.ip);
+
+				highestPlayerCount[server.ip] = record;
+
+				completedQueries += 1;
+
+				if (completedQueries === servers.length) {
+					startServices();
+				}
+			});
+		}
 	});
 } else {
 	logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
