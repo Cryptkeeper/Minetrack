@@ -245,6 +245,8 @@ function startServices() {
 					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
 				}
 			}
+
+			client.emit('syncComplete');
 		});
 	});
 
