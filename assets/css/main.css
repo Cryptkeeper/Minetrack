@@ -255,9 +255,7 @@ h3 {
 }
 
 #perc-bar > .perc-bar-part:hover {
-    margin-top: -5px;
-    height: 45px;
-    border-radius: 2px;
+    opacity: 0.75;
 }
 
 /* Mojang Status */
