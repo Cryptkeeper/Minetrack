@@ -102,8 +102,7 @@ function sortServers() {
             });
 
             for (var x = 0; x < keys.length; x++) {
-                $('#' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
-
+                $('#container_' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
                 $('#ranking_' + safeName(keys[x])).text('#' + (x + 1));
             }
         }
@@ -121,8 +120,7 @@ function sortServers() {
         });
 
         for (var i = 0; i < serverNames.length; i++) {
-            $('#' + safeName(serverNames[i])).appendTo('#server-container-all');
-
+            $('#container_' + safeName(serverNames[i])).appendTo('#server-container-all');
             $('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
         }
     }
@@ -132,7 +130,7 @@ function renderPercentageBarText(server) {
     var totalPlayers = getCurrentTotalPlayers();
     var playerCount = lastPlayerEntries[server];
 
-    $('#perc-bar-text').html('<strong>' + server + '</strong><br />' + roundToPoint(playerCount / totalPlayers * 100, 10) + '% of ' + formatNumber(totalPlayers) + ' tracked players.');
+    showCaption('<strong>' + server + '</strong>: ' + formatNumber(playerCount) + ' online. <strong>' + roundToPoint(playerCount / totalPlayers * 100, 10) + '%</strong> of ' + formatNumber(totalPlayers) + ' tracked players.');
 }
 
 function updatePercentageBar() {
@@ -167,17 +165,11 @@ function updatePercentageBar() {
 
                 div.mouseover(function(e) {
                     renderPercentageBarText(server);
-
-                    var text = $('#perc-bar-text');
-
-                    text.stop(true, false);
-                    text.slideDown(100);
-
                     currentServerHover = server;
                 });
 
                 div.mouseout(function(e) {
-                    $('#perc-bar-text').slideUp(100);
+                    hideCaption();
                     currentServerHover = undefined;
                 });
             }
@@ -187,11 +179,7 @@ function updatePercentageBar() {
 
             div.css({
                 width: width + 'px',
-                left: leftPadding + 'px',
-                'border-top-left-radius': (pos === 0 ? '2px' : 0),
-                'border-bottom-left-radius': (pos === 0 ? '2px' : 0),
-                'border-top-right-radius': (pos === keys.length - 1 ? '2px' : 0),
-                'border-bottom-right-radius': (pos === keys.length ? '2px' : 0)
+                left: leftPadding + 'px'
             });
 
             leftPadding += width;
@@ -268,8 +256,7 @@ function validateBootTime(bootTime, socket) {
             if (xhr.status === 200) {
                 validateBootTime(publicConfig.bootTime, socket);
             } else {
-                $('#tagline').attr('class', 'status-offline');
-                $('#tagline-text').text('Failed to update! Refresh?');
+                showCaption('Failed to update! Refresh?');
             }
         });
     }
@@ -300,8 +287,7 @@ $(document).ready(function() {
 
         lastMojangServiceUpdate = undefined;
 
-        $('#tagline').attr('class', 'status-offline');
-        $('#tagline-text').text('Disconnected! Refresh?');
+        showCaption('Disconnected! Refresh?');
 
         lastPlayerEntries = {};
         graphs = {};
@@ -428,10 +414,11 @@ $(document).ready(function() {
             var safeNameCopy = safeName(info.name);
 
             $('<div/>', {
-                id: safeNameCopy,
+                id: 'container_' + safeNameCopy,
                 class: 'server',
+                'server-id': safeNameCopy,
                 html: '<div id="server-' + safeNameCopy + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + safeNameCopy + '" title="' + info.ip + printPort(info.port) + '">\
+                            <img id="favicon_' + safeNameCopy + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeNameCopy + '"></p>\
                         </div>\
@@ -503,6 +490,14 @@ $(document).ready(function() {
         }
     });
 
+    socket.on('syncComplete', function(data) {
+        $('#tagline-text').slideUp(100);
+
+        $(document).on('click', '.server', function(e) {
+            var serverId = $(this).attr('server-id');
+        });
+    });
+
     $(document).on('click', '.graph-control', function(e) {
         var serverIp = $(this).attr('data-target-network');
         var checked = $(this).attr('checked');
@@ -530,5 +525,9 @@ $(document).ready(function() {
         } else {
             saveGraphControls(Object.keys(displayedGraphData));
         }
+    });
+
+    $(window).on('resize', function() {
+        updatePercentageBar();
     });
 });

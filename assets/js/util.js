@@ -8,6 +8,25 @@ var publicConfig;
 var createdCategories = false;
 var categoriesVisible;
 
+var colorsByStatus = {
+    'Online': '#87D37C',
+    'Unstable': '#f1c40f',
+    'Offline': '#DE5749'
+};
+
+function showCaption(html) {
+    var tagline = $('#tagline-text');
+    tagline.stop(true, false);
+    tagline.html(html);
+    tagline.slideDown(100);
+}
+
+function hideCaption() {
+    var tagline = $('#tagline-text');
+    tagline.stop(true, false);
+    tagline.slideUp(100);
+}
+
 function setPublicConfig(json) {
     publicConfig = json;
 
@@ -79,43 +98,15 @@ function updateMojangServices(currentUpdate) {
     	return;
     }
 
-	var keys = Object.keys(lastMojangServiceUpdate);
-    var newStatus = 'Mojang Services: ';
-
-    var serviceCountByType = {
-        Online: 0,
-        Unstable: 0,
-        Offline: 0
-    };
+    var keys = Object.keys(lastMojangServiceUpdate);
 
     for (var i = 0; i < keys.length; i++) {
-        var entry = lastMojangServiceUpdate[keys[i]];
+        var key = keys[i];
+        var status = lastMojangServiceUpdate[key];
 
-        serviceCountByType[entry.title] += 1;
+        var div = $('#mojang-status_' + status.name);
+        div.css({background: colorsByStatus[status.title]});
     }
-
-    if (serviceCountByType['Online'] === keys.length) {
-        $('#tagline').attr('class', 'status-online');
-
-        newStatus += 'All systems operational.';
-    } else {
-        if (serviceCountByType['Unstable'] > serviceCountByType['Offline']) {
-            $('#tagline').attr('class', 'status-unstable');
-        } else {
-            $('#tagline').attr('class', 'status-offline');
-        }
-
-        for (var i = 0; i < keys.length; i++) {
-            var entry = lastMojangServiceUpdate[keys[i]];
-
-            if (entry.startTime) {
-                newStatus += entry.name + ' ' + entry.title.toLowerCase() + ' for ' + msToTime((new Date()).getTime() - entry.startTime);
-                if (i < keys.length - 1) newStatus += ', ';
-            }
-        }
-    }
-
-	$('#tagline-text').text(newStatus);
 }
 
 function findErrorMessage(error) {
