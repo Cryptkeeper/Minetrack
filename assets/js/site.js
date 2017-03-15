@@ -126,13 +126,6 @@ function sortServers() {
     }
 }
 
-function renderPercentageBarText(server) {
-    var totalPlayers = getCurrentTotalPlayers();
-    var playerCount = lastPlayerEntries[server];
-
-    showCaption('<strong>' + server + '</strong>: ' + formatNumber(playerCount) + ' online. <strong>' + roundToPoint(playerCount / totalPlayers * 100, 10) + '%</strong> of ' + formatNumber(totalPlayers) + ' tracked players.');
-}
-
 function updatePercentageBar() {
     var keys = Object.keys(lastPlayerEntries);
 
@@ -164,12 +157,11 @@ function updatePercentageBar() {
                 div = $('#perc_bar_part_' + safeNameCopy);
 
                 div.mouseover(function(e) {
-                    renderPercentageBarText(server);
                     currentServerHover = server;
                 });
 
                 div.mouseout(function(e) {
-                    hideCaption();
+                    hideTooltip();
                     currentServerHover = undefined;
                 });
             }
@@ -185,8 +177,6 @@ function updatePercentageBar() {
             leftPadding += width;
         })(i, keys[i], keys.length);
     }
-
-    if (currentServerHover) renderPercentageBarText(currentServerHover);
 }
 
 function getCurrentTotalPlayers() {
@@ -299,6 +289,9 @@ $(document).ready(function() {
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
+
+        $('#perc-bar').html('');
+        $('.mojang-status').css('background', 'transparent');
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
@@ -524,6 +517,15 @@ $(document).ready(function() {
             resetGraphControls();
         } else {
             saveGraphControls(Object.keys(displayedGraphData));
+        }
+    });
+
+    $(document).on('mousemove', function(e) {
+        if (currentServerHover) {
+            var totalPlayers = getCurrentTotalPlayers();
+            var playerCount = lastPlayerEntries[currentServerHover];
+
+            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + roundToPoint(playerCount / totalPlayers * 100, 10) + '%<br />' + formatNumber(playerCount) + ' of ' + formatNumber(totalPlayers) + ' tracked players.');
         }
     });
 
