@@ -491,7 +491,7 @@ $(document).ready(function() {
     });
 
     socket.on('syncComplete', function(data) {
-        $('#tagline-text').slideUp(100);
+        hideCaption();
 
         $(document).on('click', '.server', function(e) {
             var serverId = $(this).attr('server-id');
