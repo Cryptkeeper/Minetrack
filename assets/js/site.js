@@ -529,5 +529,11 @@ $(document).ready(function() {
 
     $(window).on('resize', function() {
         updatePercentageBar();
+
+        if (historyPlot) {
+            historyPlot.resize();
+            historyPlot.setupGrid();
+            historyPlot.draw();
+        }
     });
 });
