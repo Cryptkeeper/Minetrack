@@ -58,5 +58,15 @@
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
-  	}
+  	},
+	{
+		"name": "FunCraft",
+		"ip": "premium.funcraft.net",
+		"type": "PC"
+	},
+	{
+		"name": "GommeHD",
+		"ip": "play.gommehd.net",
+		"type": "PC"
+	}
 ]
