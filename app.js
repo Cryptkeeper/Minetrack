@@ -26,6 +26,11 @@ function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
+			// Asign auto generated color if not present
+			if (!network.color) {
+				network.color = util.stringToColor(network.name);
+			}
+
 			var attemptedVersion = config.versions[network.type][currentVersionIndex[network.type]];
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
