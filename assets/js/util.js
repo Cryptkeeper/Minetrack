@@ -76,14 +76,28 @@ function getServersByCategory() {
 	return byCategory;
 }
 
-function getServerByIp(ip) {
+function getServerByField(id, value) {
 	for (var i = 0; i < publicConfig.servers.length; i++) {
 		var entry = publicConfig.servers[i];
 
-		if (entry.ip === ip) {
+		if (entry[id] === value) {
 			return entry;
 		}
 	}
+}
+
+function getServerByIp(ip) {
+	return getServerByField('ip', ip);
+}
+
+function getServerByName(name) {
+	return getServerByField('name', name);
+}
+
+function getServerColor(name) {
+	var server = getServerByName(name);
+
+	return server ? server.color : stringToColor(name);
 }
 
 // Generate (and set) the HTML that displays Mojang status.

@@ -151,7 +151,7 @@ function updatePercentageBar() {
                     id: 'perc_bar_part_' + safeNameCopy,
                     class: 'perc-bar-part',
                     html: '',
-                    style: 'background: ' + stringToColor(server) + ';'
+                    style: 'background: ' + getServerColor(server) + ';'
                 }).appendTo(parent);
 
                 div = $('#perc_bar_part_' + safeNameCopy);
