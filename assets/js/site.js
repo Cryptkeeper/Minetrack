@@ -419,7 +419,7 @@ $(document).ready(function() {
                         <div class="column" style="width: 220px;">\
                             <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
                             <span id="status_' + safeNameCopy + '">Waiting</span>\
-                            <div id="version_' + safeNameCopy + '" class="color-gray versions"><span class="version"></span></div>\
+                            <div id="version_' + safeNameCopy + '" class="color-dark-gray versions"><span class="version"></span></div>\
                             <span id="record_' + safeNameCopy + '" class="color-gray"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
