@@ -118,8 +118,8 @@ function updateMojangServices(currentUpdate) {
         var key = keys[i];
         var status = lastMojangServiceUpdate[key];
 
-        var div = $('#mojang-status_' + status.name);
-        div.css({background: colorsByStatus[status.title]});
+        $('#mojang-status_' + status.name).css({background: colorsByStatus[status.title]});
+        $('#mojang-status-text_' + status.name).text(status.title);
     }
 }
 
