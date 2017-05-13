@@ -32,7 +32,7 @@ function updateServerStatus(lastEntry) {
 
     if (lastEntry.result) {
         var result = lastEntry.result;
-        var newStatus = 'Players: ' + formatNumber(result.players.online);
+        var newStatus = 'Players: <span style="font-weight: 500;">' + formatNumber(result.players.online) + '</span>';
 
         var listing = graphs[lastEntry.info.name].listing;
 
@@ -420,7 +420,7 @@ $(document).ready(function() {
                             <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
                             <span id="status_' + safeNameCopy + '">Waiting</span>\
                             <div id="version_' + safeNameCopy + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-                            <span id="record_' + safeNameCopy + '" class="color-gray server-meta"></span>\
+                            <span id="record_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
                             <div class="chart" id="chart_' + safeNameCopy + '"></div>\
