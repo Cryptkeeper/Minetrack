@@ -292,6 +292,7 @@ $(document).ready(function() {
 
         $('#perc-bar').html('');
         $('.mojang-status').css('background', 'transparent');
+        $('.mojang-status-text').text('');
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
@@ -525,7 +526,7 @@ $(document).ready(function() {
             var totalPlayers = getCurrentTotalPlayers();
             var playerCount = lastPlayerEntries[currentServerHover];
 
-            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + roundToPoint(playerCount / totalPlayers * 100, 10) + '%<br />' + formatNumber(playerCount) + ' of ' + formatNumber(totalPlayers) + ' tracked players.');
+            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + roundToPoint(playerCount / totalPlayers * 100, 10) + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
         }
     });
 

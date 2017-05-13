@@ -27,6 +27,10 @@ a {
     min-height: 100%;
 }
 
+strong {
+    font-weight: 700;
+}
+
 /* Constants */
 #header, #footer, #tagline {
 
@@ -47,7 +51,6 @@ a {
 #header .column {
     display: inline-block;
     float: left;
-    padding: 20px;
 }
 
 #header .column h1 {
@@ -85,13 +88,22 @@ a {
 
 /* Footer */
 #footer {
-    font-size: 14px;
+    font-size: 16px;
     text-transform: uppercase;
     background: #EBEBEB;
     color: #3B3738;
     padding: 15px 0;
     min-width: 950px;
     margin-top: 15px;
+}
+
+#footer a {
+    font-weight: 700;
+    border-bottom: none !important;
+}
+
+#footer a:hover {
+    border-bottom: 1px dashed #000 !important;
 }
 
 /* Tagline */
@@ -260,16 +272,19 @@ h3 {
 
 /* Mojang Status */
 .mojang-status {
-    width: 60px;
-    height: 60px;
+    width: 85px;
+    height: 106px;
     display: inline-block;
-    border-radius: 2px;
     text-align: center;
     line-height: 20px;
-    font-size: 12px;
+    font-size: 14px;
+}
+
+.mojang-status > strong {
+    text-transform: uppercase;
 }
 
 .mojang-status > i {
-    margin-top: 8px;
+    margin-top: 20px;
     font-size: 22px;
 }
