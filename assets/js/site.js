@@ -292,7 +292,7 @@ $(document).ready(function() {
 
         $('#perc-bar').html('');
         $('.mojang-status').css('background', 'transparent');
-        $('.mojang-status-text').text('');
+        $('.mojang-status-text').text('...');
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
