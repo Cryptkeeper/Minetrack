@@ -12,7 +12,8 @@
 	{
 		"name": "InPvP",
 		"ip": "play.inpvp.net",
-		"type": "PE"
+		"type": "PE",
+		"color": "#A874AB"
 	},
 	{
 		"name": "CookieBuild",
