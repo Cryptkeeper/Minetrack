@@ -117,12 +117,12 @@ function convertGraphData(rawData) {
 
     var keys = Object.keys(rawData);
 
-    for (var i = 0; i < keys.length; i++) {
+    for (var i = 0; i < keys.length; i++) {    
         data.push({
             data: rawData[keys[i]],
             yaxis: 1,
             label: keys[i],
-            color: stringToColor(keys[i])
+            color: getServerColor(keys[i])
         });
     }
 
