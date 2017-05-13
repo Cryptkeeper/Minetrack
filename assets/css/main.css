@@ -159,15 +159,15 @@ strong {
     margin-bottom: 2px;
 }
 
-.server > .column > .versions > .version {
-    font-size: 16px;
-}
-
 .category-header {
     margin-bottom: 10px;
     margin-left: 15px;
     text-align: left;
     display: none;
+}
+
+.server-meta {
+    font-size: 16px !important;
 }
 
 /* Charts */
