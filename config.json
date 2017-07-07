@@ -12,7 +12,8 @@
 		"/favicons/mobcrush.png": "assets/images/favicons/mobcrush.png",
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
 		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
-		"/favicons/leetcc.png": "assets/images/favicons/leetcc.png"
+		"/favicons/leetcc.png": "assets/images/favicons/leetcc.png",
+		"/favicons/infinite.png": "assets/images/favicons/infinite.png"
 	},
 	"faviconOverride": {
 		"Mineplex PE": "/favicons/mineplex.png",
@@ -21,7 +22,8 @@
 		"Mobcrush Land": "/favicons/mobcrush.png",
 		"CookieBuild": "/favicons/cookie_build.png",
 		"PigRaid": "/favicons/pigraid.png",
-		"Leet CC": "/favicons/leetcc.png"
+		"Leet CC": "/favicons/leetcc.png",
+		"Infinite Network": "/favicons/infinite.png"
 	},
 	"site": {
 		"port": 80,
