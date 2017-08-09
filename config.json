@@ -24,8 +24,8 @@
 		"Leet CC": "/favicons/leetcc.png"
 	},
 	"site": {
-		"port": 80,
-		"ip": "0.0.0.0"
+		"port": 8081,
+		"ip": "127.0.0.1"
 	},
 	"rates": {
 		"upateMojangStatus": 5000,
