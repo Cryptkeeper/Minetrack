@@ -40,11 +40,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "PartyZone",
-		"ip": "play.mcpz.net",
-		"type": "PC"
-	},
-	{
 		"name": "Rewinside",
 		"ip": "mc.rewinside.tv",
 		"type": "PC"
@@ -68,5 +63,11 @@
 		"name": "GommeHD",
 		"ip": "play.gommehd.net",
 		"type": "PC"
+	},
+	{
+		"name": "Hypixel China",
+		"ip": "x19hypixel.nie.netease.com",
+		"type": "PC",
+		"color": "#E68196"
 	}
 ]
