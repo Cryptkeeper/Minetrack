@@ -29,5 +29,10 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
+	},
+	{
+		"name": "Infinite Network",
+		"ip": "play.infinite.pe",
+		"type": "PE"
 	}
 ]
