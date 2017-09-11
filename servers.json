@@ -69,5 +69,10 @@
 		"ip": "x19hypixel.nie.netease.com",
 		"type": "PC",
 		"color": "#E68196"
+	},
+	{
+		"name": "DusDavidGames-server",
+		"ip": "play.dusdavidgames.nl",
+		"type": "PC"
 	}
 ]
