@@ -262,6 +262,7 @@ function printPort(port) {
 
 $(document).ready(function() {
 	var socket = io.connect({
+        path: window.location.pathname + '/socket.io',
         reconnect: true,
         reconnectDelay: 1000,
         reconnectionAttempts: 10
