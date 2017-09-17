@@ -29,5 +29,11 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
+	},
+	{
+		"name": "PePirates",
+		"ip": "play.pepirat.es",
+		"type": "PE",
+		"color": "#d35400"
 	}
 ]
