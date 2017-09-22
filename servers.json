@@ -24,5 +24,10 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
+	},
+	{
+		"name": "VastLands",
+		"ip": "play.vastlands.com",
+		"type": "PE"
 	}
 ]
