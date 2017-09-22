@@ -9,19 +9,15 @@
 		"/favicons/mineplex.png": "assets/images/favicons/mineplex.png",
 		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
 		"/favicons/inpvp.png": "assets/images/favicons/inpvp.png",
-		"/favicons/mobcrush.png": "assets/images/favicons/mobcrush.png",
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
-		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
-		"/favicons/leetcc.png": "assets/images/favicons/leetcc.png"
+		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png"
 	},
 	"faviconOverride": {
 		"Mineplex PE": "/favicons/mineplex.png",
 		"Lifeboat": "/favicons/lifeboat.png",
 		"InPvP": "/favicons/inpvp.png",
-		"Mobcrush Land": "/favicons/mobcrush.png",
 		"CookieBuild": "/favicons/cookie_build.png",
-		"PigRaid": "/favicons/pigraid.png",
-		"Leet CC": "/favicons/leetcc.png"
+		"PigRaid": "/favicons/pigraid.png"
 	},
 	"site": {
 		"port": 8081,
