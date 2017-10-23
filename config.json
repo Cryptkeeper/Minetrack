@@ -10,14 +10,16 @@
 		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
 		"/favicons/inpvp.png": "assets/images/favicons/inpvp.png",
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
-		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png"
+		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
+		"/favicons/vastlands.png": "assets/images/favicons/vastlands.png"
 	},
 	"faviconOverride": {
 		"Mineplex": "/favicons/mineplex.png",
 		"Lifeboat": "/favicons/lifeboat.png",
 		"InPvP": "/favicons/inpvp.png",
 		"CookieBuild": "/favicons/cookie_build.png",
-		"PigRaid": "/favicons/pigraid.png"
+		"PigRaid": "/favicons/pigraid.png",
+		"VastLands": "/favicons/vastlands.png"
 	},
 	"site": {
 		"port": 8081,
