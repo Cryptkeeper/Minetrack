@@ -22,6 +22,7 @@ function updateServerStatus(lastEntry) {
         var versions = '';
 
         for (var i = 0; i < lastEntry.versions.length; i++) {
+            if (!lastEntry.versions[i]) continue;
             versions += '<span class="version">' + publicConfig.minecraftVersions[lastEntry.info.type][lastEntry.versions[i]] + '</span>&nbsp;';
         }
 
