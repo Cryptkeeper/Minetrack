@@ -8,11 +8,10 @@
 		"/css/main.css": "assets/css/main.css"
 	},
 	"faviconOverride": {
-
 	},
 	"site": {
 		"port": 8080,
-		"ip": "0.0.0.0"
+		"ip": "127.0.0.1"
 	},
 	"rates": {
 		"upateMojangStatus": 5000,
@@ -20,11 +19,9 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-	"logToDatabase": false,
+	"logToDatabase": true,
 	"graphDuration": 86400000,
 	"serverCategories": {
-		"minigames": "Minigame Networks",
-		"pocket": "Pocket Edition Networks"
 	},
 	"versions": {
 		"PC": [
@@ -40,6 +37,6 @@
 			0
 		]
 	},
-	"categoriesVisible": true,
-	"serverTypesVisible": true
+	"categoriesVisible": false,
+	"serverTypesVisible": false
 }
