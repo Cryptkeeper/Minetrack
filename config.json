@@ -11,7 +11,8 @@
 		"/favicons/inpvp.png": "assets/images/favicons/inpvp.png",
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
 		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
-		"/favicons/grand_theft_mcpe.png": "assets/images/favicons/grand_theft_mcpe.png"
+		"/favicons/grand_theft_mcpe.png": "assets/images/favicons/grand_theft_mcpe.png",
+        "/favicons/cosmicpe.png": "assets/images/favicons/cosmicpe.png"
 	},
 	"faviconOverride": {
 		"Mineplex": "/favicons/mineplex.png",
@@ -19,7 +20,8 @@
 		"InPvP": "/favicons/inpvp.png",
 		"CookieBuild": "/favicons/cookie_build.png",
 		"PigRaid": "/favicons/pigraid.png",
-		"GrandTheftMCPE": "/favicons/grand_theft_mcpe.png"
+		"GrandTheftMCPE": "/favicons/grand_theft_mcpe.png",
+        "CosmicPE": "/favicons/cosmicpe.png"
 	},
 	"site": {
 		"port": 8081,

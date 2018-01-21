@@ -29,5 +29,10 @@
 		"name": "GrandTheftMCPE",
 		"ip": "grandtheft.mcpe.me",
 		"type": "PE"
+	},
+	{
+		"name": "CosmicPE",
+		"ip": "play.cosmicpe.me",
+		"type": "PE"
 	}
 ]
