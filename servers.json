@@ -34,5 +34,10 @@
 		"name": "CosmicPE",
 		"ip": "play.cosmicpe.me",
 		"type": "PE"
-	}
+	},
+	{
+		"name": "NetherGames",
+		"ip": "play.nethergames.org",
+		"type": "PE"
+	},
 ]

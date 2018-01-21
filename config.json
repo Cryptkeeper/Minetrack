@@ -12,7 +12,8 @@
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
 		"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
 		"/favicons/grand_theft_mcpe.png": "assets/images/favicons/grand_theft_mcpe.png",
-        "/favicons/cosmicpe.png": "assets/images/favicons/cosmicpe.png"
+        "/favicons/cosmicpe.png": "assets/images/favicons/cosmicpe.png",
+        "/favicons/nethergames.png": "assets/images/favicons/nethergames.png"
 	},
 	"faviconOverride": {
 		"Mineplex": "/favicons/mineplex.png",
@@ -21,7 +22,8 @@
 		"CookieBuild": "/favicons/cookie_build.png",
 		"PigRaid": "/favicons/pigraid.png",
 		"GrandTheftMCPE": "/favicons/grand_theft_mcpe.png",
-        "CosmicPE": "/favicons/cosmicpe.png"
+        "CosmicPE": "/favicons/cosmicpe.png",
+        "NetherGames": "/favicons/nethergames.png"
 	},
 	"site": {
 		"port": 8081,
