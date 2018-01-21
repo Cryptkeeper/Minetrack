@@ -24,5 +24,20 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
-	}
+	},
+	{
+		"name": "GrandTheftMCPE",
+		"ip": "grandtheft.mcpe.me",
+		"type": "PE"
+	},
+	{
+		"name": "CosmicPE",
+		"ip": "play.cosmicpe.me",
+		"type": "PE"
+	},
+	{
+		"name": "NetherGames",
+		"ip": "play.nethergames.org",
+		"type": "PE"
+	},
 ]
