@@ -24,5 +24,10 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
+	},
+	{
+		"name": "GrandTheftMCPE",
+		"ip": "grandtheft.mcpe.me",
+		"type": "PE"
 	}
 ]
