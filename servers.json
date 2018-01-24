@@ -65,6 +65,11 @@
 		"type": "PC"
 	},
 	{
+		"name": "Sky Network",
+		"ip": "skynetwork.com.br",
+		"type": "PC"
+	},
+	{
 		"name": "Hypixel China",
 		"ip": "x19hypixel.nie.netease.com",
 		"type": "PC",
