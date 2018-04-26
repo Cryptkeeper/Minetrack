@@ -12,7 +12,8 @@
 	{
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
-		"type": "PC"
+		"type": "PC",
+		"color": "#176093"
 	},
 	{
 		"name": "Shotbow",
