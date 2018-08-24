@@ -24,10 +24,11 @@
 		"name": "PigRaid",
 		"ip": "pvp.pigraid.com",
 		"type": "PE"
-  },
-  {
-    "name": "CubeCraft",
-    "ip": "mco.cubecraft.net",
-    "type": "PE"
-  }
+	 },
+	 {
+	   "name": "CubeCraft",
+	   "ip": "mco.cubecraft.net",
+	   "type": "PE",
+	   "color": "#176093"
+	 }
 ]
