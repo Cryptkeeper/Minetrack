@@ -126,6 +126,10 @@ strong {
     display: inline-block;
 }
 
+.version {
+	font-size: 12px;
+}
+
 /*.server:hover {
     background: #282828;
     border: 1px solid #444;
