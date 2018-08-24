@@ -41,8 +41,6 @@ strong {
     background: #EBEBEB;
     color: #3B3738;
     overflow: auto;
-<<<<<<< HEAD
-=======
 }
 
 #header-wrapper {
@@ -57,7 +55,6 @@ strong {
 
 #header .column h1 {
     margin: -6px 0;
->>>>>>> f722f5295a9264bd64217ee3141f7a5692d1e554
 }
 
 #header .slogan {
@@ -127,6 +124,10 @@ strong {
     width: 738px;
     border: 1px solid transparent;
     display: inline-block;
+}
+
+.version {
+	font-size: 12px;
 }
 
 /*.server:hover {
