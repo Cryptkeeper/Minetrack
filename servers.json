@@ -30,5 +30,11 @@
 	   "ip": "mco.cubecraft.net",
 	   "type": "PE",
 	   "color": "#176093"
+	 },
+	 {
+	   "name": "HiveMC",
+	   "ip": "hivebedrock.network",
+	   "type": "PE",
+	   "color": "#ffcb03"
 	 }
 ]
