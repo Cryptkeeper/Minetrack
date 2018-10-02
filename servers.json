@@ -2,7 +2,8 @@
 	{
 		"name": "Mineplex",
 		"ip": "pe.mineplex.com",
-		"type": "PE"
+		"type": "PE",
+		"color": "#ec8008"
 	},
 	{
 		"name": "Lifeboat",
