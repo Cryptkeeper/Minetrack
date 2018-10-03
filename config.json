@@ -10,18 +10,18 @@
 		"/favicons/lifeboat.png": "assets/images/favicons/lifeboat.png",
 		"/favicons/inpvp.png": "assets/images/favicons/inpvp.png",
 		"/favicons/cookie_build.png": "assets/images/favicons/cookie_build.png",
-                "/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
-                "/favicons/cubecraft.png": "assets/images/favicons/cubecraft.png",
-		"/favicons/hivemc.png": "assets/images/favicons/hivemc.png"
+    	"/favicons/pigraid.png": "assets/images/favicons/pigraid.png",
+		"/favicons/cubecraft.png": "assets/images/favicons/cubecraft.png",
+		"/favicons/hive.png": "assets/images/favicons/hive.png"
 	},
 	"faviconOverride": {
 		"Mineplex": "/favicons/mineplex.png",
 		"Lifeboat": "/favicons/lifeboat.png",
 		"InPvP": "/favicons/inpvp.png",
 		"CookieBuild": "/favicons/cookie_build.png",
-                "PigRaid": "/favicons/pigraid.png",
-                "CubeCraft": "/favicons/cubecraft.png",
-		"HiveMC": "/favicons/hivemc.png"
+    	"PigRaid": "/favicons/pigraid.png",
+		"CubeCraft": "/favicons/cubecraft.png",
+		"Hive Games": "/favicons/hive.png"
 	},
 	"site": {
 		"port": 8081,

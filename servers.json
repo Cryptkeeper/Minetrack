@@ -33,9 +33,9 @@
 	   "color": "#176093"
 	 },
 	 {
-	   "name": "HiveMC",
-	   "ip": "hivebedrock.network",
-	   "type": "PE",
-	   "color": "#ffcb03"
-	 }
+		"name": "Hive Games",
+		"ip": "hivebedrock.network",
+		"type": "PE",
+		"color": "#ffcb03"
+	  }
 ]
