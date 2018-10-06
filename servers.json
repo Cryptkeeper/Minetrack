@@ -29,7 +29,8 @@
 	{
 		"name": "Mineplex",
 		"ip": "us.mineplex.com",
-		"type": "PC"
+		"type": "PC",
+		"color": "#ec8008"
 	},
 	{
 		"name": "Cosmic PVP",
