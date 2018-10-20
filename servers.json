@@ -58,6 +58,12 @@
 		"type": "PC"
 	},
 	{
+		"name": "LemonCloud",
+		"ip": "play.lemoncloud.org",
+		"type": "PC",
+		"color": "#FFE84E"
+	},
+	{
 		"name": "GommeHD",
 		"ip": "play.gommehd.net",
 		"type": "PC"
