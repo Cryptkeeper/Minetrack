@@ -27,15 +27,21 @@
 		"type": "PE"
 	 },
 	 {
-	   "name": "CubeCraft",
-	   "ip": "mco.cubecraft.net",
-	   "type": "PE",
-	   "color": "#176093"
+		"name": "CubeCraft",
+		"ip": "mco.cubecraft.net",
+		"type": "PE",
+		"color": "#176093"
 	 },
 	 {
 		"name": "Hive Games",
 		"ip": "hivebedrock.network",
 		"type": "PE",
 		"color": "#ffcb03"
+	  },
+	  {
+	  	"name": "GreenWix",
+	  	"ip": "play.greenwix.fun",
+	  	"type": "PE",
+	  	"color": "#1bdf1b"
 	  }
 ]
