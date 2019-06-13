@@ -5,6 +5,11 @@
 		"type": "PC"
 	},
 	{
+		"name": "Minehut",
+		"ip": "minehut.com",
+		"type": "PC"
+	},
+	{
 		"name": "HiveMC",
 		"ip": "play.hivemc.com",
 		"type": "PC",
