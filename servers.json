@@ -11,7 +11,7 @@
 		"type": "PE"
 	},
 	{
-		"name": "InPvP",
+		"name": "Mineville",
 		"ip": "play.inpvp.net",
 		"type": "PE",
 		"color": "#A874AB"
@@ -22,17 +22,17 @@
 		"type": "PE"
 	},
 	{
-		"name": "PigRaid",
-		"ip": "pvp.pigraid.com",
+		"name": "HyperLands",
+		"ip": "pvp.hyperlandsmc.net",
 		"type": "PE"
-	 },
-	 {
-	   "name": "CubeCraft",
-	   "ip": "mco.cubecraft.net",
-	   "type": "PE",
-	   "color": "#176093"
-	 },
-	 {
+	},
+	{
+		"name": "CubeCraft",
+		"ip": "mco.cubecraft.net",
+		"type": "PE",
+		"color": "#176093"
+	},
+	{
 		"name": "Hive Games",
 		"ip": "hivebedrock.network",
 		"type": "PE",
