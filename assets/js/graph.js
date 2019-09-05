@@ -44,7 +44,7 @@ var bigChartOptions = {
     },
     yaxis: {
         show: true,
-        tickSize: 2000,
+        tickSize: 4000,
         tickLength: 10,
         tickFormatter: function(value) {
             return formatNumber(value);
