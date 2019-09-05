@@ -281,7 +281,7 @@ h3 {
 /* Mojang Status */
 .mojang-status {
     width: 85px;
-    height: 106px;
+    height: 131px;
     display: inline-block;
     text-align: center;
     line-height: 20px;
@@ -293,6 +293,6 @@ h3 {
 }
 
 .mojang-status > i {
-    margin-top: 20px;
+    margin-top: 32px;
     font-size: 22px;
 }
