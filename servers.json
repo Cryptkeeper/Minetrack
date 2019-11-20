@@ -62,5 +62,10 @@
 		"ip": "x19hypixel.nie.netease.com",
 		"type": "PC",
 		"color": "#E68196"
+	},
+	{
+		"name": "PokéFind",
+		"ip": "play.pokefind.co",
+		"type": "PC"
 	}
 ]
