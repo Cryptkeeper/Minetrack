@@ -4,7 +4,7 @@ Built to be lightweight and durable, you can easily adapt it to monitor BungeeCo
 
 #### A note on the state of this project
 This project and the offical website are not actively maintained anymore, but you are welcome to run your once instances of minetrack.
-
+I will however accept and review pull-requests, so please share any improvements you are making so everybody can benefit from them.
 #### Try it out!
 You can see an up-to-date copy of the production branch running on http://minetrack.me
 
