@@ -21,8 +21,6 @@
 	},
 	"logToDatabase": true,
 	"graphDuration": 86400000,
-	"serverCategories": {
-	},
 	"versions": {
 		"PC": [
 			4,
@@ -40,6 +38,5 @@
 			0
 		]
 	},
-	"categoriesVisible": false,
 	"serverTypesVisible": false
 }

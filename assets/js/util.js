@@ -5,9 +5,6 @@ var tooltip = $('#tooltip');
 var lastMojangServiceUpdate;
 var publicConfig;
 
-var createdCategories = false;
-var categoriesVisible;
-
 function showCaption(html) {
     var tagline = $('#tagline-text');
     tagline.stop(true, false);
@@ -23,51 +20,7 @@ function hideCaption() {
 
 function setPublicConfig(json) {
     publicConfig = json;
-
     $('#server-container-list').html('');
-
-    createdCategories = false;
-
-    createCategories();
-
-    if (publicConfig.categoriesVisible) {
-    	$('.category-header').css('display', 'block');
-	    $('.server-container').css('margin', '10px auto');
-
-	    sortServers();
-    }
-}
-
-function createCategories() {
-	if (!createdCategories) {
-		createdCategories = true;
-
-		var keys = Object.keys(publicConfig.categories);
-
-		for (var i = 0; i < keys.length; i++) {
-			var title = publicConfig.categories[keys[i]];
-
-			$('#server-container-list').append('<div id="server-container-' + keys[i] + '" class="container server-container"><h3 class="category-header">' + title + '</h3></div>');
-		}
-
-		$('#server-container-list').append('<div id="server-container-all" class="container server-container"></div>');
-	}
-}
-
-function getServersByCategory() {
-	var byCategory = {};
-
-	for (var i = 0; i < publicConfig.servers.length; i++) {
-		var entry = publicConfig.servers[i];
-
-		if (!byCategory[entry.category]) {
-			byCategory[entry.category] = [];
-		}
-
-		byCategory[entry.category].push(entry);
-	}
-
-	return byCategory;
 }
 
 function getServerByField(id, value) {
