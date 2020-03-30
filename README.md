@@ -12,7 +12,7 @@ You can find a list of community hosted instances below:
 Want to be listed here? Add yourself in a pull-request!
 
 #### Try it out!
-You can see an up-to-date copy of the production branch running on http://minetrack.me
+You can see an up-to-date copy of the production branch running on https://minetrack.me
 
 "master" branch contains everything you need to start your own copy. "production" branch is what's used in the production environment of the minetrack.me site.
 
