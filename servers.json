@@ -2,13 +2,11 @@
 	{
 		"name": "Hypixel",
 		"ip": "mc.hypixel.net",
-		"type": "PC",
-		"category": "minigames"
+		"type": "PC"
 	},
 	{
 		"name": "HiveMC",
 		"ip": "play.hivemc.com",
-		"type": "PC",
-		"category": "minigames"
+		"type": "PC"
 	}
 ]

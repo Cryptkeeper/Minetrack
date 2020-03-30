@@ -110,7 +110,9 @@ strong {
 /* Server listing */
 .server-container {
     overflow: auto;
-    display: flex; flex-wrap: wrap; justify-content: center;
+	display: flex; 
+	flex-wrap: wrap; 
+	justify-content: center;
 }
 
 .server {
@@ -153,13 +155,6 @@ strong {
     border: 1px solid #A09E9E;
     font-size: 14px;
     margin-bottom: 2px;
-}
-
-.category-header {
-    margin-bottom: 10px;
-    margin-left: 15px;
-    text-align: left;
-    display: none;
 }
 
 .server-meta {

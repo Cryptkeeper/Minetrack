@@ -22,10 +22,6 @@
 	},
 	"logToDatabase": false,
 	"graphDuration": 86400000,
-	"serverCategories": {
-		"minigames": "Minigame Networks",
-		"pocket": "Pocket Edition Networks"
-	},
 	"versions": {
 		"PC": [
 			4,
@@ -42,6 +38,5 @@
 			0
 		]
 	},
-	"categoriesVisible": true,
 	"serverTypesVisible": true
 }
