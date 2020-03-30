@@ -2,6 +2,15 @@
 Minetrack is a Minecraft PC/PE server tracker that lets you focus on what's happening *now*. 
 Built to be lightweight and durable, you can easily adapt it to monitor BungeeCord or server instances.
 
+#### This project is not actively maintained!
+This project and the offical website are not actively maintained anymore, but you are welcome to run your own instances of Minetrack.
+I will however review and accept pull-requests, so please share any improvements you are making so everybody can benefit from them.
+
+You can find a list of community hosted instances below:  
+* https://minetrack.me
+
+Want to be listed here? Add yourself in a pull-request!
+
 #### Try it out!
 You can see an up-to-date copy of the production branch running on http://minetrack.me
 
