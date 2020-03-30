@@ -8,12 +8,6 @@ var publicConfig;
 var createdCategories = false;
 var categoriesVisible;
 
-var colorsByStatus = {
-    'Online': '#87D37C',
-    'Unstable': '#f1c40f',
-    'Offline': '#DE5749'
-};
-
 function showCaption(html) {
     var tagline = $('#tagline-text');
     tagline.stop(true, false);
@@ -116,9 +110,10 @@ function updateMojangServices(currentUpdate) {
 
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        var status = lastMojangServiceUpdate[key];
+		var status = lastMojangServiceUpdate[key];
 
-        $('#mojang-status_' + status.name).css({background: colorsByStatus[status.title]});
+		// hack: ensure mojang-status is added for alignment, replace existing class to swap status color
+        $('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
         $('#mojang-status-text_' + status.name).text(status.title);
     }
 }

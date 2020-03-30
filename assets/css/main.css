@@ -31,11 +31,6 @@ strong {
     font-weight: 700;
 }
 
-/* Constants */
-#header, #footer, #tagline {
-
-}
-
 /* Header */
 #header {
     background: #EBEBEB;
@@ -295,4 +290,49 @@ h3 {
 .mojang-status > i {
     margin-top: 32px;
     font-size: 22px;
+}
+
+/* Mojang status colors */
+.mojang-status-online {
+	background: #87D37C;
+}
+
+.mojang-status-unstable {
+	background: #f1c40f;
+}
+
+.mojang-status-offline {
+	background: #DE5749;
+}
+
+/* Dark color scheme overrides */
+@media (prefers-color-scheme: dark) {
+	body {
+		background: #1c1b1c;
+	}
+
+	#header, #footer {
+		background: #3B3738;
+		color: #FFF;
+	}
+
+	#footer a, #header a:hover {
+		border-bottom: 1px dashed transparent !important;
+	}
+
+	#footer a:hover, #header a {
+		border-bottom: 1px dashed #EBEBEB !important;
+	}
+
+	.mojang-status-online {
+		background: #6b9963;
+	}
+
+	.mojang-status-unstable {
+		background: #a87b4b;
+	}
+
+	.mojang-status-offline {
+		background: #A6453B;
+	}
 }
