@@ -317,11 +317,11 @@ if (config.logToDatabase) {
 			if (networkData) {
 				var graphPeakIndex = -1;
 				var graphPeakPlayerCount = 0;
-				for (var i = 0; i < networkData.length; i++) {
+				for (var x = 0; x < networkData.length; x++) {
 					// [1] refers to the online player count
 					var point = networkData[i][1];
 					if (point > 0 && (graphPeakIndex === -1 || point > graphPeakPlayerCount)) {
-						graphPeakIndex = i;
+						graphPeakIndex = x;
 						graphPeakPlayerCount = point;
 					}
 				}
