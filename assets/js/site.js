@@ -83,49 +83,22 @@ function updateServerStatus(lastEntry) {
 }
 
 function sortServers() {
-    if (categoriesVisible) {
-        var byCategories = getServersByCategory();
+	var serverNames = [];
 
-        var categories = Object.keys(byCategories);
+	var keys = Object.keys(lastPlayerEntries);
 
-        for (var i = 0; i < categories.length; i++) {
-            var relevantPlayers = [];
+	for (var i = 0; i < keys.length; i++) {
+		serverNames.push(keys[i]);
+	}
 
-            for (var x = 0; x < byCategories[categories[i]].length; x++) {
-                var server = byCategories[categories[i]][x];
+	serverNames.sort(function(a, b) {
+		return (lastPlayerEntries[b] || 0) - (lastPlayerEntries[a] || 0);
+	});
 
-                relevantPlayers[server.name] = lastPlayerEntries[server.name];
-            }
-
-            var keys = Object.keys(relevantPlayers);
-
-            keys.sort(function(a, b) {
-                return relevantPlayers[b] - relevantPlayers[a];
-            });
-
-            for (var x = 0; x < keys.length; x++) {
-                $('#container_' + safeName(keys[x])).appendTo('#server-container-' + categories[i]);
-                $('#ranking_' + safeName(keys[x])).text('#' + (x + 1));
-            }
-        }
-    } else {
-        var serverNames = [];
-
-        var keys = Object.keys(lastPlayerEntries);
-
-        for (var i = 0; i < keys.length; i++) {
-            serverNames.push(keys[i]);
-        }
-
-        serverNames.sort(function(a, b) {
-            return (lastPlayerEntries[b] || 0) - (lastPlayerEntries[a] || 0);
-        });
-
-        for (var i = 0; i < serverNames.length; i++) {
-            $('#container_' + safeName(serverNames[i])).appendTo('#server-container-all');
-            $('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
-        }
-    }
+	for (var i = 0; i < serverNames.length; i++) {
+		$('#container_' + safeName(serverNames[i])).appendTo('#server-container-list');
+		$('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
+	}
 }
 
 function updatePercentageBar() {
@@ -295,8 +268,6 @@ $(document).ready(function() {
 
         $('#server-container-list').html('');
 
-        createdCategories = false;
-
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
         $('#big-graph-controls').css('display', 'none');
@@ -437,7 +408,7 @@ $(document).ready(function() {
                         <div class="column" style="float: right;">\
                             <div class="chart" id="chart_' + safeNameCopy + '"></div>\
                         </div>'
-            }).appendTo("#server-container-" + getServerByIp(info.ip).category);
+            }).appendTo("#server-container-list");
 
             var favicon = MISSING_FAVICON_BASE64;
 
