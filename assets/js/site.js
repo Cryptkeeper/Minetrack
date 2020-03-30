@@ -262,6 +262,15 @@ function printPort(port) {
   }
 }
 
+function updateServerPeak(name, time, playerCount) {
+	var safeNameCopy = safeName(name);
+	// hack: strip the AM/PM suffix, this could just use a date format instead
+	var timestamp = getTimestamp(time / 1000).split(':');
+	var end = timestamp.pop().split(' ')[1];
+	timestamp = timestamp.join(':') + ' ' + end;
+	$('#peak_' + safeNameCopy).html('24h Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -418,11 +427,12 @@ $(document).ready(function() {
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + safeNameCopy + '"></p>\
                         </div>\
-                        <div class="column" style="width: 220px;">\
+                        <div class="column" style="width: 282px;">\
                             <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
                             <span id="status_' + safeNameCopy + '">Waiting</span>\
-                            <div id="version_' + safeNameCopy + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-                            <span id="record_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
+							<div id="version_' + safeNameCopy + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
+							<span id="peak_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
+                            <br><span id="record_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
                             <div class="chart" id="chart_' + safeNameCopy + '"></div>\
@@ -486,17 +496,24 @@ $(document).ready(function() {
         }
     });
 
-    socket.on('syncComplete', function(data) {
+    socket.on('syncComplete', function() {
         hideCaption();
+	});
+	
+	socket.on('updatePeak', function(data) {
+		updateServerPeak(data.name, data.timestamp, data.players);
+	});
 
-        $(document).on('click', '.server', function(e) {
-            var serverId = $(this).attr('server-id');
-        });
-    });
+	socket.on('peaks', function(data) {
+		var keys = Object.keys(data);
+		for (var i = 0; i < keys.length; i++) {
+			var val = data[keys[i]];
+			updateServerPeak(keys[i], val[0], val[1]);
+		}
+	});
 
     $(document).on('click', '.graph-control', function(e) {
         var serverIp = $(this).attr('data-target-network');
-        var checked = $(this).attr('checked');
 
         // Restore it, or delete it - either works.
         if (!this.checked) {
