@@ -431,7 +431,7 @@ $(document).ready(function() {
                             <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
                             <span id="status_' + safeNameCopy + '">Waiting</span>\
 							<div id="version_' + safeNameCopy + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-							<span id="peak_' + safeNameCopy + '" class="color-dark-gray server-meta"></div>\
+							<span id="peak_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
                             <br><span id="record_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
