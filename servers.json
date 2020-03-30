@@ -16,16 +16,6 @@
 		"type": "PE",
 		"color": "#A874AB"
 	},
-	{
-		"name": "CookieBuild",
-		"ip": "pe.cookie-build.com",
-		"type": "PE"
-	},
-	{
-		"name": "PigRaid",
-		"ip": "pvp.pigraid.com",
-		"type": "PE"
-	 },
 	 {
 	   "name": "CubeCraft",
 	   "ip": "mco.cubecraft.net",
