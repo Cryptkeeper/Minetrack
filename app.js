@@ -21,6 +21,7 @@ var networkVersions = [];
 var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
+var graphPeaks = [];
 
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
@@ -177,6 +178,38 @@ function handlePing(network, res, err, attemptedVersion) {
 				timestamp: timeMs
 			});
 		}
+
+		// Update calculated graph peak regardless if the graph is being updated
+		// This can cause a (harmless) desync between live and stored data, but it allows it to be more accurate for long surviving processes
+		var networkData = graphData[network.name];
+
+		if (networkData) {
+			var graphPeakIndex = -1;
+			var graphPeakPlayerCount = 0;
+			for (var i = 0; i < networkData.length; i++) {
+				// [1] refers to the online player count
+				var point = networkData[i][1];
+				if (point > 0 && (graphPeakIndex === -1 || point > graphPeakPlayerCount)) {
+					graphPeakIndex = i;
+					graphPeakPlayerCount = point;
+				}
+			}
+			// Test if a highest index has been selected and has changed from any previous selections
+			var previousPeak = graphPeaks[network.name];
+			// [1] refers to the online player count
+			if (graphPeakIndex !== -1 && (!previousPeak || previousPeak[1] !== graphPeakPlayerCount)) {
+				var graphPeakData = networkData[graphPeakIndex];
+				graphPeaks[network.name] = graphPeakData;
+
+				// Broadcast update event to clients
+				server.io.sockets.emit('updatePeak', {
+					ip: network.ip,
+					name: network.name,
+					players: graphPeakData[1],
+					timestamp: graphPeakData[0]
+				});
+			}
+		}
 	}
 }
 
@@ -216,6 +249,11 @@ function startServices() {
 			if (config.logToDatabase) {
 				// Send them the big 24h graph.
 				client.emit('historyGraph', graphData);
+
+				// Send current peaks, if any
+				if (graphPeaks.length > 0) {
+					client.emit('peaks', graphPeaks);
+				}
 			}
 		});
 
@@ -274,9 +312,28 @@ if (config.logToDatabase) {
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
 
 		for (var i = 0; i < servers.length; i++) {
+			// Compute graph peak from historical data
+			var networkData = graphData[servers[i].name];
+			if (networkData) {
+				var graphPeakIndex = -1;
+				var graphPeakPlayerCount = 0;
+				for (var i = 0; i < networkData.length; i++) {
+					// [1] refers to the online player count
+					var point = networkData[i][1];
+					if (point > 0 && (graphPeakIndex === -1 || point > graphPeakPlayerCount)) {
+						graphPeakIndex = i;
+						graphPeakPlayerCount = point;
+					}
+				}
+				if (graphPeakIndex !== -1) {
+					graphPeaks[servers[i].name] = networkData[graphPeakIndex];
+					logger.log('info', 'Selected graph peak %d (%s)', networkData[graphPeakIndex][1], servers[i].name);
+				}
+			}
+
 			(function(server) {
 				db.getTotalRecord(server.ip, function(record) {
-					logger.log('info', 'Completed query for %s', server.ip);
+					logger.log('info', 'Computed total record %s (%d)', server.ip, record);
 
 					highestPlayerCount[server.ip] = record;
 
