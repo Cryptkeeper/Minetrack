@@ -1,3 +1,13 @@
+**4.0.0** *(Mar 30 2020)*
+- Added dark mode
+- Added 24hr peak feature
+- Removed legacy category system
+- Removed /status.json deprecation warning
+- Removed Google Analytics tracker
+- Changed default footer text
+- Various bug fixes
+- Removed gulp build tools
+
 **3.1.0** *(Mar 14 2017)*
 - Updated design. More flexible!
 - Automatically builds indexes on database.
