@@ -21,7 +21,7 @@ var networkVersions = [];
 var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
-var graphPeaks = [];
+var graphPeaks = {};
 
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
@@ -251,7 +251,7 @@ function startServices() {
 				client.emit('historyGraph', graphData);
 
 				// Send current peaks, if any
-				if (graphPeaks.length > 0) {
+				if (Object.keys(graphPeaks).length > 0) {
 					client.emit('peaks', graphPeaks);
 				}
 			}
