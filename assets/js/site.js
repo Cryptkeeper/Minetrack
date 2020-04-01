@@ -237,10 +237,15 @@ function printPort(port) {
 
 function updateServerPeak(name, time, playerCount) {
 	var safeNameCopy = safeName(name);
-	// hack: strip the AM/PM suffix, this could just use a date format instead
+	// hack: strip the AM/PM suffix
+	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
 	var timestamp = getTimestamp(time / 1000).split(':');
 	var end = timestamp.pop().split(' ')[1];
-	timestamp = timestamp.join(':') + ' ' + end;
+	timestamp = timestamp.join(':');
+	// end may be undefined for other timezones/24 hour times
+	if (end) {
+		timestamp += ' ' + end;
+	}
 	$('#peak_' + safeNameCopy).html('24h Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
