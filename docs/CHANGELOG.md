@@ -1,3 +1,6 @@
+**4.0.5** *(Apr 1 2020)*
+- The frontend will now auto calculate the "24h Peak" label using your configured graphDuration in config.json
+
 **4.0.3** *(Apr 1 2020)*
 - Updated jquery dependency, 2.1.4->3.4.1
 - Updated socket.io dependency, 1.3.7->2.3.0 (fixes several socket.io low risk vulns)
