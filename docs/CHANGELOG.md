@@ -1,3 +1,9 @@
+**4.0.3** *(Apr 1 2020)*
+- Updated jquery dependency, 2.1.4->3.4.1
+- Updated socket.io dependency, 1.3.7->2.3.0 (fixes several socket.io low risk vulns)
+- Logs CF-Connecting-IP/X-Forwarded-For headers when present
+- Added Minecraft version 1.15.1 support to config.json & minecraft.json
+
 **4.0.2** *(Apr 1 2020)*
 - Updated install.sh & start.sh scripts
 - Committed package-lock.json
