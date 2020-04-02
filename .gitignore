@@ -4,4 +4,3 @@ minetrack.log
 database.sql
 database.sql-journal
 .DS_Store
-package-lock.json
