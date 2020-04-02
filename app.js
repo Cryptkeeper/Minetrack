@@ -232,7 +232,7 @@ function startServices() {
 		// We're good to connect them!
 		connectedClients += 1;
 
-		logger.log('info', '%s connected, total clients: %d', client.request.connection.remoteAddress, connectedClients);
+		logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 
 		// We send the boot time (also sent in publicConfig.json) to the frontend to validate they have the same config.
 		// If so, they'll send back "requestListing" event, otherwise they will pull the new config and retry.
@@ -242,7 +242,7 @@ function startServices() {
 		client.on('disconnect', function() {
 			connectedClients -= 1;
 
-			logger.log('info', '%s disconnected, total clients: %d', client.request.connection.remoteAddress, connectedClients);
+			logger.log('info', '%s disconnected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 		});
 
 		client.on('requestHistoryGraph', function() {
