@@ -8,7 +8,6 @@
 		"/css/main.css": "assets/css/main.css"
 	},
 	"faviconOverride": {
-
 	},
 	"site": {
 		"port": 8080,
@@ -32,7 +31,8 @@
 			315,
 			335,
 			393,
-			477
+			477,
+			575
 		],
 		"PE": [
 			0
