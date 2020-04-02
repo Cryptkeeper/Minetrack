@@ -163,7 +163,17 @@ function msToTime(timer) {
 	var minutes = timer % 60;
 	var hours = (timer - minutes) / 60;
 
+	var days = Math.floor(hours / 24);
+	hours -= days * 24;
+
 	var string = '';
+
+	// hack: only format days if >1, if === 1 it will format as "24h" instead
+	if (days > 1) {
+		string += days + 'd';
+	} else if (days === 1) {
+		hours += 24;
+	}
 
 	if (hours > 0) {
 		string += hours + 'h';

@@ -246,7 +246,8 @@ function updateServerPeak(name, time, playerCount) {
 	if (end) {
 		timestamp += ' ' + end;
 	}
-	$('#peak_' + safeNameCopy).html('24h Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
+	var timeLabel = msToTime(publicConfig.graphDuration);
+	$('#peak_' + safeNameCopy).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
 $(document).ready(function() {
