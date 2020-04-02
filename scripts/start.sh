@@ -1,5 +1,5 @@
 while true;
 do
-        /usr/bin/nodejs app.js 
+        node app.js 
         sleep 5
 done
