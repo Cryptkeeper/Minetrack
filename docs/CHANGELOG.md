@@ -1,3 +1,8 @@
+**4.0.2** *(Apr 1 2020)*
+- Updated install.sh & start.sh scripts
+- Committed package-lock.json
+- Fixed outdated package.json version
+
 **4.0.1** *(Apr 1 2020)*
 - Fixed potential crash issue during startup when determining 24 hour graph peaks.
 - Fixed a bug in the frontend that could result in "undefined" AM/PM time markers.
