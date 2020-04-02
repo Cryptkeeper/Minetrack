@@ -1,3 +1,12 @@
+**4.0.1** *(Apr 1 2020)*
+- Fixed potential crash issue during startup when determining 24 hour graph peaks.
+- Fixed a bug in the frontend that could result in "undefined" AM/PM time markers.
+- Added protection to prevent artifically high player counts (>250k) degrading browser performance by abusing the graphs.
+- Updated mime dependency, 1.3.4->2.4.4
+- Updated request dependency, 2.74.0->2.88.2 (deprecated, should investigate removal)
+- Updated sqlite3 dependency, 3.1.8->4.1.1 (fixes macOS install issue)
+- winston & socket.io dependencies were not updated due to broken behavior. Will investigate as a follow up patch.
+
 **4.0.0** *(Mar 30 2020)*
 - Added dark mode
 - Added 24hr peak feature
