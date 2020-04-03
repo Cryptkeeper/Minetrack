@@ -8,6 +8,7 @@ I will however review and accept pull-requests, so please share any improvements
 
 You can find a list of community hosted instances below:  
 * https://minetrack.me
+* https://trackedservers.com
 
 Want to be listed here? Add yourself in a pull-request!
 
