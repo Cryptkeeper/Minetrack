@@ -1,5 +1,6 @@
 **4.1** *(Apr 6 2020)*
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
+- publicConfig.json is now sent over the socket connection so the frontend can be safely reloaded on rebooted instances
 - Tooltips have been optimized and updated to a more readable design
 - Initial page loading has been optimized
 - MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.png to improve caching behavior (and its customizable now!)
@@ -10,7 +11,7 @@
 - Fixed some elements/frontend state not being completely reset on disconnect
 - Fixed Minecraft Bedrock Edition servers showing the default port of 19132
 - Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
-- Remove #validateBootTime loop, it will now display a refresh message
+- Remove #validateBootTime loop and logic
 - Lots and lots of optimizations, legacy code removal and reorganization.
 - Seriously.
 
