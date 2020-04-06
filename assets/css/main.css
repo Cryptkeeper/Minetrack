@@ -10,7 +10,6 @@
 }
 
 body {
-    background: #212021;
     color: #FFF;
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
@@ -39,8 +38,6 @@ strong {
 
 /* Header */
 header {
-    background: #EBEBEB;
-    color: #3B3738;
 	overflow: auto;
 }
 
@@ -76,19 +73,12 @@ header .mojang-status-column {
 
 header a {
     color: inherit;
-    border-bottom: 1px dashed #3B3738;
-}
-
-header a:hover {
-    border-bottom: 1px dashed transparent;
 }
 
 /* Footer */
 footer {
     font-size: 16px;
     text-transform: uppercase;
-    background: #EBEBEB;
-    color: #3B3738;
     padding: 15px 0 15px 20px;
     margin-top: 15px;
 }
@@ -96,11 +86,6 @@ footer {
 footer a {
     color: inherit;
     font-weight: 700;
-    border-bottom: 1px dashed #3B3738;
-}
-
-footer a:hover {
-    border-bottom: 1px dashed #000 !important;
 }
 
 /* Status */
@@ -300,20 +285,37 @@ footer a:hover {
     font-size: 22px;
 }
 
-/* Mojang status colors */
-.mojang-status-online {
-	background: #87D37C;
+@media (prefers-color-scheme: light) {
+	body {
+		background: #212021;
+	}
+
+	header, footer {
+		background: #EBEBEB;
+		color: #3B3738;
+	}
+
+	footer a, header a:hover {
+		border-bottom: 1px dashed transparent !important;
+	}
+
+	footer a:hover, header a {
+		border-bottom: 1px dashed #3B3738 !important;
+	}
+
+	.mojang-status-online {
+		background: #87D37C;
+	}
+	
+	.mojang-status-unstable {
+		background: #f1c40f;
+	}
+	
+	.mojang-status-offline {
+		background: #DE5749;
+	}
 }
 
-.mojang-status-unstable {
-	background: #f1c40f;
-}
-
-.mojang-status-offline {
-	background: #DE5749;
-}
-
-/* Dark color scheme overrides */
 @media (prefers-color-scheme: dark) {
 	body {
 		background: #1c1b1c;
