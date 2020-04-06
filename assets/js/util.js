@@ -42,7 +42,7 @@ class ServerRegistry {
 			serverId = this._nextId++;
 			this._serverIdsByName[name] = serverId;
 			this._serverNamesById[serverId] = name;
-			
+
 			console.log('Assigning server name %s to id %d', name, serverId);
 		}
 		return serverId;
@@ -168,22 +168,11 @@ class GraphDisplayManager {
 	}
 
 	setGraphData(graphData) {
-		// TODO: move to page init instead of lazy load?
+		// Lazy load settings from localStorage, if any and if enabled
 		if (!this._hasLoadedSettings) {
 			this._hasLoadedSettings = true;
 
-			if (typeof(localStorage)) {
-				let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY);
-				if (serverNames) {
-					serverNames = JSON.parse(serverNames);
-
-					// Mutate the server name array into serverIds for active use
-					for (let i = 0; i < serverNames.length; i++) {
-						const serverId = serverRegistry.getOrAssign(serverNames[i]);
-						this._hiddenServerIds.push(serverId);
-					}
-				}
-			}
+			this.loadLocalStorage();
 		}
 
 		const keys = Object.keys(graphData);
@@ -197,6 +186,21 @@ class GraphDisplayManager {
 		// This isn't nessecary since #setGraphData is manually called, but it ensures
 		// consistent behavior which will make any future changes easier.
 		this._mustRedraw = true;
+	}
+
+	loadLocalStorage() {
+		if (typeof(localStorage)) {
+			let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY);
+			if (serverNames) {
+				serverNames = JSON.parse(serverNames);
+
+				// Mutate the server name array into serverIds for active use
+				for (let i = 0; i < serverNames.length; i++) {
+					const serverId = serverRegistry.getOrAssign(serverNames[i]);
+					this._hiddenServerIds.push(serverId);
+				}
+			}
+		}
 	}
 
 	updateLocalStorage() {
@@ -259,7 +263,12 @@ class GraphDisplayManager {
 		return false;
 	}
 
-	// TODO: reset logic, need to check existing legacy calls before retro-fitting
+	reset() {
+		this._graphData = [];
+		this._hiddenServerIds = [];
+		this._hasLoadedSettings = false;
+		this._mustRedraw = false;
+	}
 }
 
 var publicConfig;

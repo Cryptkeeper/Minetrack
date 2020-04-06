@@ -208,6 +208,7 @@ $(document).ready(function() {
 		
 		serverRegistry.reset();
 		pingTracker.reset();
+		graphDisplayManager.reset();
 
         graphs = {};
 
