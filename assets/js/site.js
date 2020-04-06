@@ -1,7 +1,5 @@
 var historyPlot;
 
-var sortServersTask;
-
 const tooltip = new Tooltip();
 
 const serverRegistry = new ServerRegistry();
@@ -157,9 +155,6 @@ function validateBootTime(bootTime, socket) {
         if (!isMobileBrowser()) {
 			socket.emit('requestHistoryGraph');
 		}
-
-        // Start any special updating tasks.
-        sortServersTask = setInterval(sortServers, 10000);
     } else {
         $('#tagline-text').text('Updating...');
 
@@ -263,8 +258,6 @@ $(document).ready(function() {
     });
 
     socket.on('disconnect', function() {
-        if (sortServersTask) clearInterval(sortServersTask);
-
 		showCaption('Disconnected! Refresh?');
 		
 		serverRegistry.reset();
@@ -389,5 +382,9 @@ $(document).ready(function() {
             historyPlot.setupGrid();
             historyPlot.draw();
         }
-    });
+	});
+	
+	// Run the sortServers loop even if the frontend has not connected to the backend
+	// It will safely handle the empty data and simplifies state logic
+	setInterval(sortServers, 10000);
 });
