@@ -72,10 +72,6 @@ function getTimestamp(ms) {
     return date.toLocaleTimeString();
 }
 
-function safeName(name) {
-    return name.replace(/ /g, '');
-}
-
 function renderTooltip(x, y, html) {
 	tooltip.html(html).css({
 		top: y,

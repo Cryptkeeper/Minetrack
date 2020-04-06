@@ -13,11 +13,16 @@ var sortServersTask;
 var currentServerHover;
 var faviconSize = 64;
 
-function updateServerStatus(lastEntry) {
-    var info = lastEntry.info;
+const serverIdsByName = [];
+var nextServerId = 0;
 
-    var div = $('#status_' + safeName(info.name));
-    var versionDiv = $('#version_' + safeName(info.name));
+function updateServerStatus(lastEntry) {
+	var info = lastEntry.info;
+	
+	const serverId = serverIdsByName[info.name];
+
+    var div = $('#status_' + serverId);
+    var versionDiv = $('#version_' + serverId);
 
     if (lastEntry.versions) {
         var versions = '';
@@ -76,7 +81,7 @@ function updateServerStatus(lastEntry) {
     $("#stat_networks").text(formatNumber(keys.length));
 
     if (lastEntry.record) {
-        $('#record_' + safeName(info.name)).html('Record: ' + formatNumber(lastEntry.record));
+        $('#record_' + serverId).html('Record: ' + formatNumber(lastEntry.record));
     }
 
     updatePercentageBar();
@@ -96,8 +101,9 @@ function sortServers() {
 	});
 
 	for (var i = 0; i < serverNames.length; i++) {
-		$('#container_' + safeName(serverNames[i])).appendTo('#server-container-list');
-		$('#ranking_' + safeName(serverNames[i])).text('#' + (i + 1));
+		const serverId = serverIdsByName[serverNames[i]];
+		$('#container_' + serverId).appendTo('#server-container-list');
+		$('#ranking_' + serverId).text('#' + (i + 1));
 	}
 }
 
@@ -115,21 +121,21 @@ function updatePercentageBar() {
 
     for (var i = 0; i < keys.length; i++) {
         (function(pos, server, length) {
-            var safeNameCopy = safeName(server);
+			const serverId = serverIdsByName[server];
             var playerCount = lastPlayerEntries[server];
 
-            var div = $('#perc_bar_part_' + safeNameCopy);
+            var div = $('#perc_bar_part_' + serverId);
 
             // Setup the base
             if (!div.length) {
                 $('<div/>', {
-                    id: 'perc_bar_part_' + safeNameCopy,
+                    id: 'perc_bar_part_' + serverId,
                     class: 'perc-bar-part',
                     html: '',
                     style: 'background: ' + getServerColor(server) + ';'
                 }).appendTo(parent);
 
-                div = $('#perc_bar_part_' + safeNameCopy);
+                div = $('#perc_bar_part_' + serverId);
 
                 div.mouseover(function(e) {
                     currentServerHover = server;
@@ -236,7 +242,6 @@ function printPort(port) {
 }
 
 function updateServerPeak(name, time, playerCount) {
-	var safeNameCopy = safeName(name);
 	// hack: strip the AM/PM suffix
 	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
 	var timestamp = getTimestamp(time / 1000).split(':');
@@ -247,7 +252,8 @@ function updateServerPeak(name, time, playerCount) {
 		timestamp += ' ' + end;
 	}
 	var timeLabel = msToTime(publicConfig.graphDuration);
-	$('#peak_' + safeNameCopy).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
+	const serverId = serverIdsByName[name];
+	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
 $(document).ready(function() {
@@ -383,36 +389,37 @@ $(document).ready(function() {
             }
 
             var lastEntry = history[history.length - 1];
-            var info = lastEntry.info;
-
+			var info = lastEntry.info;
+			
             if (lastEntry.error) {
                 lastPlayerEntries[info.name] = 0;
             } else if (lastEntry.result) {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
-            }
+			}
+			
+			const serverId = nextServerId++;
+			serverIdsByName[info.name] = serverId;
 
             var typeString = publicConfig.serverTypesVisible ? '<span class="type">' + info.type + '</span>' : '';
 
-            var safeNameCopy = safeName(info.name);
-
             $('<div/>', {
-                id: 'container_' + safeNameCopy,
+                id: 'container_' + serverId,
                 class: 'server',
-                'server-id': safeNameCopy,
-                html: '<div id="server-' + safeNameCopy + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + safeNameCopy + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '" height="' + faviconSize + '" width="' + faviconSize + '">\
+                'server-id': serverId,
+                html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
+                            <img id="favicon_' + serverId + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '" height="' + faviconSize + '" width="' + faviconSize + '">\
                             <br />\
-                            <p class="text-center-align rank" id="ranking_' + safeNameCopy + '"></p>\
+                            <p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
                         </div>\
                         <div class="column" style="width: 282px;">\
                             <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
-                            <span id="status_' + safeNameCopy + '">Waiting</span>\
-							<div id="version_' + safeNameCopy + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-							<span id="peak_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
-                            <br><span id="record_' + safeNameCopy + '" class="color-dark-gray server-meta"></span>\
+                            <span id="status_' + serverId + '">Waiting</span>\
+							<div id="version_' + serverId + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
+							<span id="peak_' + serverId + '" class="color-dark-gray server-meta"></span>\
+                            <br><span id="record_' + serverId + '" class="color-dark-gray server-meta"></span>\
                         </div>\
                         <div class="column" style="float: right;">\
-                            <div class="chart" id="chart_' + safeNameCopy + '"></div>\
+                            <div class="chart" id="chart_' + serverId + '"></div>\
                         </div>'
             }).appendTo("#server-container-list");
 
@@ -422,16 +429,16 @@ $(document).ready(function() {
                 favicon = lastEntry.result.favicon;
             }
 
-            $('#favicon_' + safeName(info.name)).attr('src', favicon);
+            $('#favicon_' + serverId).attr('src', favicon);
 
             graphs[lastEntry.info.name] = {
                 listing: listing,
-                plot: $.plot('#chart_' + safeNameCopy, [listing], smallChartOptions)
+                plot: $.plot('#chart_' + serverId, [listing], smallChartOptions)
             };
 
             updateServerStatus(lastEntry);
 
-            $('#chart_' + safeNameCopy).bind('plothover', handlePlotHover);
+            $('#chart_' + serverId).bind('plothover', handlePlotHover);
         }
 
         sortServers();
@@ -442,11 +449,12 @@ $(document).ready(function() {
         // Prevent weird race conditions.
         if (!graphs[update.info.name]) {
             return;
-        }
+		}
 
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
-            $('#favicon_' + safeName(update.info.name)).attr('src', update.result.favicon);
+			const serverId = serverIdsByName[update.info.name];
+            $('#favicon_' + serverId).attr('src', update.result.favicon);
         }
 
         var graph = graphs[update.info.name];
