@@ -64,11 +64,29 @@ class ServerRegistry {
 class PingTracker {
 	constructor() {
 		this._lastPlayerCounts = [];
+		this._serverGraphs = [];
 	}
 
-	handlePing(serverId, payload) {
+	registerServerGraph(serverId, serverGraph) {
+		this._serverGraphs[serverId] = serverGraph;
+	}
+
+	getServerGraph(serverId) {
+		return this._serverGraphs[serverId];
+	}
+
+	handlePing(serverId, payload, pushToGraph) {
 		if (payload.result) {
-			this._lastPlayerCounts[serverId] = payload.result.players.online;
+			const playerCount = payload.result.players.online;
+			
+			this._lastPlayerCounts[serverId] = playerCount;
+
+			if (pushToGraph) {
+				// Only update graph for successful pings
+				// This intentionally pauses the server graph when pings begin to fail
+				const serverGraph = this._serverGraphs[serverId];
+				serverGraph.handlePing(payload.info.timestamp, playerCount);
+			}
 		} else {
 			delete this._lastPlayerCounts[serverId];
 		}
@@ -84,6 +102,65 @@ class PingTracker {
 
 	reset() {
 		this._lastPlayerCounts = [];
+		this._serverGraphs = [];
+	}
+}
+
+const SERVER_GRAPH_DATA_MAX_LENGTH = 72;
+
+class ServerGraph {
+	constructor(plotInstance) {
+		this._plotInstance = plotInstance;
+		this._graphData = [];
+	}
+
+	addGraphPoints(points)  {
+		// TODO: trim to fit?
+		for (let i = 0; i < points.length; i++) {
+			const point = points[i];
+
+			let playerCount = 0;
+			if (point.result) {
+				playerCount = point.result.players.online;
+			}
+
+			// TODO: filter >0?
+			
+			// Data structure used by flot.js
+			this._graphData.push([point.timestamp, playerCount]);
+		}
+	}
+
+	handlePing(timestamp, playerCount) {
+		// #handlePing should not be fired in bulk or by the constructor
+		// Each #handlePing call redraws the flot.js plot instance
+		this._graphData.push([timestamp, playerCount]);
+
+		// Trim graphData to within the max length by shifting the first element out
+		// This should never need to happen more than once, but a while loop ensures it will never desync
+		while (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+			this._graphData.shift();
+		}
+
+		this.redrawIfNeeded();
+	}
+
+	redrawIfNeeded() {
+		// Redraw the plot instance
+		this._plotInstance.setData([this._graphData]);
+		this._plotInstance.setupGrid();
+		this._plotInstance.draw();
+	}
+
+	getPlayerCountDifference() {
+		if (this._graphData.length >= 2) {
+			// [1] refers to playerCount data index
+			// See constructor for data structure initialization
+			let oldestPlayerCount = this._graphData[0][1];
+			let newestPlayerCount = this._graphData[this._graphData.length - 1][1];
+			
+			return newestPlayerCount - oldestPlayerCount;
+		}
 	}
 }
 
@@ -109,8 +186,8 @@ class GraphDisplayManager {
 		const graphData = this._graphData[serverId];
 
 		// Trim any outdated entries by filtering the array into a new array
-		let startTime = new Date().getTime();
-		let newGraphData = [];
+		const startTime = new Date().getTime();
+		const newGraphData = [];
 
 		for (let i = 0; i < graphData.length; i++) {
 			// [0] corresponds to timestamp index, see push call @ L#131
@@ -228,7 +305,7 @@ class GraphDisplayManager {
 	// Converts the backend data into the schema used by flot.js
 	getVisibleGraphData() {
 		const keys = Object.keys(this._graphData).map(Number);
-		let visibleGraphData = [];
+		const visibleGraphData = [];
 
 		for (let i = 0; i < keys.length; i++) {
 			const serverId = keys[i];

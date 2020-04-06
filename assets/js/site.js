@@ -1,8 +1,4 @@
-var graphs = [];
-
 var historyPlot;
-
-var isConnected = false;
 
 var sortServersTask;
 
@@ -12,20 +8,19 @@ const serverRegistry = new ServerRegistry();
 const pingTracker = new PingTracker();
 const graphDisplayManager = new GraphDisplayManager();
 
-function updateServerStatus(lastEntry) {
-	var info = lastEntry.info;
+function updateServerStatus(serverId, ping, isAddEvent) {
+	// Only pushTograph when isAddedEvent == false
+	pingTracker.handlePing(serverId, ping, !isAddEvent);
 	
-	const serverId = serverRegistry.getOrAssign(info.name);
-
     var div = $('#status_' + serverId);
     var versionDiv = $('#version_' + serverId);
 
-    if (lastEntry.versions) {
+    if (ping.versions) {
         var versions = '';
 
-        for (var i = 0; i < lastEntry.versions.length; i++) {
-            if (!lastEntry.versions[i]) continue;
-            versions += '<span class="version">' + publicConfig.minecraftVersions[lastEntry.info.type][lastEntry.versions[i]] + '</span>&nbsp;';
+        for (var i = 0; i < ping.versions.length; i++) {
+            if (!ping.versions[i]) continue;
+            versions += '<span class="version">' + publicConfig.minecraftVersions[ping.info.type][ping.versions[i]] + '</span>&nbsp;';
         }
 
         versionDiv.html(versions);
@@ -33,30 +28,33 @@ function updateServerStatus(lastEntry) {
         versionDiv.html('');
     }
 
-    if (lastEntry.result) {
-        var result = lastEntry.result;
+    if (ping.result) {
+        var result = ping.result;
         var newStatus = 'Players: <span style="font-weight: 500;">' + formatNumber(result.players.online) + '</span>';
 
-        var listing = graphs[lastEntry.info.name].listing;
+		const serverGraph = pingTracker.getServerGraph(serverId);
+		const playerCountDifference = serverGraph.getPlayerCountDifference();
 
-        if (listing.length > 0) {
+		if (playerCountDifference !== undefined) {
             newStatus += '<span class="color-gray"> (';
-
-            var playerDifference = listing[listing.length - 1][1] - listing[0][1];
-
-            if (playerDifference >= 0) {
+            if (playerCountDifference >= 0) {
                 newStatus += '+';
             }
-
-            newStatus += playerDifference + ')</span>';
+            newStatus += playerCountDifference + ')</span>';
         }
 
-        div.html(newStatus);
+		div.html(newStatus);
+		
+		// An updated favicon has been sent, update the src
+		// Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
+		if (!isAddEvent && ping.result.favicon) {
+			$('#favicon_' + serverId).attr('src', ping.result.favicon);
+		}
     } else {
         var newStatus = '<span class="color-red">';
 
-        if (findErrorMessage(lastEntry.error)) {
-            newStatus += findErrorMessage(lastEntry.error);
+        if (findErrorMessage(ping.error)) {
+            newStatus += findErrorMessage(ping.error);
         } else {
             newStatus += 'Failed to ping!';
         }
@@ -67,9 +65,9 @@ function updateServerStatus(lastEntry) {
     $("#stat_totalPlayers").text(formatNumber(pingTracker.getTotalPlayerCount()));
     $("#stat_networks").text(formatNumber(pingTracker.getActiveServerCount()));
 
-    if (lastEntry.record) {
-        $('#record_' + serverId).html('Record: ' + formatNumber(lastEntry.record));
-    }
+    if (ping.record) {
+        $('#record_' + serverId).html('Record: ' + formatNumber(ping.record));
+	}
 
     updatePercentageBar();
 }
@@ -156,9 +154,9 @@ function validateBootTime(bootTime, socket) {
 
         socket.emit('requestListing');
 
-        if (!isMobileBrowser()) socket.emit('requestHistoryGraph');
-
-        isConnected = true;
+        if (!isMobileBrowser()) {
+			socket.emit('requestHistoryGraph');
+		}
 
         // Start any special updating tasks.
         sortServersTask = setInterval(sortServers, 10000);
@@ -190,6 +188,69 @@ function updateServerPeak(name, time, playerCount) {
 	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
+function addServer(serverData) {
+	// Even if the backend has never pinged the server, the frontend is promised a placeholder object.
+	// result = undefined
+	// error = defined with "Waiting" description
+	// info = safely defined with configured data
+	const ping = serverData[serverData.length - 1];
+
+	const serverId = serverRegistry.getOrAssign(ping.info.name);
+
+	// Conditional formatting given configuration
+	let typeMarker = '';
+	if (publicConfig.serverTypesVisible) {
+		typeMarker = '<span class="type">' + ping.info.type + '</span>';
+	}
+
+	// Safely default to a missing placeholder if not present
+	// If a favicon is later provided in an update, it will be handled by #updateServerStatus
+	let favicon = MISSING_FAVICON_BASE64;
+	if (ping.result && ping.result.favicon) {
+		favicon = ping.result.favicon;
+	}
+
+	// Build a placeholder element with empty data first
+	$('<div/>', {
+		id: 'container_' + serverId,
+		class: 'server',
+		'server-id': serverId,
+		html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
+					<img class="server-favicon" src="' + favicon + '" id="favicon_' + serverId + '" title="' + ping.info.name + '\n' + formatMinecraftServerAddress(ping.info.ip, ping.info.port) + '">\
+					<br />\
+					<p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
+				</div>\
+				<div class="column" style="width: 282px;">\
+					<h3>' + ping.info.name + '&nbsp;' + typeMarker + '</h3>\
+					<span id="status_' + serverId + '">Waiting</span>\
+					<div id="version_' + serverId + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
+					<span id="peak_' + serverId + '" class="color-dark-gray server-meta"></span>\
+					<br><span id="record_' + serverId + '" class="color-dark-gray server-meta"></span>\
+				</div>\
+				<div class="column" style="float: right;">\
+					<div class="chart" id="chart_' + serverId + '"></div>\
+				</div>'
+	}).appendTo("#server-container-list");
+
+	// Create an empty plot instance
+	const plotInstance = $.plot('#chart_' + serverId, [], smallChartOptions);
+
+	$('#chart_' + serverId).bind('plothover', handlePlotHover);
+
+	// Populate and redraw the ServerGraph
+	const serverGraph = new ServerGraph(plotInstance);
+
+	serverGraph.addGraphPoints(serverData);
+	serverGraph.redrawIfNeeded();
+
+	// Register into pingTracker for downstream referencing
+	pingTracker.registerServerGraph(serverId, serverGraph);
+
+	// Handle the last known state (if any) as an incoming update
+	// This triggers the main update pipeline and enables centralized update handling
+	updateServerStatus(serverId, ping, true);
+}
+
 $(document).ready(function() {
 	var socket = io.connect({
         reconnect: true,
@@ -210,8 +271,6 @@ $(document).ready(function() {
 		pingTracker.reset();
 		graphDisplayManager.reset();
 
-        graphs = {};
-
         $('#server-container-list').html('');
 
         $('#big-graph').html('');
@@ -224,8 +283,6 @@ $(document).ready(function() {
 
         $("#stat_totalPlayers").text(0);
         $("#stat_networks").text(0);
-
-        isConnected = false;
     });
 
 	// TODO: var naming
@@ -277,103 +334,24 @@ $(document).ready(function() {
     });
 
 	socket.on('add', function(servers) {
-        for (var i = 0; i < servers.length; i++) {
-            var history = servers[i];
-            var listing = [];
+		servers.forEach(addServer);
 
-            for (var x = 0; x < history.length; x++) {
-                var point = history[x];
-
-                if (point.result) {
-                    listing.push([point.timestamp, point.result.players.online]);
-                } else if (point.error) {
-                    listing.push([point.timestamp, 0]);
-                }
-            }
-
-            var lastEntry = history[history.length - 1];
-			var info = lastEntry.info;
-
-			const serverId = serverRegistry.getOrAssign(info.name);
-
-			pingTracker.handlePing(serverId, lastEntry);
-
-            var typeString = publicConfig.serverTypesVisible ? '<span class="type">' + info.type + '</span>' : '';
-
-            $('<div/>', {
-                id: 'container_' + serverId,
-                class: 'server',
-                'server-id': serverId,
-                html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
-                            <img class="server-favicon" id="favicon_' + serverId + '" title="' + info.name + '\n' + formatMinecraftServerAddress(info.ip, info.port) + '">\
-                            <br />\
-                            <p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
-                        </div>\
-                        <div class="column" style="width: 282px;">\
-                            <h3>' + info.name + '&nbsp;' + typeString + '</h3>\
-                            <span id="status_' + serverId + '">Waiting</span>\
-							<div id="version_' + serverId + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-							<span id="peak_' + serverId + '" class="color-dark-gray server-meta"></span>\
-                            <br><span id="record_' + serverId + '" class="color-dark-gray server-meta"></span>\
-                        </div>\
-                        <div class="column" style="float: right;">\
-                            <div class="chart" id="chart_' + serverId + '"></div>\
-                        </div>'
-            }).appendTo("#server-container-list");
-
-            var favicon = MISSING_FAVICON_BASE64;
-
-            if (lastEntry.result && lastEntry.result.favicon) {
-                favicon = lastEntry.result.favicon;
-            }
-
-            $('#favicon_' + serverId).attr('src', favicon);
-
-            graphs[lastEntry.info.name] = {
-                listing: listing,
-                plot: $.plot('#chart_' + serverId, [listing], smallChartOptions)
-            };
-
-            updateServerStatus(lastEntry);
-
-            $('#chart_' + serverId).bind('plothover', handlePlotHover);
-        }
-
+		// Run a single bulk update to externally managed elements
         sortServers();
         updatePercentageBar();
 	});
 
-	socket.on('update', function(update) {
-        // Prevent weird race conditions.
-        if (!graphs[update.info.name]) {
-            return;
+	socket.on('update', function(data) {
+		const serverId = serverRegistry.getOrAssign(data.info.name);
+
+		// The backend may send "update" events prior to receiving all "add" events
+		// A server has only been added once it's ServerGraph is defined
+		// Checking undefined protects from this race condition
+		if (pingTracker.getServerGraph(serverId) !== undefined) {
+			updateServerStatus(serverId, data, false);
+
+			updatePercentageBar();
 		}
-
-		const serverId = serverRegistry.getOrAssign(update.info.name);
-
-        // We have a new favicon, update the old one.
-        if (update.result && update.result.favicon) {
-            $('#favicon_' + serverId).attr('src', update.result.favicon);
-        }
-
-		var graph = graphs[update.info.name];
-		
-		pingTracker.handlePing(serverId, update);
-
-        updateServerStatus(update);
-
-        if (update.result) {
-            graph.listing.push([update.info.timestamp, update.result ? update.result.players.online : 0]);
-
-            if (graph.listing.length > 72) {
-                graph.listing.shift();
-            }
-
-            graph.plot.setData([graph.listing]);
-            graph.plot.setupGrid();
-
-            graph.plot.draw();
-        }
 	});
 
 	socket.on('updateMojangServices', function(data) {
