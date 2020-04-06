@@ -19,7 +19,8 @@ html, body {
 }
 
 a {
-    cursor: pointer;
+	cursor: pointer;
+	text-decoration: none;
 }
 
 #push {
@@ -35,50 +36,47 @@ strong {
 #header {
     background: #EBEBEB;
     color: #3B3738;
-    overflow: auto;
-}
-
-#header-wrapper {
-    overflow: auto;
-    min-width: 850px;
+	overflow: auto;
+	min-width: 850px;
 }
 
 #header .column {
-    display: inline-block;
     float: left;
 }
 
-#header .column h1 {
-    margin: -6px 0;
+#header .logo-column {
+	padding: 20px;
 }
 
-#header .slogan {
-    font-size: 20px;
-    text-align: left;
+#header .logo-column .logo-image {
+	width: 28px;
+	height: 28px;
+	margin-right: 5px;
+	display: inline-block;
 }
 
-#header .subslogan {
+#header .logo-column .logo-text {
+	margin: -6px 0;
+	text-transform: uppercase;
+	display: inline-block;
+}
+
+#header .logo-column .logo-status {
+	text-transform: uppercase;
     font-size: 19px;
 }
 
-#header a, #footer a {
-    text-decoration: none;
+#header .mojang-status-column {
+	float: right;
+}
+
+#header a {
     color: inherit;
     border-bottom: 1px dashed #3B3738;
 }
 
-#header a:hover, #footer a:hover {
+#header a:hover {
     border-bottom: 1px dashed transparent;
-}
-
-#header > h1 {
-    font-size: 42px;
-}
-
-#header > #column-center {
-    width: 1480px;
-    margin: 0 auto;
-    text-align: center;
 }
 
 /* Footer */
@@ -93,22 +91,23 @@ strong {
 }
 
 #footer a {
+    color: inherit;
     font-weight: 700;
-    border-bottom: none !important;
+    border-bottom: 1px dashed #3B3738;
 }
 
 #footer a:hover {
     border-bottom: 1px dashed #000 !important;
 }
 
-/* Tagline */
-#tagline-text {
+/* Status */
+#status-text {
     padding-top: 20px;
     text-align: center;
 }
 
 /* Server listing */
-#server-container-list {
+#server-list {
 	overflow: auto;
 	display: flex; 
 	flex-wrap: wrap; 
@@ -119,20 +118,12 @@ strong {
     padding: 5px 10px;
     margin: 0 5px;
     width: 800px;
-    border: 1px solid transparent;
     display: inline-block;
 }
 
 .version {
 	font-size: 12px;
 }
-
-/*.server:hover {
-    background: #282828;
-    border: 1px solid #444;
-    cursor: pointer;
-    border-radius: 2px;
-}*/
 
 .server > .column > img {
     border-radius: 2px;

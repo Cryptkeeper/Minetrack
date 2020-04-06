@@ -4,8 +4,8 @@
 
 	<head>
 
-		<link rel="stylesheet" type="text/css" href="css/main.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 
 		<link rel="icon" type="image/png" href="/images/compass.png">
 
@@ -20,32 +20,21 @@
 		<div id="tooltip"></div>
 
 		<div id="push">
-
 			<div id="header">
-
-				<div id="header-wrapper">
-
-					<div class="column" style="padding: 20px;">
-
-						<img src="/images/compass.png" width="28" height="28" style="display: inline-block; margin-right: 5px;">
-						<h1 style="display: inline-block;" class="text-uppercase">Minetrack</h1>
-						<p class="subslogan text-uppercase">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
-
-					</div>
-
-					<div id="mojang-status-list" class="column" style="float: right;">
-
-						<div class="mojang-status" title="Sessions" id="mojang-status_Sessions"><i class="fa fa-gamepad"></i><br /><strong>Sessions</strong><p class="mojang-status-text" id="mojang-status-text_Sessions">...</p></div><div class="mojang-status" title="Skins" id="mojang-status_Skins"><i class="fa fa-user"></i><br /><strong>Skins</strong><p class="mojang-status-text" id="mojang-status-text_Skins">...</p></div><div class="mojang-status" title="Auth" id="mojang-status_Auth"><i class="fa fa-key"></i><br /><strong>Auth</strong><p class="mojang-status-text" id="mojang-status-text_Auth">...</p></div><div class="mojang-status" title="API" id="mojang-status_API"><i class="fa fa-wrench"></i><br /><strong>API</strong><p class="mojang-status-text" id="mojang-status-text_API">...</p></div>
-
-					</div>
-
+				<div class="column logo-column">
+					<img class="logo-image" src="/images/compass.png">
+					<h1 class="logo-text">Minetrack</h1>
+					<p class="logo-status">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
 				</div>
 
+				<div class="column mojang-status-column">
+					<div class="mojang-status" title="Sessions" id="mojang-status_Sessions"><i class="fa fa-gamepad"></i><br /><strong>Sessions</strong><p class="mojang-status-text" id="mojang-status-text_Sessions">...</p></div><div class="mojang-status" title="Skins" id="mojang-status_Skins"><i class="fa fa-user"></i><br /><strong>Skins</strong><p class="mojang-status-text" id="mojang-status-text_Skins">...</p></div><div class="mojang-status" title="Auth" id="mojang-status_Auth"><i class="fa fa-key"></i><br /><strong>Auth</strong><p class="mojang-status-text" id="mojang-status-text_Auth">...</p></div><div class="mojang-status" title="API" id="mojang-status_API"><i class="fa fa-wrench"></i><br /><strong>API</strong><p class="mojang-status-text" id="mojang-status-text_API">...</p></div>
+				</div>
 			</div>
 
 			<div id="perc-bar"></div>
 
-			<div id="tagline-text">Connecting...</div>
+			<div id="status-text">Connecting...</div>
 
 			<div id="big-graph"></div>
 
@@ -74,7 +63,7 @@
 
 			</div>
 
-			<div id="server-container-list"></div>
+			<div id="server-list"></div>
 
         </div>
 
@@ -84,12 +73,9 @@
 
 		</div>
 
-        <!-- External JS assets -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-
-		<!-- Internal JS assets -->
 		<script src="js/core.js"></script>
         <script src="js/util.js"></script>
         <script src="js/graph.js"></script>

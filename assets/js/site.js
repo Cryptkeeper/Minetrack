@@ -67,7 +67,7 @@ function sortServers() {
 	serverRegistry.getServerIds().sort(function(a, b) {
 			return serverRegistry.getPlayerCount(b) - serverRegistry.getPlayerCount(a);
 		}).forEach(function(serverId, i) {
-			$('#container_' + serverId).appendTo('#server-container-list');
+			$('#server_' + serverId).appendTo('#server-list');
 			$('#ranking_' + serverId).text('#' + (i + 1));
 		});
 }
@@ -180,7 +180,7 @@ function addServer(serverData) {
 				<div class="column" style="float: right;">\
 					<div class="chart" id="chart_' + serverId + '"></div>\
 				</div>'
-	}).appendTo("#server-container-list");
+	}).appendTo("#server-list");
 
 	// Create an empty plot instance
 	const plotInstance = $.plot('#chart_' + serverId, [], SERVER_GRAPH_OPTIONS);
@@ -226,7 +226,7 @@ $(document).ready(function() {
 		graphDisplayManager.reset();
 
 		// Reset HTML structures that have been generated during runtime
-		$('#server-container-list').empty();
+		$('#server-list').empty();
 		$('#big-graph').empty();
         $('#big-graph-checkboxes').empty();
 		$('#perc-bar').empty();

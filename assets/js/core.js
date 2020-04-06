@@ -15,7 +15,7 @@ class Tooltip {
 
 class Caption {
 	constructor() {
-		this._div = $('#tagline-text');
+		this._div = $('#status-text');
 	}
 
 	set(text) {
