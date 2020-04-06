@@ -377,18 +377,6 @@ function getServerColor(name) {
 	return stringToColor(name);
 }
 
-function updateMojangServices(update) {
-    var keys = Object.keys(update);
-
-    for (var i = 0; i < keys.length; i++) {
-		var status = update[keys[i]];
-
-		// hack: ensure mojang-status is added for alignment, replace existing class to swap status color
-        $('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
-        $('#mojang-status-text_' + status.name).text(status.title);
-    }
-}
-
 function findErrorMessage(error) {
     if (error.description) {
         return error.description;

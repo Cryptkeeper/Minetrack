@@ -348,7 +348,15 @@ $(document).ready(function() {
 	});
 
 	socket.on('updateMojangServices', function(data) {
-        updateMojangServices(data);
+		const keys = Object.keys(data);
+
+		for (let i = 0; i < keys.length; i++) {
+			const status = data[keys[i]];
+
+			// hack: ensure mojang-status is added for alignment, replace existing class to swap status color
+			$('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
+			$('#mojang-status-text_' + status.name).text(status.title);
+		}
     });
 
     socket.on('syncComplete', function() {
