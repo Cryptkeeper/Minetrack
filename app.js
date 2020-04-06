@@ -269,7 +269,8 @@ function startServices() {
 					// This server hasn't been ping'd yet. Send a hacky placeholder.
 					client.emit('add', [[{
 						error: {
-							description: 'Waiting'
+							description: 'Waiting...',
+							placeholder: true
 						},
 						result: null,
 						timestamp: util.getCurrentTimeMs(),
