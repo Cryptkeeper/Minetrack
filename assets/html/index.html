@@ -20,7 +20,8 @@
 		<div id="tooltip"></div>
 
 		<div id="push">
-			<div id="header">
+			
+			<header>
 				<div class="column logo-column">
 					<img class="logo-image" src="/images/compass.png">
 					<h1 class="logo-text">Minetrack</h1>
@@ -30,42 +31,30 @@
 				<div class="column mojang-status-column">
 					<div class="mojang-status" title="Sessions" id="mojang-status_Sessions"><i class="fa fa-gamepad"></i><br /><strong>Sessions</strong><p class="mojang-status-text" id="mojang-status-text_Sessions">...</p></div><div class="mojang-status" title="Skins" id="mojang-status_Skins"><i class="fa fa-user"></i><br /><strong>Skins</strong><p class="mojang-status-text" id="mojang-status-text_Skins">...</p></div><div class="mojang-status" title="Auth" id="mojang-status_Auth"><i class="fa fa-key"></i><br /><strong>Auth</strong><p class="mojang-status-text" id="mojang-status-text_Auth">...</p></div><div class="mojang-status" title="API" id="mojang-status_API"><i class="fa fa-wrench"></i><br /><strong>API</strong><p class="mojang-status-text" id="mojang-status-text_API">...</p></div>
 				</div>
-			</div>
+			</header>
 
 			<div id="perc-bar"></div>
 
-			<div id="status-text">Connecting...</div>
-
 			<div id="big-graph"></div>
 
-			<div id="big-graph-controls" style="display: none;">
+			<div id="big-graph-controls">
+				<a class="graph-controls-toggle" onclick="$('#big-graph-controls-drawer').toggle();">Click to toggle graph controls</a>
 
-				<span style="text-align: center; display: block;">
-
-					<a onclick="$('#big-graph-controls-drawer').toggle();">Click to toggle graph controls</a>
-
-				</span>
-
-				<div id="big-graph-controls-drawer" style="display: none;">
-
+				<div id="big-graph-controls-drawer">
 					<div id="big-graph-checkboxes"></div>
 
-					<br />
-
-					<span style="text-align: center; display: block; margin-bottom: 15px;">
-
-						<span onclick="setAllGraphVisibility(true);" class="button">Show All</span>
-						<span onclick="setAllGraphVisibility(false);" class="button">Hide All</span>
-
+					<span class="graph-controls-setall">
+						<a onclick="setAllGraphVisibility(true);" class="button">Show All</a>
+						<a onclick="setAllGraphVisibility(false);" class="button">Hide All</a>
 					</span>
-
 				</div>
-
 			</div>
 
 			<div id="server-list"></div>
 
-        </div>
+		</div>
+		
+		<div id="status-text">Connecting...</div>
 
         <footer>
 			Website powered by <a href="https://github.com/Cryptkeeper/Minetrack"><i class="fa fa-github"></i> Minetrack</a>.
@@ -74,6 +63,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+		
 		<script src="js/core.js"></script>
         <script src="js/util.js"></script>
         <script src="js/graph.js"></script>

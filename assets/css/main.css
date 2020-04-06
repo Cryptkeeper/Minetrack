@@ -38,48 +38,48 @@ strong {
 }
 
 /* Header */
-#header {
+header {
     background: #EBEBEB;
     color: #3B3738;
 	overflow: auto;
 }
 
-#header .column {
+header .column {
     float: left;
 }
 
-#header .logo-column {
+header .logo-column {
 	padding: 20px;
 }
 
-#header .logo-column .logo-image {
+header .logo-column .logo-image {
 	width: 28px;
 	height: 28px;
 	margin-right: 5px;
 	display: inline-block;
 }
 
-#header .logo-column .logo-text {
+header .logo-column .logo-text {
 	margin: -6px 0;
 	text-transform: uppercase;
 	display: inline-block;
 }
 
-#header .logo-column .logo-status {
+header .logo-column .logo-status {
 	text-transform: uppercase;
     font-size: 19px;
 }
 
-#header .mojang-status-column {
+header .mojang-status-column {
 	float: right;
 }
 
-#header a {
+header a {
     color: inherit;
     border-bottom: 1px dashed #3B3738;
 }
 
-#header a:hover {
+header a:hover {
     border-bottom: 1px dashed transparent;
 }
 
@@ -218,7 +218,6 @@ footer a:hover {
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
-    margin: 15px auto 0 auto;
 }
 
 #big-graph-checkboxes > table {
@@ -226,40 +225,48 @@ footer a:hover {
 }
 
 #big-graph {
-    margin-top: 20px;
+	margin: 20px auto 0 auto;
 }
 
 #big-graph-controls {
-    margin: 10px auto;
+	margin: 10px auto;
+	display: none;
 }
 
-#big-graph-controls a {
-    text-decoration: none;
+#big-graph-controls .graph-controls-toggle {
     color: inherit;
     text-transform: uppercase;
-    border-bottom: 1px dashed #FFF;
-    font-size: 16px;
+	font-size: 16px;
+	display: block;
+	text-align: center;
 }
 
-#big-graph-controls a:hover {
-    border-bottom: 1px dashed transparent;
+#big-graph-controls-drawer {
+	display: none;
+}
+
+#big-graph-controls-drawer .graph-controls-setall {
+	text-align: center;
+	display: block;
+	margin: 15px 0;
+}
+
+#big-graph-checkboxes {
+	margin: 15px auto 0 auto;
 }
 
 /* Basic elements */
 .button {
     background: #3498db;
     border-radius: 2px;
-    text-shadow: 0 0 0 #000;
     width: 85px;
     font-size: 16px;
     padding: 5px 10px;
-    margin: 0 auto;
 }
 
 .button:hover {
     background: #ecf0f1;
     color: #3498db;
-    cursor: pointer;
 }
 
 /* Percentage bar */
@@ -268,18 +275,13 @@ footer a:hover {
     position: relative;
 }
 
-#perc-bar > .perc-bar-part {
+#perc-bar .perc-bar-part {
     height: 100%;
     display: inline-block;
     position: absolute;
-    transition: 0.1s all;
 }
 
-#perc-bar > .perc-bar-part:hover {
-    opacity: 0.75;
-}
-
-/* Mojang Status */
+/* Mojang status */
 .mojang-status {
     width: 85px;
     height: 106px;
@@ -317,16 +319,16 @@ footer a:hover {
 		background: #1c1b1c;
 	}
 
-	#header, footer {
+	header, footer {
 		background: #3B3738;
 		color: #FFF;
 	}
 
-	footer a, #header a:hover {
+	footer a, header a:hover {
 		border-bottom: 1px dashed transparent !important;
 	}
 
-	footer a:hover, #header a {
+	footer a:hover, header a {
 		border-bottom: 1px dashed #EBEBEB !important;
 	}
 
