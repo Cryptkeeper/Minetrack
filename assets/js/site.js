@@ -520,9 +520,10 @@ $(document).ready(function() {
     $(document).on('mousemove', function(e) {
         if (currentServerHover) {
             var totalPlayers = getCurrentTotalPlayers();
-            var playerCount = lastPlayerEntries[currentServerHover];
+			var playerCount = lastPlayerEntries[currentServerHover];
+			var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
 
-            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + roundToPoint(playerCount / totalPlayers * 100, 10) + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
+            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
         }
     });
 

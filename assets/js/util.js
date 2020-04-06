@@ -23,28 +23,13 @@ function setPublicConfig(json) {
     $('#server-container-list').html('');
 }
 
-function getServerByField(id, value) {
-	for (var i = 0; i < publicConfig.servers.length; i++) {
-		var entry = publicConfig.servers[i];
-
-		if (entry[id] === value) {
-			return entry;
+function getServerColor(name) {
+	for (let i = 0; i < publicConfig.servers.length; i++) {
+		if (publicConfig.servers[i].name === name) {
+			return publicConfig.servers[i].color;
 		}
 	}
-}
-
-function getServerByIp(ip) {
-	return getServerByField('ip', ip);
-}
-
-function getServerByName(name) {
-	return getServerByField('name', name);
-}
-
-function getServerColor(name) {
-	var server = getServerByName(name);
-
-	return server ? server.color : stringToColor(name);
+	return stringToColor(name);
 }
 
 // Generate (and set) the HTML that displays Mojang status.
@@ -79,7 +64,7 @@ function findErrorMessage(error) {
     }
 }
 
-function getTimestamp(ms, timeOnly) {
+function getTimestamp(ms) {
     var date = new Date(0);
 
     date.setUTCSeconds(ms);
@@ -147,10 +132,6 @@ function stringToColor(base) {
     color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
 
     return '#' + Array(6 - color.length + 1).join('0') + color;
-}
-
-function roundToPoint(val, scale) {
-    return Math.round(val * scale) / scale;
 }
 
 function msToTime(timer) {
