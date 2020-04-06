@@ -108,8 +108,8 @@ strong {
 }
 
 /* Server listing */
-.server-container {
-    overflow: auto;
+#server-container-list {
+	overflow: auto;
 	display: flex; 
 	flex-wrap: wrap; 
 	justify-content: center;

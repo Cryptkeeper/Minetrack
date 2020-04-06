@@ -227,10 +227,13 @@ $(document).ready(function() {
 
 		// Reset HTML structures that have been generated during runtime
 		$('#server-container-list').empty();
-        $('#big-graph').empty();
+		$('#big-graph').empty();
         $('#big-graph-checkboxes').empty();
-        $('#big-graph-controls').empty();
 		$('#perc-bar').empty();
+
+		$('#big-graph-controls').hide();
+
+		$('#big-graph').removeAttr('style');
 		
 		// Strip any mojang-status-* color classes from all mojang-status classes
 		$('.mojang-status').attr('class', 'mojang-status');
