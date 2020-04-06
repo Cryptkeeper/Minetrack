@@ -7,13 +7,46 @@
 
 :root {
 	--color-dark-gray: #A3A3A3;
+
+	--minecraft-color-dark-blue: #00002A;
+
+	--theme-color-dark: #3B3738;
+	--theme-color-text-dark: #000;
+	--theme-color-light: #EBEBEB;
+	--theme-color-text-light: #FFF;
+	--theme-color-element: #3498DB;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--background-color: var(--theme-color-light);
+		--text-decoration-color: var(--theme-color-dark);
+		--text-color: var(--theme-color-text-dark);
+	}
+
+	body {
+		background: #212021;
+		color: var(--theme-color-text-light);
+	}
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: var(--theme-color-dark);
+		--text-decoration-color: var(--theme-color-light);
+		--text-color: var(--theme-color-text-light);
+	}
+
+	body {
+		background: #1c1b1c;
+		color: var(--theme-color-text-light);
+	}
 }
 
 body {
-    color: #FFF;
     font-family: "Open Sans", sans-serif;
     font-size: 18px;
-    font-weight: 300 !important;
+    font-weight: 300;
 }
 
 /* Page layout */
@@ -38,6 +71,8 @@ strong {
 
 /* Header */
 header {
+	background: var(--background-color);
+	color: var(--text-color);
 	overflow: auto;
 }
 
@@ -72,11 +107,18 @@ header .mojang-status-column {
 }
 
 header a {
-    color: inherit;
+	color: inherit;
+	border-bottom: 1px dashed var(--text-decoration-color);
+}
+
+header a:hover {
+	border-bottom: 1px dashed transparent;
 }
 
 /* Footer */
 footer {
+	background: var(--background-color);
+	color: var(--text-color);
     font-size: 16px;
     text-transform: uppercase;
     padding: 15px 0 15px 20px;
@@ -84,8 +126,13 @@ footer {
 }
 
 footer a {
-    color: inherit;
-    font-weight: 700;
+	font-weight: 700;
+	color: inherit;
+	border-bottom: 1px dashed transparent;
+}
+
+footer a:hover {
+	border-bottom: 1px dashed var(--text-decoration-color);
 }
 
 /* Status */
@@ -103,7 +150,7 @@ footer a {
     padding: 5px 8px;
     border-radius: 2px;
 	background: rgba(0, 0, 0, 1);
-	border: 3px solid #00002A;
+	border: 3px solid var(--minecraft-color-dark-blue);
     z-index: 10000;
 }
 
@@ -242,7 +289,7 @@ footer a {
 
 /* Basic elements */
 .button {
-    background: #3498db;
+    background: var(--theme-color-element);
     border-radius: 2px;
     width: 85px;
     font-size: 16px;
@@ -250,8 +297,8 @@ footer a {
 }
 
 .button:hover {
-    background: #ecf0f1;
-    color: #3498db;
+    background: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Percentage bar */
@@ -286,23 +333,6 @@ footer a {
 }
 
 @media (prefers-color-scheme: light) {
-	body {
-		background: #212021;
-	}
-
-	header, footer {
-		background: #EBEBEB;
-		color: #3B3738;
-	}
-
-	footer a, header a:hover {
-		border-bottom: 1px dashed transparent !important;
-	}
-
-	footer a:hover, header a {
-		border-bottom: 1px dashed #3B3738 !important;
-	}
-
 	.mojang-status-online {
 		background: #87D37C;
 	}
@@ -317,23 +347,6 @@ footer a {
 }
 
 @media (prefers-color-scheme: dark) {
-	body {
-		background: #1c1b1c;
-	}
-
-	header, footer {
-		background: #3B3738;
-		color: #FFF;
-	}
-
-	footer a, header a:hover {
-		border-bottom: 1px dashed transparent !important;
-	}
-
-	footer a:hover, header a {
-		border-bottom: 1px dashed #EBEBEB !important;
-	}
-
 	.mojang-status-online {
 		background: #6b9963;
 	}
