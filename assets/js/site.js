@@ -14,25 +14,27 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 	serverGraph.handlePing(ping, !initialUpdate);
 	
 	// Remap version indexes into their formatted name equivalents
+	const versionsElement = document.getElementById('version_' + serverId);
+
     if (ping.versions) {
 		const versionNames = ping.versions.map(version => {
 				const versionName = publicConfig.minecraftVersions[ping.info.type][version];
 				return versionName;
 			}).join(' ');
 
-		document.getElementById('version_' + serverId).innerHTML = versionNames;
+		versionsElement.innerHTML = versionNames;
     } else {
-		document.getElementById('version_' + serverId).innerHTML = '';
+		versionsElement.innerHTML = '';
 	}
 	
 	if (ping.record) {
 		document.getElementById('record_' + serverId).innerText = 'Record: ' + formatNumber(ping.record);
 	}
 
-	let statusHTML;
+	const statusElement = document.getElementById('status_' + serverId);
 
     if (ping.result) {
-		statusHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>';
+		let statusHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>';
 
 		// If the data is defined, generate a player count difference and append
 		const playerCountDifference = serverGraph.getPlayerCountDifference();
@@ -40,6 +42,8 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 		if (playerCountDifference !== undefined) {
             statusHTML += '<span class="server-player-count-diff"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>';
 		}
+
+		statusElement.innerHTML = statusHTML;
 		
 		// An updated favicon has been sent, update the src
 		// Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
@@ -52,10 +56,9 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 			// Attempt to find an error cause from documented options
 			errorMessage = ping.error.description || ping.error.errno || errorMessage;
 		}
-		statusHTML = '<span class="server-error-message">' + errorMessage + '</span>';
-	}
 
-	document.getElementById('status_' + serverId).innerHTML = statusHTML;
+		statusElement.innerHTML = '<span class="server-error-message">' + errorMessage + '</span>';
+	}
 }
 
 function updateGlobalStats() {
@@ -67,57 +70,57 @@ function sortServers() {
 	serverRegistry.getServerIds().sort(function(a, b) {
 			return serverRegistry.getPlayerCount(b) - serverRegistry.getPlayerCount(a);
 		}).forEach(function(serverId, i) {
-			$('#server_' + serverId).appendTo('#server-list');
+			$('#container_' + serverId).appendTo('#server-list');
 
 			document.getElementById('ranking_' + serverId).innerText = '#' + (i + 1);
 		});
 }
 
 function updatePercentageBar() {
-    const parent = $('#perc-bar');
+    const parent = document.getElementById('perc-bar');
 	let leftPadding = 0;
 	
 	serverRegistry.getServerIds().sort(function(a, b) {
 			return serverRegistry.getPlayerCount(a) - serverRegistry.getPlayerCount(b);
 		}).forEach(function(serverId) {
-			let div = $('#perc_bar_part_' + serverId);
+			let div = document.getElementById('perc_bar_part_' + serverId);
 
 			// Test if an element has been previously created
-			if (!div.length) {
-				$('<div/>', {
-					id: 'perc_bar_part_' + serverId,
-					class: 'perc-bar-part',
-					html: '',
-					style: 'background: ' + serverRegistry.getServerColor(serverId) + ';'
-				}).appendTo(parent);
+			if (div === null) {
+				div = document.createElement('div');
 
-				div = $('#perc_bar_part_' + serverId);
+				div.id = 'perc_bar_part_' + serverId;
+				div.style.background = serverRegistry.getServerColor(serverId);
+
+				div.setAttribute('class', 'perc-bar-part');
+
+				parent.appendChild(div);
 
 				// Define events once during creation
-				div.mouseover(function() {
+				div.addEventListener('mouseover', function() {
 					const totalPlayers = serverRegistry.getTotalPlayerCount();
 					const playerCount = serverRegistry.getPlayerCount(serverId);
 					const serverName = serverRegistry.getServerName(serverId);
 
 					const percentage = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
-					const position = div.offset();
 
-					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong><br>' + formatNumber(playerCount) + ' Players<br><em>' + percentage + '%</em>');
-				});
+					tooltip.set(div.offsetLeft + 10, div.offsetTop + parent.offsetTop + parent.offsetHeight + 10,
+						'<strong>' + serverName + '</strong>\
+						<br>' + formatNumber(playerCount) + ' Players<br>\
+						<em>' + percentage + '%</em>');
+				}, false);
 
-				div.mouseout(tooltip.hide);
+				div.addEventListener('mouseout', tooltip.hide, false);
 			}
 
 			// Update position/width
 			// leftPadding is a sum of previous iterations width value
 			const totalPlayers = serverRegistry.getTotalPlayerCount();
 			const playerCount = serverRegistry.getPlayerCount(serverId);
-			const width = (playerCount / totalPlayers) * parent.width();
+			const width = (playerCount / totalPlayers) * parent.offsetWidth;
 
-			div.css({
-				width: width + 'px',
-				left: leftPadding + 'px'
-			});
+			div.style.width = width + 'px';
+			div.style.left = leftPadding + 'px';
 
 			leftPadding += width;
 		});
@@ -127,9 +130,11 @@ function setAllGraphVisibility(visible) {
 	graphDisplayManager.setAllGraphDataVisible(visible);
 
     if (graphDisplayManager.redrawIfNeeded()) {
-		$('.graph-control').each(function(index, item) {
-			item.checked = visible;
-		});
+		const graphControls = document.getElementsByClassName('graph-control');
+
+		for (let i = 0; i < graphControls.length; i++) {
+			graphControls[i].checked = visible;
+		}
 	}
 }
 
@@ -162,23 +167,25 @@ function addServer(serverData) {
 	}
 
 	// Build a placeholder element with empty data first
-	$('<div/>', {
-		id: 'container_' + serverId,
-		class: 'server',
-		'server-id': serverId,
-		html: '<div id="server-' + serverId + '" class="column column-favicon">\
-					<img class="server-favicon" src="' + favicon + '" id="favicon_' + serverId + '" title="' + ping.info.name + '\n' + formatMinecraftServerAddress(ping.info.ip, ping.info.port) + '">\
-					<span class="server-rank" id="ranking_' + serverId + '"></span>\
-				</div>\
-				<div class="column column-status">\
-					<h3 class="server-name">' + ping.info.name + typeMarker + '</h3>\
-					<span id="status_' + serverId + '"></span>\
-					<span class="server-versions" id="version_' + serverId + '"></span>\
-					<span class="server-peak" id="peak_' + serverId + '"></span>\
-					<span class="server-record" id="record_' + serverId + '"></span>\
-				</div>\
-				<div class="column column-graph" id="chart_' + serverId + '"></div>'
-	}).appendTo("#server-list");
+	const serverElement = document.createElement('div');
+
+	serverElement.id = 'container_' + serverId;
+	serverElement.innerHTML = '<div id="server-' + serverId + '" class="column column-favicon">\
+			<img class="server-favicon" src="' + favicon + '" id="favicon_' + serverId + '" title="' + ping.info.name + '\n' + formatMinecraftServerAddress(ping.info.ip, ping.info.port) + '">\
+			<span class="server-rank" id="ranking_' + serverId + '"></span>\
+		</div>\
+		<div class="column column-status">\
+			<h3 class="server-name">' + ping.info.name + typeMarker + '</h3>\
+			<span id="status_' + serverId + '"></span>\
+			<span class="server-versions" id="version_' + serverId + '"></span>\
+			<span class="server-peak" id="peak_' + serverId + '"></span>\
+			<span class="server-record" id="record_' + serverId + '"></span>\
+		</div>\
+		<div class="column column-graph" id="chart_' + serverId + '"></div>';
+	
+	serverElement.setAttribute('class', 'server');
+
+	document.getElementById('server-list').appendChild(serverElement);
 
 	// Create an empty plot instance
 	const plotInstance = $.plot('#chart_' + serverId, [], SERVER_GRAPH_OPTIONS);
@@ -199,7 +206,7 @@ function addServer(serverData) {
 	updateServerStatus(serverId, ping, true);
 }
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
 	const socket = io.connect({
         reconnect: true,
         reconnectDelay: 1000,
@@ -256,7 +263,7 @@ $(document).ready(function() {
 
 		// Explicitly define a height so flot.js can rescale the Y axis
 		document.getElementById('big-graph').style.height = '400px';
-		
+
 		$('#big-graph').bind('plothover', handlePlotHover);
 
 		graphDisplayManager.buildPlotInstance();
@@ -267,10 +274,10 @@ $(document).ready(function() {
 
 		Object.keys(data).sort().forEach(function(serverName) {
 			const serverId = serverRegistry.getOrCreateId(serverName);
-			const isChecked = graphDisplayManager.isGraphDataVisible(serverId);
+			const isChecked = graphDisplayManager.isGraphDataVisible(serverId) ? 'checked' : '';
 
 			controlsHTML += '<td>\
-				<input type="checkbox" class="graph-control" minetrack-server-id="' + serverId + '" checked="' + isChecked + '">\
+				<input type="checkbox" class="graph-control" minetrack-server-id="' + serverId + '" ' + isChecked + '>\
 				' + serverName + '\
 				</input></td>';
 
@@ -287,6 +294,18 @@ $(document).ready(function() {
 		// Apply generated HTML and show controls
 		document.getElementById('big-graph-checkboxes').innerHTML = controlsHTML;
 		document.getElementById('big-graph-controls').style.display = 'block';
+
+		// Bind click event for updating graph data
+		const graphControls = document.getElementsByClassName('graph-control');
+
+		for (let i = 0; i < graphControls.length; i++) {
+			graphControls[i].addEventListener('click', function(e) {
+				const serverId = parseInt(e.target.getAttribute('minetrack-server-id'));
+
+				graphDisplayManager.setGraphDataVisible(serverId, e.target.checked);
+				graphDisplayManager.redrawIfNeeded();
+			}, false);
+		}
     });
 
     socket.on('updateHistoryGraph', function(data) {
@@ -356,21 +375,14 @@ $(document).ready(function() {
 		});
 	});
 
-    $(document).on('click', '.graph-control', function() {
-		const serverId = parseInt(this.getAttribute('minetrack-server-id'));
-
-		graphDisplayManager.setGraphDataVisible(serverId, this.checked);
-		graphDisplayManager.redrawIfNeeded();
-	});
-
-    $(window).on('resize', function() {
+	window.addEventListener('resize', function() {
 		updatePercentageBar();
 
 		// Delegate to GraphDisplayManager which can check if the resize is necessary
 		graphDisplayManager.handleResizeRequest();
-	});
+	}, false);
 	
 	// Run the sortServers loop even if the frontend has not connected to the backend
 	// It will safely handle the empty data and simplifies state logic
 	setInterval(sortServers, 10000);
-});
+}, false);

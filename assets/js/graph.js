@@ -243,6 +243,15 @@ class GraphDisplayManager {
 		this._resizeRequestTimeout = undefined;
 	}
 
+	toggleControls() {
+		const element = document.getElementById('big-graph-controls-drawer');
+		if (element.style.display !== 'block') {
+			element.style.display = 'block';
+		} else {
+			element.style.display = 'none';
+		}
+	}
+
 	reset() {
 		this._graphData = [];
 		this._hiddenServerIds = [];
