@@ -127,6 +127,12 @@ class GraphDisplayManager {
 		// This may cause unnessecary localStorage updates, but its a rare and harmless outcome
 		if (this._mustRedraw) {
 			this.updateLocalStorage();
+
+			if (this.redrawIfNeeded()) {
+				document.querySelectorAll('.graph-control').forEach(function(element) {
+					element.checked = visible;
+				});
+			}
 		}
 	}
 

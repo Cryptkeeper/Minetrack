@@ -126,16 +126,6 @@ function updatePercentageBar() {
 		});
 }
 
-function setAllGraphVisibility(visible) {
-	graphDisplayManager.setAllGraphDataVisible(visible);
-
-    if (graphDisplayManager.redrawIfNeeded()) {
-		document.querySelectorAll('.graph-control').forEach(function(element) {
-			element.checked = visible;
-		});
-	}
-}
-
 function updateServerPeak(serverId, time, playerCount) {
 	const hourDuration = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000));
 
