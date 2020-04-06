@@ -118,6 +118,11 @@ class ServerGraph {
 	}
 
 	addGraphPoints(points)  {
+		// Test if the first point contains error.placeholder === true
+		// This is sent by the backend when the server hasn't been pinged yet
+		// These points will be disregarded to prevent the graph starting at 0 player count
+		points = points.filter(point => !point.error || !point.error.placeholder);
+
 		// The backend should never return more data elements than the max
 		// but trim the data result regardless for safety and performance purposes
 		if (points.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
