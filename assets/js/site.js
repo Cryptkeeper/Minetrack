@@ -139,34 +139,6 @@ function setAllGraphVisibility(visible) {
 	}
 }
 
-function validateBootTime(bootTime, socket) {
-	$('#tagline-text').text('Validating...');
-	
-	bootTime = 0;
-
-    console.log('Remote bootTime is ' + publicConfig.bootTime + ', local is ' + bootTime);
-
-    if (bootTime === publicConfig.bootTime) {
-        $('#tagline-text').text('Loading...');
-
-        socket.emit('requestListing');
-
-        if (!isMobileBrowser()) {
-			socket.emit('requestHistoryGraph');
-		}
-    } else {
-        $('#tagline-text').text('Updating...');
-
-        $.getScript('/publicConfig.json', function(data, textStatus, xhr) {
-            if (xhr.status === 200) {
-                validateBootTime(publicConfig.bootTime, socket);
-            } else {
-                showCaption('Failed to update! Refresh?');
-            }
-        });
-    }
-}
-
 function updateServerPeak(serverId, time, playerCount) {
 	// hack: strip the AM/PM suffix
 	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
@@ -251,8 +223,22 @@ $(document).ready(function() {
         reconnectionAttempts: 10
     });
 
-    socket.on('bootTime', function(bootTime) {
-        validateBootTime(bootTime, socket);
+    socket.on('bootTime', function(data) {
+		// Compare the bootTime sent by the socket.io connection against the bootTime provided by publicConfig.json during initial page setup
+		// This prevents outdated frontends from being reconnected to updated backend instances
+		if (data !== publicConfig.bootTime) {
+			$('#tagline-text').text('Your page is outdated or the system has been rebooted. Please refresh.');
+		} else {
+			$('#tagline-text').text('Loading...');
+
+			// requestListing starts the data sync process
+			socket.emit('requestListing');
+
+			// Only emit graph data request if not on mobile due to graph data size
+			if (!isMobileBrowser()) {
+				socket.emit('requestHistoryGraph');
+			}
+		}
     });
 
     socket.on('disconnect', function() {
@@ -370,7 +356,7 @@ $(document).ready(function() {
 
 		keys.forEach(function(serverName) {
 			const serverId = serverRegistry.getOrAssign(serverName);
-			const graphData = data[key];
+			const graphData = data[serverName];
 
 			// [0] and [1] indexes correspond to flot.js' graphing data structure
 			updateServerPeak(serverId, graphData[0], graphData[1]);
