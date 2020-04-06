@@ -5,46 +5,45 @@ const serverRegistry = new ServerRegistry();
 const pingTracker = new PingTracker();
 const graphDisplayManager = new GraphDisplayManager();
 
-function updateServerStatus(serverId, ping, isAddEvent) {
-	// Only pushTograph when isAddedEvent == false
-	pingTracker.handlePing(serverId, ping, !isAddEvent);
+function updateServerStatus(serverId, ping, initialUpdate) {
+	// Only pushTograph when initialUpdate === false
+	// Otherwise the ping value is pushed into the graphData when already present
+	pingTracker.handlePing(serverId, ping, !initialUpdate);
 	
-    var div = $('#status_' + serverId);
-    var versionDiv = $('#version_' + serverId);
-
+	// Remap version indexes into their formatted name equivalents
+	// TODO: Only rebuild if ping.versions !== last versions listing (data not in scope)
     if (ping.versions) {
-        var versions = '';
-
-        for (var i = 0; i < ping.versions.length; i++) {
-            if (!ping.versions[i]) continue;
-            versions += '<span class="version">' + publicConfig.minecraftVersions[ping.info.type][ping.versions[i]] + '</span>&nbsp;';
-        }
-
-        versionDiv.html(versions);
+		const versionNames = ping.versions.map(version => {
+				const versionName = publicConfig.minecraftVersions[ping.info.type][version];
+				return '<span class="version">' + versionName + '</span>';
+			}).join('&nbsp');
+			
+		$('#version_' + serverId).html(versionNames);
     } else {
-        versionDiv.html('');
-    }
+		$('#version_' + serverId).empty();
+	}
+	
+	// TODO: Only rebuild if ping.record !== last record (data not in scope)
+	if (ping.record) {
+        $('#record_' + serverId).text('Record: ' + formatNumber(ping.record));
+	}
+
+	let statusHTML;
 
     if (ping.result) {
-        var result = ping.result;
-        var newStatus = 'Players: <span style="font-weight: 500;">' + formatNumber(result.players.online) + '</span>';
+		statusHTML = 'Players: <span style="font-weight: 500;">' + formatNumber(ping.result.players.online) + '</span>';
 
+		// If the data is defined, generate a player count difference and append
 		const serverGraph = pingTracker.getServerGraph(serverId);
 		const playerCountDifference = serverGraph.getPlayerCountDifference();
-
+		
 		if (playerCountDifference !== undefined) {
-            newStatus += '<span class="color-gray"> (';
-            if (playerCountDifference >= 0) {
-                newStatus += '+';
-            }
-            newStatus += playerCountDifference + ')</span>';
-        }
-
-		div.html(newStatus);
+            statusHTML += '<span class="color-gray"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>';
+		}
 		
 		// An updated favicon has been sent, update the src
 		// Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
-		if (!isAddEvent && ping.result.favicon) {
+		if (!initialUpdate && ping.result.favicon) {
 			$('#favicon_' + serverId).attr('src', ping.result.favicon);
 		}
     } else {
@@ -53,15 +52,15 @@ function updateServerStatus(serverId, ping, isAddEvent) {
 			// Attempt to find an error cause from documented options
 			errorMessage = ping.error.description || ping.error.errno || errorMessage;
 		}
-        div.html('<span class="color-red">' + errorMessage + '</span>');
-    }
-
-    $("#stat_totalPlayers").text(formatNumber(pingTracker.getTotalPlayerCount()));
-    $("#stat_networks").text(formatNumber(pingTracker.getActiveServerCount()));
-
-    if (ping.record) {
-        $('#record_' + serverId).html('Record: ' + formatNumber(ping.record));
+		statusHTML = '<span class="color-red">' + errorMessage + '</span>';
 	}
+	
+	$('#status_' + serverId).html(statusHTML);
+}
+
+function updateGlobalStats() {
+	$('#stat_totalPlayers').text(formatNumber(pingTracker.getTotalPlayerCount()));
+    $('#stat_networks').text(formatNumber(pingTracker.getActiveServerCount()));
 }
 
 function sortServers() {
@@ -302,7 +301,8 @@ $(document).ready(function() {
 
 		// Run a single bulk update to externally managed elements
         sortServers();
-        updatePercentageBar();
+		updatePercentageBar();
+		updateGlobalStats();
 	});
 
 	socket.on('update', function(data) {
@@ -315,6 +315,7 @@ $(document).ready(function() {
 			updateServerStatus(serverId, data, false);
 
 			updatePercentageBar();
+			updateGlobalStats();
 		}
 	});
 
