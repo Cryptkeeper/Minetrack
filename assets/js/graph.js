@@ -64,17 +64,14 @@ const HISTORY_GRAPH_OPTIONS = {
 
 // Called by flot.js when they hover over a data point.
 function handlePlotHover(event, pos, item) {
-    if (item) {
-        var text = getTimestamp(item.datapoint[0]) + '\
-            <br />\
-            ' + formatNumber(item.datapoint[1]) + ' Players';
-
-        if (item.series && item.series.label) {
-            text = item.series.label + '<br />' + text;
-        }
-
-        tooltip.set(item.pageX + 5, item.pageY + 5, text);
-    } else {
+	if (!item) {
 		tooltip.hide();
-    }
+	} else {
+		let text = formatNumber(item.datapoint[1]) + ' Players<br>' + getTimestamp(item.datapoint[0]);
+		if (item.series && item.series.label) {
+			// Prefix text with the series label when possible
+			text = '<strong>' + item.series.label + '</strong><br>' + text;
+		}
+		tooltip.set(item.pageX + 5, item.pageY + 5, text);
+	}
 }

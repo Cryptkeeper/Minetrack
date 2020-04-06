@@ -136,17 +136,9 @@ function setAllGraphVisibility(visible) {
 }
 
 function updateServerPeak(serverId, time, playerCount) {
-	// hack: strip the AM/PM suffix
-	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
-	var timestamp = getTimestamp(time).split(':');
-	var end = timestamp.pop().split(' ')[1];
-	timestamp = timestamp.join(':');
-	// end may be undefined for other timezones/24 hour times
-	if (end) {
-		timestamp += ' ' + end;
-	}
-	const timeLabel = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000)) + 'h';
-	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
+	const hourDuration = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000));
+	
+	$('#peak_' + serverId).html(hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + getTimestamp(time));
 }
 
 function addServer(serverData) {
