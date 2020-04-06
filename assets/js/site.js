@@ -1,5 +1,3 @@
-var historyPlot;
-
 const tooltip = new Tooltip();
 const caption = new Caption();
 
@@ -128,7 +126,7 @@ function updatePercentageBar() {
 function setAllGraphVisibility(visible) {
 	graphDisplayManager.setAllGraphDataVisible(visible);
 
-    if (graphDisplayManager.redrawIfNeeded(historyPlot)) {
+    if (graphDisplayManager.redrawIfNeeded()) {
 		$('.graph-control').each(function(index, item) {
 			item.checked = visible;
 		});
@@ -259,17 +257,12 @@ $(document).ready(function() {
         $('#stat_networks').text(0);
     });
 
-	// TODO: var naming
-    socket.on('historyGraph', function(rawData) {
-		graphDisplayManager.setGraphData(rawData);
+    socket.on('historyGraph', function(data) {
+		graphDisplayManager.setGraphData(data);
 
-		$('#big-graph').css('height', '400px');
+		graphDisplayManager.buildPlotInstance();
 
-        historyPlot = $.plot('#big-graph', graphDisplayManager.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS);
-
-        $('#big-graph').bind('plothover', handlePlotHover);
-
-        var keys = Object.keys(rawData);
+        var keys = Object.keys(data);
 
         var sinceBreak = 0;
         var html = '<table><tr>';
@@ -304,7 +297,7 @@ $(document).ready(function() {
 		const serverId = serverRegistry.getOrAssign(data.name);
 		
 		graphDisplayManager.addGraphPoint(serverId, data.timestamp, data.players);
-		graphDisplayManager.redrawIfNeeded(historyPlot);
+		graphDisplayManager.redrawIfNeeded();
     });
 
 	socket.on('add', function(data) {
@@ -363,31 +356,14 @@ $(document).ready(function() {
 		const serverId = parseInt($(this).attr('minetrack-server-id'));
 
 		graphDisplayManager.setGraphDataVisible(serverId, this.checked);
-		graphDisplayManager.redrawIfNeeded(historyPlot);
+		graphDisplayManager.redrawIfNeeded();
 	});
-	
-	let graphResizeTask;
 
     $(window).on('resize', function() {
 		updatePercentageBar();
-		
-		// Only resize historyPlot when defined
-		// Set a timeout to resize after resize events have not been fired for some duration of time
-		// This prevents burning CPU time for multiple, rapid resize events
-		if (historyPlot) {
-			if (graphResizeTask) {
-				clearTimeout(graphResizeTask);
-			}
 
-			graphResizeTask = setTimeout(function() {
-				historyPlot.resize();
-				historyPlot.setupGrid();
-				historyPlot.draw();
-
-				// undefine value so #clearTimeout is not called
-				graphResizeTask = undefined;
-			}, 200);
-		}
+		// Delegate to GraphDisplayManager which can check if the resize is necessary
+		graphDisplayManager.handleResizeRequest();
 	});
 	
 	// Run the sortServers loop even if the frontend has not connected to the backend

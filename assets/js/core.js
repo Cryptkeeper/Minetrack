@@ -275,7 +275,7 @@ class GraphDisplayManager {
 	}
 
 	isGraphDataVisible = (serverId) => !this._hiddenServerIds.includes(serverId);
-
+	
 	// Converts the backend data into the schema used by flot.js
 	getVisibleGraphData() {
 		const keys = Object.keys(this._graphData).map(Number);
@@ -297,15 +297,24 @@ class GraphDisplayManager {
 		return visibleGraphData;
 	}
 
-	redrawIfNeeded(graphInstance) {
+	buildPlotInstance() {
+		// Explicitly define a height so flot.js can rescale the Y axis
+		$('#big-graph').css('height', '400px');
+		$('#big-graph').bind('plothover', handlePlotHover);
+
+		// Build the plot instance
+		this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS);
+	}
+
+	redrawIfNeeded() {
 		if (this._mustRedraw) {
 			this._mustRedraw = false;
 
 			// Fire calls to the provided graph instance
 			// This allows flot.js to manage redrawing and creates a helper method to reduce code duplication
-			graphInstance.setData(this.getVisibleGraphData());
-			graphInstance.setupGrid();
-			graphInstance.draw();
+			this._plotInstance.setData(this.getVisibleGraphData());
+			this._plotInstance.setupGrid();
+			this._plotInstance.draw();
 			
 			// Return was redrawn for downstream context specific handling
 			return true;
@@ -314,10 +323,44 @@ class GraphDisplayManager {
 		return false;
 	}
 
+	handleResizeRequest() {
+		// Only resize when _plotInstance is defined
+		// Set a timeout to resize after resize events have not been fired for some duration of time
+		// This prevents burning CPU time for multiple, rapid resize events
+		if (this._plotInstance) {
+			if (this._resizeRequestTimeout) {
+				clearTimeout(this._resizeRequestTimeout);
+			}
+
+			// Schedule new delayed resize call
+			// This can be cancelled by #handleResizeRequest, #resize and #reset
+			this._resizeRequestTimeout = setTimeout(this.resize, 200);
+		}
+	}
+
+	resize = () => {
+		if (this._plotInstance) {
+			this._plotInstance.resize();
+			this._plotInstance.setupGrid();
+			this._plotInstance.draw();
+		}
+
+		// undefine value so #clearTimeout is not called
+		// This is safe even if #resize is manually called since it removes the pending work
+		this._resizeRequestTimeout = undefined;
+	}
+
 	reset() {
 		this._graphData = [];
 		this._hiddenServerIds = [];
 		this._hasLoadedSettings = false;
 		this._mustRedraw = false;
+		this._plotInstance = undefined;
+
+		// Fire #clearTimeout if the timeout is currently defined
+		if (this._resizeRequestTimeout) {
+			clearTimeout(this._resizeRequestTimeout);
+			this._resizeRequestTimeout = undefined;
+		}
 	}
 }
