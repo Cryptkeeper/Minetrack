@@ -41,8 +41,6 @@ class ServerRegistry {
 			serverId = this._nextId++;
 			this._serverIdsByName[name] = serverId;
 			this._serverNamesById[serverId] = name;
-
-			console.log('Assigning server name %s to id %d', name, serverId);
 		}
 		return serverId;
 	}
