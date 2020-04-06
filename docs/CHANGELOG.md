@@ -1,3 +1,19 @@
+**4.1** *(Apr 6 2020)*
+- Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
+- Tooltips have been optimized and updated to a more readable design
+- Initial page loading has been optimized
+- MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.png to improve caching behavior (and its customizable now!)
+- Peak player count labels are formatted using the graphDuration hours and now displays the timestamp seconds
+- Fixed the page being broken when connecting to a freshly booted instance
+- Fixed graphs starting at 0 player count when a server is initially pinged
+- Fixed status text ocassionally not being shown
+- Fixed some elements/frontend state not being completely reset on disconnect
+- Fixed Minecraft Bedrock Edition servers showing the default port of 19132
+- Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
+- Remove #validateBootTime loop, it will now display a refresh message
+- Lots and lots of optimizations, legacy code removal and reorganization.
+- Seriously.
+
 **4.0.5** *(Apr 1 2020)*
 - The frontend will now auto calculate the "24h Peak" label using your configured graphDuration in config.json
 
