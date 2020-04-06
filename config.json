@@ -2,6 +2,7 @@
 	"routes": {
 		"/": "assets/html/index.html",
 		"/images/compass.png": "assets/images/compass.png",
+		"/images/missing_favicon.png": "assets/images/missing_favicon.png",
 		"/js/site.js": "assets/js/site.js",
 		"/js/util.js": "assets/js/util.js",
 		"/js/graph.js": "assets/js/graph.js",

@@ -158,7 +158,7 @@ function addServer(serverData) {
 
 	// Safely default to a missing placeholder if not present
 	// If a favicon is later provided in an update, it will be handled by #updateServerStatus
-	let favicon = MISSING_FAVICON_BASE64;
+	let favicon = '/images/missing_favicon.png';
 	if (ping.result && ping.result.favicon) {
 		favicon = ping.result.favicon;
 	}
