@@ -1,5 +1,4 @@
-// Used by the individual server entries
-var smallChartOptions = {
+const SERVER_GRAPH_OPTIONS = {
     series: {
         shadowSize: 0
     },
@@ -31,8 +30,7 @@ var smallChartOptions = {
     ]
 };
 
-// Used by the one chart to rule them all
-var bigChartOptions = {
+const HISTORY_GRAPH_OPTIONS = {
     series: {
         shadowSize: 0
     },
@@ -63,12 +61,6 @@ var bigChartOptions = {
         show: false
     }
 };
-
-function toggleControlsDrawer() {
-    var div = $('#big-graph-controls-drawer');
-
-    div.css('display', div.css('display') !== 'none' ? 'none' : 'block');
-}
 
 // Called by flot.js when they hover over a data point.
 function handlePlotHover(event, pos, item) {

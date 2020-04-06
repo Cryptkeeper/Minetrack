@@ -198,7 +198,7 @@ function addServer(serverData) {
 	}).appendTo("#server-container-list");
 
 	// Create an empty plot instance
-	const plotInstance = $.plot('#chart_' + serverId, [], smallChartOptions);
+	const plotInstance = $.plot('#chart_' + serverId, [], SERVER_GRAPH_OPTIONS);
 
 	$('#chart_' + serverId).bind('plothover', handlePlotHover);
 
@@ -268,7 +268,7 @@ $(document).ready(function() {
 
 		$('#big-graph').css('height', '400px');
 
-        historyPlot = $.plot('#big-graph', graphDisplayManager.getVisibleGraphData(), bigChartOptions);
+        historyPlot = $.plot('#big-graph', graphDisplayManager.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS);
 
         $('#big-graph').bind('plothover', handlePlotHover);
 
