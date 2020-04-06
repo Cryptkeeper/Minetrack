@@ -13,6 +13,19 @@ class Tooltip {
 	hide = () => this._div.hide();
 }
 
+class Caption {
+	constructor() {
+		this._div = $('#tagline-text');
+	}
+
+	set(text) {
+		this._div.text(text);
+		this._div.show();
+	}
+
+	hide = () => this._div.hide();
+}
+
 class ServerRegistry {
 	constructor() {
 		this._serverIdsByName = [];

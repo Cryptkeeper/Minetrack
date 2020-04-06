@@ -1,6 +1,7 @@
 var historyPlot;
 
 const tooltip = new Tooltip();
+const caption = new Caption();
 
 const serverRegistry = new ServerRegistry();
 const pingTracker = new PingTracker();
@@ -207,7 +208,7 @@ function addServer(serverData) {
 }
 
 $(document).ready(function() {
-	var socket = io.connect({
+	const socket = io.connect({
         reconnect: true,
         reconnectDelay: 1000,
         reconnectionAttempts: 10
@@ -217,9 +218,9 @@ $(document).ready(function() {
 		// Compare the bootTime sent by the socket.io connection against the bootTime provided by publicConfig.json during initial page setup
 		// This prevents outdated frontends from being reconnected to updated backend instances
 		if (data !== publicConfig.bootTime) {
-			$('#tagline-text').text('Your page is outdated or the system has been rebooted. Please refresh.');
+			caption.set('Your page is outdated or the system has been rebooted. Please refresh.');
 		} else {
-			$('#tagline-text').text('Loading...');
+			caption.set('Loading...');
 
 			// requestListing starts the data sync process
 			socket.emit('requestListing');
@@ -232,17 +233,19 @@ $(document).ready(function() {
     });
 
     socket.on('disconnect', function() {
-		showCaption('Disconnected! Refresh?');
+		caption.set('Disconnected! Please refresh.');
 		
+		// Reset individual tracker elements to flush any held data
 		serverRegistry.reset();
 		pingTracker.reset();
 		graphDisplayManager.reset();
 
+		// Reset HTML structures that have been generated during runtime
         $('#server-container-list').html('');
 
         $('#big-graph').html('');
         $('#big-graph-checkboxes').html('');
-        $('#big-graph-controls').css('display', 'none');
+        $('#big-graph-controls').hide();
 
         $('#perc-bar').html('');
         $('.mojang-status').css('background', 'transparent');
@@ -293,15 +296,15 @@ $(document).ready(function() {
 		$('#big-graph-controls').css('display', 'block');
     });
 
-    socket.on('updateHistoryGraph', function(update) {
-		const serverId = serverRegistry.getOrAssign(update.name);
+    socket.on('updateHistoryGraph', function(data) {
+		const serverId = serverRegistry.getOrAssign(data.name);
 		
-		graphDisplayManager.addGraphPoint(serverId, update.timestamp, update.players);
+		graphDisplayManager.addGraphPoint(serverId, data.timestamp, data.players);
 		graphDisplayManager.redrawIfNeeded(historyPlot);
     });
 
-	socket.on('add', function(servers) {
-		servers.forEach(addServer);
+	socket.on('add', function(data) {
+		data.forEach(addServer);
 
 		// Run a single bulk update to externally managed elements
         sortServers();
@@ -334,7 +337,8 @@ $(document).ready(function() {
     });
 
     socket.on('syncComplete', function() {
-        hideCaption();
+		// Fired once the backend has sent all requested data
+        caption.hide();
 	});
 	
 	socket.on('updatePeak', function(data) {

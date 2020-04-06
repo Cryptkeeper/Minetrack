@@ -14,22 +14,8 @@ function formatMinecraftServerAddress(ip, port) {
 
 var publicConfig;
 
-function showCaption(html) {
-    var tagline = $('#tagline-text');
-    tagline.stop(true, false);
-    tagline.html(html);
-    tagline.slideDown(100);
-}
-
-function hideCaption() {
-    var tagline = $('#tagline-text');
-    tagline.stop(true, false);
-    tagline.slideUp(100);
-}
-
 function setPublicConfig(json) {
     publicConfig = json;
-    $('#server-container-list').html('');
 }
 
 function findErrorMessage(error) {
