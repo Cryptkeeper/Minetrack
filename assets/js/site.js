@@ -17,8 +17,8 @@ function updateServerStatus(serverId, ping, initialUpdate) {
     if (ping.versions) {
 		const versionNames = ping.versions.map(version => {
 				const versionName = publicConfig.minecraftVersions[ping.info.type][version];
-				return '<span class="version">' + versionName + '</span>';
-			}).join('&nbsp');
+				return versionName;
+			}).join(' ');
 			
 		$('#version_' + serverId).html(versionNames);
     } else {
@@ -32,13 +32,13 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 	let statusHTML;
 
     if (ping.result) {
-		statusHTML = 'Players: <span style="font-weight: 500;">' + formatNumber(ping.result.players.online) + '</span>';
+		statusHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>';
 
 		// If the data is defined, generate a player count difference and append
 		const playerCountDifference = serverGraph.getPlayerCountDifference();
 
 		if (playerCountDifference !== undefined) {
-            statusHTML += '<span class="color-gray"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>';
+            statusHTML += '<span class="server-player-count-diff"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>';
 		}
 		
 		// An updated favicon has been sent, update the src
@@ -52,7 +52,7 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 			// Attempt to find an error cause from documented options
 			errorMessage = ping.error.description || ping.error.errno || errorMessage;
 		}
-		statusHTML = '<span class="color-red">' + errorMessage + '</span>';
+		statusHTML = '<span class="server-error-message">' + errorMessage + '</span>';
 	}
 	
 	$('#status_' + serverId).html(statusHTML);
@@ -150,7 +150,7 @@ function addServer(serverData) {
 	// Conditional formatting given configuration
 	let typeMarker = '';
 	if (publicConfig.serverTypesVisible) {
-		typeMarker = '<span class="type">' + ping.info.type + '</span>';
+		typeMarker = '<span class="server-type">' + ping.info.type + '</span>';
 	}
 
 	// Safely default to a missing placeholder if not present
@@ -165,21 +165,18 @@ function addServer(serverData) {
 		id: 'container_' + serverId,
 		class: 'server',
 		'server-id': serverId,
-		html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
+		html: '<div id="server-' + serverId + '" class="column column-favicon">\
 					<img class="server-favicon" src="' + favicon + '" id="favicon_' + serverId + '" title="' + ping.info.name + '\n' + formatMinecraftServerAddress(ping.info.ip, ping.info.port) + '">\
-					<br />\
-					<p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
+					<span class="server-rank" id="ranking_' + serverId + '"></span>\
 				</div>\
-				<div class="column" style="width: 282px;">\
-					<h3>' + ping.info.name + '&nbsp;' + typeMarker + '</h3>\
-					<span id="status_' + serverId + '">Waiting</span>\
-					<div id="version_' + serverId + '" class="color-dark-gray server-meta versions"><span class="version"></span></div>\
-					<span id="peak_' + serverId + '" class="color-dark-gray server-meta"></span>\
-					<br><span id="record_' + serverId + '" class="color-dark-gray server-meta"></span>\
+				<div class="column column-status">\
+					<h3 class="server-name">' + ping.info.name + typeMarker + '</h3>\
+					<span id="status_' + serverId + '"></span>\
+					<span class="server-versions" id="version_' + serverId + '"></span>\
+					<span class="server-peak" id="peak_' + serverId + '"></span>\
+					<span class="server-record" id="record_' + serverId + '"></span>\
 				</div>\
-				<div class="column" style="float: right;">\
-					<div class="chart" id="chart_' + serverId + '"></div>\
-				</div>'
+				<div class="column column-graph" id="chart_' + serverId + '"></div>'
 	}).appendTo("#server-list");
 
 	// Create an empty plot instance
