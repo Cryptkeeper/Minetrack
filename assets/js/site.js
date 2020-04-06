@@ -101,7 +101,7 @@ function updatePercentageBar() {
 					const percentage = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
 					const position = div.offset();
 
-					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong>: ' + percentage + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
+					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong><br>' + formatNumber(playerCount) + ' Players<br><em>' + percentage + '%</em>');
 				});
 
 				div.mouseout(tooltip.hide);

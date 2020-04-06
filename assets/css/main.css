@@ -179,9 +179,10 @@ strong {
 #tooltip {
     display: none;
     position: absolute;
-    padding: 5px;
-    border-radius: 3px;
-    background: rgba(0, 0, 0, 0.65);
+    padding: 5px 8px;
+    border-radius: 2px;
+	background: rgba(0, 0, 0, 1);
+	border: 3px solid #00002A;
     z-index: 10000;
 }
 
