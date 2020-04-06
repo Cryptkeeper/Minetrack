@@ -130,11 +130,9 @@ function setAllGraphVisibility(visible) {
 	graphDisplayManager.setAllGraphDataVisible(visible);
 
     if (graphDisplayManager.redrawIfNeeded()) {
-		const graphControls = document.getElementsByClassName('graph-control');
-
-		for (let i = 0; i < graphControls.length; i++) {
-			graphControls[i].checked = visible;
-		}
+		document.querySelectorAll('.graph-control').forEach(function(element) {
+			element.checked = visible;
+		});
 	}
 }
 
@@ -241,15 +239,13 @@ document.addEventListener('DOMContentLoaded', function() {
 		graphElement.removeAttribute('style');
 		
 		// Strip any mojang-status-* color classes from all mojang-status classes
-		const mojangStatusElements = document.getElementsByClassName('mojang-status');
-		for (let i = 0; i < mojangStatusElements.length; i++) {
-			mojangStatusElements[i].setAttribute('class', 'mojang-status');
-		}
+		document.querySelectorAll('.mojang-status').forEach(function(element) {
+			element.setAttribute('class', 'mojang-status');
+		});
 
-		const mojangStatusTextElements = document.getElementsByClassName('mojang-status-text');
-		for (let i = 0; i < mojangStatusTextElements.length; i++) {
-			mojangStatusTextElements[i].innerText = '...';
-		}
+		document.querySelectorAll('.mojang-status-text').forEach(function(element) {
+			element.innerText = '...';
+		});
 
 		document.getElementById('stat_totalPlayers').innerText = 0;
 		document.getElementById('stat_networks').innerText = 0;
@@ -296,16 +292,14 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.getElementById('big-graph-controls').style.display = 'block';
 
 		// Bind click event for updating graph data
-		const graphControls = document.getElementsByClassName('graph-control');
+		document.querySelectorAll('.graph-control').forEach(function(element) {
+			element.addEventListener('click', function(event) {
+				const serverId = parseInt(event.target.getAttribute('minetrack-server-id'));
 
-		for (let i = 0; i < graphControls.length; i++) {
-			graphControls[i].addEventListener('click', function(e) {
-				const serverId = parseInt(e.target.getAttribute('minetrack-server-id'));
-
-				graphDisplayManager.setGraphDataVisible(serverId, e.target.checked);
+				graphDisplayManager.setGraphDataVisible(serverId, event.target.checked);
 				graphDisplayManager.redrawIfNeeded();
 			}, false);
-		}
+		});
     });
 
     socket.on('updateHistoryGraph', function(data) {
