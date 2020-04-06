@@ -8,8 +8,6 @@ var isConnected = false;
 
 var sortServersTask;
 
-var currentServerHover;
-
 const tooltip = new Tooltip();
 
 const serverRegistry = new ServerRegistry();
@@ -111,12 +109,19 @@ function updatePercentageBar() {
 				div = $('#perc_bar_part_' + serverId);
 
 				div.mouseover(function() {
-					currentServerHover = serverId;
+					var totalPlayers = pingTracker.getTotalPlayerCount();
+					var playerCount = pingTracker.getPlayerCount(serverId);
+					var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
+
+					let serverName = serverRegistry.getName(serverId);
+
+					let position = div.offset();
+
+					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
 				});
 
 				div.mouseout(function() {
 					tooltip.hide();
-					currentServerHover = undefined;
 				});
 			}
 
@@ -472,18 +477,6 @@ $(document).ready(function() {
             resetGraphControls();
         } else {
             saveGraphControls(Object.keys(displayedGraphData));
-        }
-    });
-
-    $(document).on('mousemove', function(e) {
-        if (currentServerHover !== undefined) {
-			var totalPlayers = pingTracker.getTotalPlayerCount();
-			var playerCount = pingTracker.getPlayerCount(currentServerHover);
-			var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
-
-			let serverName = serverRegistry.getName(currentServerHover);
-
-            tooltip.set(e.pageX + 10, e.pageY + 10, '<strong>' + serverName + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
         }
     });
 
