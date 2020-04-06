@@ -5,6 +5,7 @@
 		"/js/site.js": "assets/js/site.js",
 		"/js/util.js": "assets/js/util.js",
 		"/js/graph.js": "assets/js/graph.js",
+		"/js/core.js": "assets/js/core.js",
 		"/css/main.css": "assets/css/main.css"
 	},
 	"faviconOverride": {
