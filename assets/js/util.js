@@ -30,22 +30,59 @@ class Tooltip {
 class ServerRegistry {
 	constructor() {
 		this._serverIdsByName = [];
+		this._serverNamesById = [];
 		this._nextId = 0;
 	}
+
+	getServerIds = () => Object.keys(this._serverNamesById);
 
 	getOrAssign(name) {
 		let serverId = this._serverIdsByName[name];
 		if (serverId === undefined) {
 			serverId = this._nextId++;
 			this._serverIdsByName[name] = serverId;
+			this._serverNamesById[serverId] = name;
 			console.log('Assigning server name %s to id %d', name, serverId);
 		}
 		return serverId;
 	}
 
+	getName = (serverId) => this._serverNamesById[serverId];
+
+	getColor(serverId) {
+		return '#FFF';
+	}
+
 	reset() {
 		this._serverIdsByName = [];
+		this._serverNamesById = [];
 		this._nextId = 0;
+	}
+}
+
+class PingTracker {
+	constructor() {
+		this._lastPlayerCounts = [];
+	}
+
+	handlePing(serverId, payload) {
+		if (payload.result) {
+			this._lastPlayerCounts[serverId] = payload.result.players.online;
+		} else {
+			delete this._lastPlayerCounts[serverId];
+		}
+	}
+
+	getPlayerCount(serverId) {
+		return this._lastPlayerCounts[serverId] || 0;
+	}
+
+	getTotalPlayerCount = () => this._lastPlayerCounts.reduce((sum, current) => sum + current, 0);
+
+	getActiveServerCount = () => this._lastPlayerCounts.length;
+
+	reset() {
+		this._lastPlayerCounts = [];
 	}
 }
 

@@ -1,5 +1,4 @@
 var graphs = [];
-var lastPlayerEntries = [];
 
 var historyPlot;
 var displayedGraphData;
@@ -14,6 +13,7 @@ var currentServerHover;
 const tooltip = new Tooltip();
 
 const serverRegistry = new ServerRegistry();
+const pingTracker = new PingTracker();
 
 function updateServerStatus(lastEntry) {
 	var info = lastEntry.info;
@@ -54,8 +54,6 @@ function updateServerStatus(lastEntry) {
             newStatus += playerDifference + ')</span>';
         }
 
-        lastPlayerEntries[info.name] = result.players.online;
-
         div.html(newStatus);
     } else {
         var newStatus = '<span class="color-red">';
@@ -69,15 +67,8 @@ function updateServerStatus(lastEntry) {
         div.html(newStatus + '</span>');
     }
 
-    var keys = Object.keys(lastPlayerEntries);
-    var totalPlayers = 0;
-
-    for (var i = 0; i < keys.length; i++) {
-        totalPlayers += lastPlayerEntries[keys[i]];
-    }
-
-    $("#stat_totalPlayers").text(formatNumber(totalPlayers));
-    $("#stat_networks").text(formatNumber(keys.length));
+    $("#stat_totalPlayers").text(formatNumber(pingTracker.getTotalPlayerCount()));
+    $("#stat_networks").text(formatNumber(pingTracker.getActiveServerCount()));
 
     if (lastEntry.record) {
         $('#record_' + serverId).html('Record: ' + formatNumber(lastEntry.record));
@@ -87,83 +78,58 @@ function updateServerStatus(lastEntry) {
 }
 
 function sortServers() {
-	var serverNames = [];
-
-	var keys = Object.keys(lastPlayerEntries);
-
-	for (var i = 0; i < keys.length; i++) {
-		serverNames.push(keys[i]);
-	}
-
-	serverNames.sort(function(a, b) {
-		return (lastPlayerEntries[b] || 0) - (lastPlayerEntries[a] || 0);
-	});
-
-	for (var i = 0; i < serverNames.length; i++) {
-		const serverId = serverRegistry.getOrAssign(serverNames[i]);
-		$('#container_' + serverId).appendTo('#server-container-list');
-		$('#ranking_' + serverId).text('#' + (i + 1));
-	}
+	serverRegistry.getServerIds().sort(function(a, b) {
+			return pingTracker.getPlayerCount(b) - pingTracker.getPlayerCount(a);
+		}).forEach(function(serverId, i) {
+			$('#container_' + serverId).appendTo('#server-container-list');
+			$('#ranking_' + serverId).text('#' + (i + 1));
+		});
 }
 
 function updatePercentageBar() {
-    var keys = Object.keys(lastPlayerEntries);
-
-    keys.sort(function(a, b) {
-        return lastPlayerEntries[a] - lastPlayerEntries[b];
-    });
-
-    var totalPlayers = getCurrentTotalPlayers();
+	const totalPlayers = pingTracker.getTotalPlayerCount();
 
     var parent = $('#perc-bar');
-    var leftPadding = 0;
+	var leftPadding = 0;
+	
+	serverRegistry.getServerIds().sort(function(a, b) {
+			return pingTracker.getPlayerCount(a) - pingTracker.getPlayerCount(b);
+		}).forEach(function(serverId) {
+			let playerCount = pingTracker.getPlayerCount(serverId);
 
-    for (var i = 0; i < keys.length; i++) {
-        (function(pos, server, length) {
-			const serverId = serverRegistry.getOrAssign(server);
-            var playerCount = lastPlayerEntries[server];
+			var div = $('#perc_bar_part_' + serverId);
 
-            var div = $('#perc_bar_part_' + serverId);
+			// Setup the base
+			if (!div.length) {
+				$('<div/>', {
+					id: 'perc_bar_part_' + serverId,
+					class: 'perc-bar-part',
+					html: '',
+					style: 'background: ' + serverRegistry.getColor(serverId) + ';'
+				}).appendTo(parent);
 
-            // Setup the base
-            if (!div.length) {
-                $('<div/>', {
-                    id: 'perc_bar_part_' + serverId,
-                    class: 'perc-bar-part',
-                    html: '',
-                    style: 'background: ' + getServerColor(server) + ';'
-                }).appendTo(parent);
+				div = $('#perc_bar_part_' + serverId);
 
-                div = $('#perc_bar_part_' + serverId);
+				div.mouseover(function() {
+					currentServerHover = serverId;
+				});
 
-                div.mouseover(function(e) {
-                    currentServerHover = server;
-                });
-
-                div.mouseout(function(e) {
+				div.mouseout(function() {
 					tooltip.hide();
-                    currentServerHover = undefined;
-                });
-            }
+					currentServerHover = undefined;
+				});
+			}
 
-            // Update our position/width
-            var width = (playerCount / totalPlayers) * parent.width();
+			// Update our position/width
+			var width = (playerCount / totalPlayers) * parent.width();
 
-            div.css({
-                width: width + 'px',
-                left: leftPadding + 'px'
-            });
+			div.css({
+				width: width + 'px',
+				left: leftPadding + 'px'
+			});
 
-            leftPadding += width;
-        })(i, keys[i], keys.length);
-    }
-}
-
-function getCurrentTotalPlayers() {
-    var totalPlayers = 0;
-    var keys = Object.keys(lastPlayerEntries);
-    for (var i = 0; i < keys.length; i++) totalPlayers += lastPlayerEntries[keys[i]]
-    return totalPlayers;
+			leftPadding += width;
+		});
 }
 
 function setAllGraphVisibility(visible) {
@@ -263,8 +229,8 @@ $(document).ready(function() {
 		showCaption('Disconnected! Refresh?');
 		
 		serverRegistry.reset();
+		pingTracker.reset();
 
-        lastPlayerEntries = {};
         graphs = {};
 
         $('#server-container-list').html('');
@@ -379,14 +345,10 @@ $(document).ready(function() {
 
             var lastEntry = history[history.length - 1];
 			var info = lastEntry.info;
-			
-            if (lastEntry.error) {
-                lastPlayerEntries[info.name] = 0;
-            } else if (lastEntry.result) {
-                lastPlayerEntries[info.name] = lastEntry.result.players.online;
-			}
 
 			const serverId = serverRegistry.getOrAssign(info.name);
+
+			pingTracker.handlePing(serverId, lastEntry);
 
             var typeString = publicConfig.serverTypesVisible ? '<span class="type">' + info.type + '</span>' : '';
 
@@ -444,7 +406,10 @@ $(document).ready(function() {
             $('#favicon_' + serverRegistry.getOrAssign(update.info.name)).attr('src', update.result.favicon);
         }
 
-        var graph = graphs[update.info.name];
+		var graph = graphs[update.info.name];
+		
+		const serverId = serverRegistry.getOrAssign(update.info.name);
+		pingTracker.handlePing(serverId, update);
 
         updateServerStatus(update);
 
@@ -511,12 +476,14 @@ $(document).ready(function() {
     });
 
     $(document).on('mousemove', function(e) {
-        if (currentServerHover) {
-            var totalPlayers = getCurrentTotalPlayers();
-			var playerCount = lastPlayerEntries[currentServerHover];
+        if (currentServerHover !== undefined) {
+			var totalPlayers = pingTracker.getTotalPlayerCount();
+			var playerCount = pingTracker.getPlayerCount(currentServerHover);
 			var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
 
-            tooltip.set(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
+			let serverName = serverRegistry.getName(currentServerHover);
+
+            tooltip.set(e.pageX + 10, e.pageY + 10, '<strong>' + serverName + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
         }
     });
 
