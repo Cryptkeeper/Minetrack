@@ -34,9 +34,7 @@ class ServerRegistry {
 		this._serverGraphs = [];
 	}
 
-	getServerIds() {
-		return Object.keys(this._serverNamesById).map(Number);
-	}
+	getServerIds = () => Object.keys(this._serverNamesById).map(Number);
 
 	getOrAssign(name) {
 		let serverId = this._serverIdsByName[name];
@@ -48,9 +46,7 @@ class ServerRegistry {
 		return serverId;
 	}
 
-	getServerName(serverId) {
-		return this._serverNamesById[serverId];
-	}
+	getServerName = (serverId) => this._serverNamesById[serverId];
 
 	getServerColor(serverId) {
 		const serverName = this.getServerName(serverId);
@@ -72,7 +68,9 @@ class ServerRegistry {
 
 	// Helper method for safely defaulting value to 0
 	getPlayerCount(serverId) {
-		return this.getServerGraph(serverId)._lastPlayerCount || 0;
+		const serverGraph = this._serverGraphs[serverId];
+		if (!serverGraph) return 0;
+		return serverGraph._lastPlayerCount || 0;
 	}
 
 	getTotalPlayerCount() {
