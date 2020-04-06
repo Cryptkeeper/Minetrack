@@ -231,14 +231,6 @@ function validateBootTime(bootTime, socket) {
     }
 }
 
-function printPort(port) {
-  if(port == undefined || port == 25565) {
-    return "";
-  } else {
-    return ":" + port;
-  }
-}
-
 function updateServerPeak(name, time, playerCount) {
 	// hack: strip the AM/PM suffix
 	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
@@ -403,7 +395,7 @@ $(document).ready(function() {
                 class: 'server',
                 'server-id': serverId,
                 html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
-                            <img class="server-favicon" id="favicon_' + serverId + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '">\
+                            <img class="server-favicon" id="favicon_' + serverId + '" title="' + info.name + '\n' + formatMinecraftServerAddress(info.ip, info.port) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
                         </div>\
