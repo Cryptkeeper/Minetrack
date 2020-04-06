@@ -145,7 +145,7 @@ function addServer(serverData) {
 	// info = safely defined with configured data
 	const ping = serverData[serverData.length - 1];
 
-	const serverId = serverRegistry.getOrAssign(ping.info.name);
+	const serverId = serverRegistry.getOrCreateId(ping.info.name);
 
 	// Conditional formatting given configuration
 	let typeMarker = '';
@@ -257,7 +257,7 @@ $(document).ready(function() {
 		let controlsHTML = '<table><tr>';
 
 		Object.keys(data).sort().forEach(function(serverName) {
-			const serverId = serverRegistry.getOrAssign(serverName);
+			const serverId = serverRegistry.getOrCreateId(serverName);
 			const isChecked = graphDisplayManager.isGraphDataVisible(serverId);
 
 			controlsHTML += '<td>\
@@ -281,7 +281,7 @@ $(document).ready(function() {
     });
 
     socket.on('updateHistoryGraph', function(data) {
-		const serverId = serverRegistry.getOrAssign(data.name);
+		const serverId = serverRegistry.getOrCreateId(data.name);
 		
 		graphDisplayManager.addGraphPoint(serverId, data.timestamp, data.players);
 		graphDisplayManager.redrawIfNeeded();
@@ -297,7 +297,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('update', function(data) {
-		const serverId = serverRegistry.getOrAssign(data.info.name);
+		const serverId = serverRegistry.getOrCreateId(data.info.name);
 
 		// The backend may send "update" events prior to receiving all "add" events
 		// A server has only been added once it's ServerGraph is defined
@@ -337,7 +337,7 @@ $(document).ready(function() {
 		const keys = Object.keys(data);
 
 		keys.forEach(function(serverName) {
-			const serverId = serverRegistry.getOrAssign(serverName);
+			const serverId = serverRegistry.getOrCreateId(serverName);
 			const graphData = data[serverName];
 
 			// [0] and [1] indexes correspond to flot.js' graphing data structure

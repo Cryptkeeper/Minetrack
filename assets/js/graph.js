@@ -142,7 +142,7 @@ class GraphDisplayManager {
 
 		for (let i = 0; i < keys.length; i++) {
 			const serverName = keys[i];
-			const serverId = serverRegistry.getOrAssign(serverName);
+			const serverId = serverRegistry.getOrCreateId(serverName);
 			this._graphData[serverId] = graphData[serverName];
 		}
 
@@ -158,7 +158,7 @@ class GraphDisplayManager {
 				serverNames = JSON.parse(serverNames);
 
 				// Mutate the server name array into serverIds for active use
-				this._hiddenServerIds = [...new Set(serverNames.map(serverName => serverRegistry.getOrAssign(serverName)))];
+				this._hiddenServerIds = [...new Set(serverNames.map(serverName => serverRegistry.getOrCreateId(serverName)))];
 			}
 		}
 	}

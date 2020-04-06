@@ -36,7 +36,7 @@ class ServerRegistry {
 
 	getServerIds = () => Object.keys(this._serverNamesById).map(Number);
 
-	getOrAssign(name) {
+	getOrCreateId(name) {
 		let serverId = this._serverIdsByName[name];
 		if (serverId === undefined) {
 			serverId = this._nextId++;
