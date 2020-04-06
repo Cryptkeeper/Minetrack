@@ -12,7 +12,6 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 	serverGraph.handlePing(ping, !initialUpdate);
 	
 	// Remap version indexes into their formatted name equivalents
-	// TODO: Only rebuild if ping.versions !== last versions listing (data not in scope)
     if (ping.versions) {
 		const versionNames = ping.versions.map(version => {
 				const versionName = publicConfig.minecraftVersions[ping.info.type][version];
@@ -24,7 +23,6 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 		$('#version_' + serverId).empty();
 	}
 	
-	// TODO: Only rebuild if ping.record !== last record (data not in scope)
 	if (ping.record) {
         $('#record_' + serverId).text('Record: ' + formatNumber(ping.record));
 	}
