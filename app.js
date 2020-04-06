@@ -7,6 +7,7 @@ var db = require('./lib/database');
 
 var config = require('./config.json');
 var servers = require('./servers.json');
+var minecraft = require('./minecraft.json');
 
 var networkHistory = [];
 var connectedClients = 0;
@@ -234,10 +235,6 @@ function startServices() {
 
 		logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 
-		// We send the boot time (also sent in publicConfig.json) to the frontend to validate they have the same config.
-		// If so, they'll send back "requestListing" event, otherwise they will pull the new config and retry.
-		client.emit('bootTime', util.getBootTime());
-
 		// Attach our listeners.
 		client.on('disconnect', function() {
 			connectedClients -= 1;
@@ -257,37 +254,43 @@ function startServices() {
 			}
 		});
 
-		client.on('requestListing', function() {
-			// Send them our previous data, so they have somewhere to start.
-			client.emit('updateMojangServices', mojang.toMessage());
-
-			// Send each individually, this should look cleaner than waiting for one big array to transfer.
-			for (var i = 0; i < servers.length; i++) {
-				var server = servers[i];
-
-				if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
-					// This server hasn't been ping'd yet. Send a hacky placeholder.
-					client.emit('add', [[{
-						error: {
-							description: 'Waiting...',
-							placeholder: true
-						},
-						result: null,
-						timestamp: util.getCurrentTimeMs(),
-						info: {
-							ip: server.ip,
-							port: server.port,
-							type: server.type,
-							name: server.name
-						}
-					}]]);
-				} else {
-					client.emit('add', [networkHistory[server.name]]);
-				}
-			}
-
-			client.emit('syncComplete');
+		// Send configuration data for rendering the page
+		client.emit('setPublicConfig', {
+			graphDuration: config.graphDuration,
+			servers: servers,
+			serverTypesVisible: config.serverTypesVisible || false,
+			minecraftVersions: minecraft.versions
 		});
+
+		// Send them our previous data, so they have somewhere to start.
+		client.emit('updateMojangServices', mojang.toMessage());
+
+		// Send each individually, this should look cleaner than waiting for one big array to transfer.
+		for (var i = 0; i < servers.length; i++) {
+			var server = servers[i];
+
+			if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
+				// This server hasn't been ping'd yet. Send a hacky placeholder.
+				client.emit('add', [[{
+					error: {
+						description: 'Waiting...',
+						placeholder: true
+					},
+					result: null,
+					timestamp: util.getCurrentTimeMs(),
+					info: {
+						ip: server.ip,
+						port: server.port,
+						type: server.type,
+						name: server.name
+					}
+				}]]);
+			} else {
+				client.emit('add', [networkHistory[server.name]]);
+			}
+		}
+
+		client.emit('syncComplete');
 	});
 
 	startMainLoop();

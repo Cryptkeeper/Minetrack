@@ -4,6 +4,8 @@ const caption = new Caption();
 const serverRegistry = new ServerRegistry();
 const graphDisplayManager = new GraphDisplayManager();
 
+let publicConfig;
+
 function updateServerStatus(serverId, ping, initialUpdate) {
 	const serverGraph = serverRegistry.getServerGraph(serverId);
 
@@ -206,28 +208,13 @@ $(document).ready(function() {
         reconnectionAttempts: 10
     });
 
-    socket.on('bootTime', function(data) {
-		// Ensure the publicConfig object has been successfully requested
-		if (!publicConfig || !publicConfig.bootTime) {
-			caption.set('Failed to load configuration.');
+	// The backend will automatically push data once connected
+    socket.on('connect', function() {
+		caption.set('Loading...');
 
-			return;
-		}
-
-		// Compare the bootTime sent by the socket.io connection against the bootTime provided by publicConfig.json during initial page setup
-		// This prevents outdated frontends from being reconnected to updated backend instances
-		if (data !== publicConfig.bootTime) {
-			caption.set('Your page is outdated or the system has been rebooted. Please refresh.');
-		} else {
-			caption.set('Loading...');
-
-			// requestListing starts the data sync process
-			socket.emit('requestListing');
-
-			// Only emit graph data request if not on mobile due to graph data size
-			if (!isMobileBrowser()) {
-				socket.emit('requestHistoryGraph');
-			}
+		// Only emit graph data request if not on mobile due to graph data size
+		if (!isMobileBrowser()) {
+			socket.emit('requestHistoryGraph');
 		}
     });
 
@@ -250,7 +237,10 @@ $(document).ready(function() {
 		$('.mojang-status-text').text('...');
 		
         $('#stat_totalPlayers').text(0);
-        $('#stat_networks').text(0);
+		$('#stat_networks').text(0);
+		
+		// Undefine publicConfig, resynced during the connection handshake
+		publicConfig = undefined;
     });
 
     socket.on('historyGraph', function(data) {
@@ -328,7 +318,11 @@ $(document).ready(function() {
 			$('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
 			$('#mojang-status-text_' + status.name).text(status.title);
 		});
-    });
+	});
+	
+	socket.on('setPublicConfig', function(data) {
+		publicConfig = data;
+	});
 
     socket.on('syncComplete', function() {
 		// Fired once the backend has sent all requested data

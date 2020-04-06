@@ -10,13 +10,6 @@ function formatMinecraftServerAddress(ip, port) {
 	return addr;
 }
 
-let publicConfig;
-
-// Called through JSONP by index.html loading /publicConfig.json
-function setPublicConfig(payload) {
-    publicConfig = payload;
-}
-
 function getTimestamp(millis) {
     var date = new Date(0);
     date.setUTCSeconds(millis / 1000);
