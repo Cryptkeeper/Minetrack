@@ -313,25 +313,21 @@ $(document).ready(function() {
     });
 
     socket.on('updateHistoryGraph', function(rawData) {
-        // Prevent race conditions.
+		// Prevent race conditions.
+		// TODO: move into centralized logic
         if (!displayedGraphData || !hiddenGraphData) {
             return;
         }
 
-        // If it's not in our display group, use the hidden group instead.
-        var targetGraphData = displayedGraphData[rawData.name] ? displayedGraphData : hiddenGraphData;
+		const serverId = serverRegistry.getOrAssign(rawData.name);
+		let mustRedraw = graphDisplayManager.addGraphPoint(serverId, rawData.timestamp, rawData.players);
 
-        trimOldPings(targetGraphData, publicConfig.graphDuration);
-
-        targetGraphData[rawData.name].push([rawData.timestamp, rawData.players]);
-
-        // Redraw if we need to.
-        if (displayedGraphData[rawData.name]) {
-            historyPlot.setData(convertGraphData(displayedGraphData));
-            historyPlot.setupGrid();
-
+		// TODO: move into displayManager directly?
+		if (mustRedraw) {
+			historyPlot.setData(graphDisplayManager.buildFlotData());
+			historyPlot.setupGrid();
             historyPlot.draw();
-        }
+		}
     });
 
 	socket.on('add', function(servers) {

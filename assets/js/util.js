@@ -92,6 +92,31 @@ class GraphDisplayManager {
 	constructor() {
 		this._visibleData = [];
 		this._hiddenData = [];
+		this._isReadyForUpdates = false;
+	}
+
+	addGraphPoint(serverId, timestamp, playerCount) {
+		const graphData = this.getGraphData(serverId);
+		graphData.push([timestamp, playerCount]);
+
+		// TODO: improve legacy code behavior
+		trimOldPings(graphData, publicConfig.graphDuration);
+
+		return serverId in this._visibleData;
+	}
+
+	getGraphData(serverId) {
+		if (serverId in this._visibleData) {
+			return this._visibleData[serverId];
+		} else if (serverId in this._hiddenData) {
+			return this._hiddenData[serverId];
+		}
+		// TODO: error?
+	}
+
+	buildFlotData() {
+		// TODO: cleanup
+		return convertGraphData(this._visibleData);
 	}
 
 	setSavedSettings(settings) {
@@ -112,6 +137,10 @@ class GraphDisplayManager {
 			localStorage.removeItem(DISPLAYED_SERVERS_SETTINGS_KEY);
 		}
 	}
+
+	/*
+	 * TODO: reset logic, need to check existing legacy calls before retro-fitting
+	 */
 }
 
 var publicConfig;
@@ -182,27 +211,21 @@ function isMobileBrowser() {
   return check;
 }
 
-function trimOldPings(data, graphDuration) {
-	var keys = Object.keys(data);
-
+function trimOldPings(listing, graphDuration) {
 	var timeMs = new Date().getTime();
 
-	for (var x = 0; x < keys.length; x++) {
-		var listing = data[keys[x]];
+	var toSplice = [];
 
-		var toSplice = [];
+	for (var i = 0; i < listing.length; i++) {
+		var entry = listing[i];
 
-		for (var i = 0; i < listing.length; i++) {
-			var entry = listing[i];
-
-			if (timeMs - entry[0] > graphDuration) {
-				toSplice.push(i);
-			}
+		if (timeMs - entry[0] > graphDuration) {
+			toSplice.push(i);
 		}
+	}
 
-		for (var i = 0; i < toSplice.length; i++) {
-			listing.splice(toSplice[i], 1);
-		}
+	for (var i = 0; i < toSplice.length; i++) {
+		listing.splice(toSplice[i], 1);
 	}
 }
 
