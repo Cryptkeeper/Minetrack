@@ -262,35 +262,32 @@ $(document).ready(function() {
 
 		graphDisplayManager.buildPlotInstance();
 
-        var keys = Object.keys(data);
+		// Build checkbox elements for graph controls
+		let lastRowCounter = 0;
+		let controlsHTML = '<table><tr>';
 
-        var sinceBreak = 0;
-        var html = '<table><tr>';
+		Object.keys(data).sort().forEach(function(serverName) {
+			const serverId = serverRegistry.getOrAssign(serverName);
+			const isChecked = graphDisplayManager.isGraphDataVisible(serverId);
 
-		keys.sort();
+			controlsHTML += '<td>\
+				<input type="checkbox" class="graph-control" minetrack-server-id="' + serverId + '" checked="' + isChecked + '">\
+				' + serverName + '\
+				</input></td>';
 
-        for (var i = 0; i < keys.length; i++) {
-			const serverId = serverRegistry.getOrAssign(keys[i]);
+			// Occasionally break table rows using a magic number
+			if (lastRowCounter++ >= 7) {
+				lastRowCounter = 0;
 
-			var checkedString = '';
+				controlsHTML += '</tr><tr>';
+			}
+		});
 
-            if (graphDisplayManager.isGraphDataVisible(serverId, 'checkboxes')) {
-                checkedString = 'checked=checked';
-            }
+		controlsHTML += '</tr></table>';
 
-            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" minetrack-server-id="' + serverId + '" ' + checkedString + '> ' + keys[i] + '</input></td>';
-
-            if (sinceBreak >= 7) {
-                sinceBreak = 0;
-
-                html += '</tr><tr>';
-            } else {
-                sinceBreak++;
-            }
-        }
-
-        $('#big-graph-checkboxes').append(html + '</tr></table>');
-		$('#big-graph-controls').css('display', 'block');
+		// Apply generated HTML and show controls
+        $('#big-graph-checkboxes').html(controlsHTML);
+		$('#big-graph-controls').show();
     });
 
     socket.on('updateHistoryGraph', function(data) {
