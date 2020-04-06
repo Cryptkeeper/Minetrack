@@ -152,10 +152,7 @@ function addServer(serverData) {
 	const serverId = serverRegistry.getOrCreateId(ping.info.name);
 
 	// Conditional formatting given configuration
-	let typeMarker = '';
-	if (publicConfig.serverTypesVisible) {
-		typeMarker = '<span class="server-type">' + ping.info.type + '</span>';
-	}
+	const serverTypeHTML = publicConfig.serverTypesVisible ? '<span class="server-type">' + ping.info.type + '</span>' : '';
 
 	// Safely default to a missing placeholder if not present
 	// If a favicon is later provided in an update, it will be handled by #updateServerStatus
@@ -173,7 +170,7 @@ function addServer(serverData) {
 			<span class="server-rank" id="ranking_' + serverId + '"></span>\
 		</div>\
 		<div class="column column-status">\
-			<h3 class="server-name">' + ping.info.name + typeMarker + '</h3>\
+			<h3 class="server-name">' + ping.info.name + serverTypeHTML + '</h3>\
 			<span id="status_' + serverId + '"></span>\
 			<span class="server-versions" id="version_' + serverId + '"></span>\
 			<span class="server-peak" id="peak_' + serverId + '"></span>\
