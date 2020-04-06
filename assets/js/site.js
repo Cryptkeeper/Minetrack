@@ -12,6 +12,7 @@ const tooltip = new Tooltip();
 
 const serverRegistry = new ServerRegistry();
 const pingTracker = new PingTracker();
+const graphDisplayManager = new GraphDisplayManager();
 
 function updateServerStatus(lastEntry) {
 	var info = lastEntry.info;
@@ -167,9 +168,9 @@ function setAllGraphVisibility(visible) {
 
     // Update our localStorage
     if (visible) {
-        resetGraphControls();
+		graphDisplayManager.resetSavedSettings();
     } else {
-        saveGraphControls(Object.keys(displayedGraphData));
+		graphDisplayManager.setSavedSettings(Object.keys(displayedGraphData));
     }
 }
 
@@ -255,7 +256,7 @@ $(document).ready(function() {
     });
 
     socket.on('historyGraph', function(rawData) {
-        var shownServers = loadGraphControls();
+        var shownServers = graphDisplayManager.getSavedSettings();
 
         if (shownServers) {
             var keys = Object.keys(rawData);
@@ -474,9 +475,9 @@ $(document).ready(function() {
 
         // Update our localStorage
         if (Object.keys(hiddenGraphData).length === 0) {
-            resetGraphControls();
+			graphDisplayManager.resetSavedSettings();
         } else {
-            saveGraphControls(Object.keys(displayedGraphData));
+			graphDisplayManager.setSavedSettings(Object.keys(displayedGraphData));
         }
     });
 

@@ -86,6 +86,34 @@ class PingTracker {
 	}
 }
 
+const DISPLAYED_SERVERS_SETTINGS_KEY = 'displayedServers';
+
+class GraphDisplayManager {
+	constructor() {
+		this._visibleData = [];
+		this._hiddenData = [];
+	}
+
+	setSavedSettings(settings) {
+		if (!typeof(localStorage)) return;
+		localStorage.setItem(DISPLAYED_SERVERS_SETTINGS_KEY, JSON.stringify(settings));
+	}
+
+	getSavedSettings() {
+		if (!typeof(localStorage)) return;
+		let settings = localStorage.getItem(DISPLAYED_SERVERS_SETTINGS_KEY);
+		if (settings) {
+			return JSON.parse(settings);
+		}
+	}
+
+	resetSavedSettings() {
+		if (typeof(localStorage)) {
+			localStorage.removeItem(DISPLAYED_SERVERS_SETTINGS_KEY);
+		}
+	}
+}
+
 var publicConfig;
 
 function showCaption(html) {

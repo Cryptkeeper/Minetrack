@@ -70,30 +70,6 @@ function toggleControlsDrawer() {
     div.css('display', div.css('display') !== 'none' ? 'none' : 'block');
 }
 
-function saveGraphControls(displayedServers) {
-	if (typeof(localStorage)) {
-		var json = JSON.stringify(displayedServers);
-
-		localStorage.setItem('displayedServers', json);
-	}
-}
-
-function loadGraphControls() {
-	if (typeof(localStorage)) {
-		var item = localStorage.getItem('displayedServers');
-
-		if (item) {
-			return JSON.parse(item);
-		}
-	}
-}
-
-function resetGraphControls() {
-	if (typeof(localStorage)) {
-		localStorage.removeItem('displayedServers');
-	}
-}
-
 // Called by flot.js when they hover over a data point.
 function handlePlotHover(event, pos, item) {
     if (item) {
