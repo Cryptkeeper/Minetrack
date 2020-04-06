@@ -19,14 +19,14 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 				const versionName = publicConfig.minecraftVersions[ping.info.type][version];
 				return versionName;
 			}).join(' ');
-			
-		$('#version_' + serverId).html(versionNames);
+
+		document.getElementById('version_' + serverId).innerHTML = versionNames;
     } else {
-		$('#version_' + serverId).empty();
+		document.getElementById('version_' + serverId).innerHTML = '';
 	}
 	
 	if (ping.record) {
-        $('#record_' + serverId).text('Record: ' + formatNumber(ping.record));
+		document.getElementById('record_' + serverId).innerText = 'Record: ' + formatNumber(ping.record);
 	}
 
 	let statusHTML;
@@ -44,7 +44,7 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 		// An updated favicon has been sent, update the src
 		// Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
 		if (!initialUpdate && ping.result.favicon) {
-			$('#favicon_' + serverId).attr('src', ping.result.favicon);
+			document.getElementById('favicon_' + serverId).setAttribute('src', ping.result.favicon);
 		}
     } else {
 		let errorMessage = 'Unknown error';
@@ -54,13 +54,13 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 		}
 		statusHTML = '<span class="server-error-message">' + errorMessage + '</span>';
 	}
-	
-	$('#status_' + serverId).html(statusHTML);
+
+	document.getElementById('status_' + serverId).innerHTML = statusHTML;
 }
 
 function updateGlobalStats() {
-	$('#stat_totalPlayers').text(formatNumber(serverRegistry.getTotalPlayerCount()));
-    $('#stat_networks').text(formatNumber(serverRegistry.getActiveServerCount()));
+	document.getElementById('stat_totalPlayers').innerText = formatNumber(serverRegistry.getTotalPlayerCount());
+	document.getElementById('stat_networks').innerText = formatNumber(serverRegistry.getActiveServerCount());
 }
 
 function sortServers() {
@@ -68,7 +68,8 @@ function sortServers() {
 			return serverRegistry.getPlayerCount(b) - serverRegistry.getPlayerCount(a);
 		}).forEach(function(serverId, i) {
 			$('#server_' + serverId).appendTo('#server-list');
-			$('#ranking_' + serverId).text('#' + (i + 1));
+
+			document.getElementById('ranking_' + serverId).innerText = '#' + (i + 1);
 		});
 }
 
@@ -135,7 +136,7 @@ function setAllGraphVisibility(visible) {
 function updateServerPeak(serverId, time, playerCount) {
 	const hourDuration = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000));
 
-	$('#peak_' + serverId).html(hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + getTimestamp(time));
+	document.getElementById('peak_' + serverId).innerText = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + getTimestamp(time);
 }
 
 function addServer(serverData) {
@@ -223,22 +224,29 @@ $(document).ready(function() {
 		graphDisplayManager.reset();
 
 		// Reset HTML structures that have been generated during runtime
-		$('#server-list').empty();
-		$('#big-graph').empty();
-        $('#big-graph-checkboxes').empty();
-		$('#perc-bar').empty();
-
-		$('#big-graph-controls').hide();
-
-		$('#big-graph').removeAttr('style');
+		document.getElementById('server-list').innerHTML = '';
+		document.getElementById('big-graph-checkboxes').innerHTML = '';
+		document.getElementById('perc-bar').innerHTML = '';
+		document.getElementById('big-graph-controls').style.display = 'none';
+		
+		const graphElement = document.getElementById('big-graph');
+		graphElement.innerHTML = '';
+		graphElement.removeAttribute('style');
 		
 		// Strip any mojang-status-* color classes from all mojang-status classes
-		$('.mojang-status').attr('class', 'mojang-status');
-		$('.mojang-status-text').text('...');
-		
-        $('#stat_totalPlayers').text(0);
-		$('#stat_networks').text(0);
-		
+		const mojangStatusElements = document.getElementsByClassName('mojang-status');
+		for (let i = 0; i < mojangStatusElements.length; i++) {
+			mojangStatusElements[i].setAttribute('class', 'mojang-status');
+		}
+
+		const mojangStatusTextElements = document.getElementsByClassName('mojang-status-text');
+		for (let i = 0; i < mojangStatusTextElements.length; i++) {
+			mojangStatusTextElements[i].innerText = '...';
+		}
+
+		document.getElementById('stat_totalPlayers').innerText = 0;
+		document.getElementById('stat_networks').innerText = 0;
+
 		// Undefine publicConfig, resynced during the connection handshake
 		publicConfig = undefined;
     });
@@ -247,7 +255,8 @@ $(document).ready(function() {
 		graphDisplayManager.setGraphData(data);
 
 		// Explicitly define a height so flot.js can rescale the Y axis
-		$('#big-graph').css('height', '400px');
+		document.getElementById('big-graph').style.height = '400px';
+		
 		$('#big-graph').bind('plothover', handlePlotHover);
 
 		graphDisplayManager.buildPlotInstance();
@@ -276,8 +285,8 @@ $(document).ready(function() {
 		controlsHTML += '</tr></table>';
 
 		// Apply generated HTML and show controls
-        $('#big-graph-checkboxes').html(controlsHTML);
-		$('#big-graph-controls').show();
+		document.getElementById('big-graph-checkboxes').innerHTML = controlsHTML;
+		document.getElementById('big-graph-controls').style.display = 'block';
     });
 
     socket.on('updateHistoryGraph', function(data) {
@@ -315,8 +324,8 @@ $(document).ready(function() {
 			const status = data[key];
 
 			// HACK: ensure mojang-status is added for alignment, replace existing class to swap status color
-			$('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
-			$('#mojang-status-text_' + status.name).text(status.title);
+			document.getElementById('mojang-status_' + status.name).setAttribute('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
+			document.getElementById('mojang-status-text_' + status.name).innerText = status.title;
 		});
 	});
 	
@@ -330,7 +339,9 @@ $(document).ready(function() {
 	});
 	
 	socket.on('updatePeak', function(data) {
-		updateServerPeak(data.name, data.timestamp, data.players);
+		const serverId = serverRegistry.getOrCreateId(data.name);
+
+		updateServerPeak(serverId, data.timestamp, data.players);
 	});
 
 	socket.on('peaks', function(data) {
@@ -346,7 +357,7 @@ $(document).ready(function() {
 	});
 
     $(document).on('click', '.graph-control', function() {
-		const serverId = parseInt($(this).attr('minetrack-server-id'));
+		const serverId = parseInt(this.getAttribute('minetrack-server-id'));
 
 		graphDisplayManager.setGraphDataVisible(serverId, this.checked);
 		graphDisplayManager.redrawIfNeeded();

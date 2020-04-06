@@ -1,29 +1,29 @@
 class Tooltip {
 	constructor() {
-		this._div = $('#tooltip');
+		this._div = document.getElementById('tooltip');
 	}
 
 	set(x, y, html) {
-		this._div.html(html).css({
-			top: y,
-			left: x
-		}).show();
+		this._div.innerHTML = html;
+		this._div.style.top = y + 'px';
+		this._div.style.left = x + 'px';
+		this._div.style.display = 'block';
 	}
 
-	hide = () => this._div.hide();
+	hide = () => this._div.style.display = 'none';
 }
 
 class Caption {
 	constructor() {
-		this._div = $('#status-text');
+		this._div = document.getElementById('status-text');
 	}
 
 	set(text) {
-		this._div.text(text);
-		this._div.show();
+		this._div.innerText = text;
+		this._div.style.display = 'block';
 	}
 
-	hide = () => this._div.hide();
+	hide = () => this._div.style.display = 'none';
 }
 
 class ServerRegistry {

@@ -12,8 +12,8 @@
 - Fixed Minecraft Bedrock Edition servers showing the default port of 19132
 - Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
 - Remove #validateBootTime loop and logic
+- Removes several usages of jQuery (baby steps...)
 - Lots and lots of optimizations, legacy code removal and reorganization.
-- Seriously.
 
 **4.0.5** *(Apr 1 2020)*
 - The frontend will now auto calculate the "24h Peak" label using your configured graphDuration in config.json
