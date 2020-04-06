@@ -161,6 +161,13 @@ strong {
     font-size: 16px !important;
 }
 
+/* Hard code the sizing to prevent overly large favicon icon payloads from rendering larger than they should */
+.server-favicon {
+	--fixed-server-favicon-size: 64px;
+	width: var(--fixed-server-favicon-size);
+	height: var(--fixed-server-favicon-size);
+}
+
 /* Charts */
 .chart {
     height: 100px;

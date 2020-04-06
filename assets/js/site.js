@@ -10,10 +10,11 @@ var isConnected = false;
 var sortServersTask;
 
 var currentServerHover;
-var faviconSize = 64;
 
 const serverIdsByName = [];
 var nextServerId = 0;
+
+const tooltip = new Tooltip();
 
 function updateServerStatus(lastEntry) {
 	var info = lastEntry.info;
@@ -141,7 +142,7 @@ function updatePercentageBar() {
                 });
 
                 div.mouseout(function(e) {
-                    hideTooltip();
+					tooltip.hide();
                     currentServerHover = undefined;
                 });
             }
@@ -402,7 +403,7 @@ $(document).ready(function() {
                 class: 'server',
                 'server-id': serverId,
                 html: '<div id="server-' + serverId + '" class="column" style="width: 80px;">\
-                            <img id="favicon_' + serverId + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '" height="' + faviconSize + '" width="' + faviconSize + '">\
+                            <img class="server-favicon" id="favicon_' + serverId + '" title="' + info.name + '\n' + info.ip + printPort(info.port) + '">\
                             <br />\
                             <p class="text-center-align rank" id="ranking_' + serverId + '"></p>\
                         </div>\
@@ -524,7 +525,7 @@ $(document).ready(function() {
 			var playerCount = lastPlayerEntries[currentServerHover];
 			var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
 
-            renderTooltip(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
+            tooltip.set(e.pageX + 10, e.pageY + 10, '<strong>' + currentServerHover + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
         }
     });
 

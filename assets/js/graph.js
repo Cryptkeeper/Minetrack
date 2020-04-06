@@ -105,9 +105,9 @@ function handlePlotHover(event, pos, item) {
             text = item.series.label + '<br />' + text;
         }
 
-        renderTooltip(item.pageX + 5, item.pageY + 5, text);
+        tooltip.set(item.pageX + 5, item.pageY + 5, text);
     } else {
-        hideTooltip();
+		tooltip.hide();
     }
 }
 
