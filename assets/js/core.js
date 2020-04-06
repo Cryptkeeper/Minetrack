@@ -298,11 +298,6 @@ class GraphDisplayManager {
 	}
 
 	buildPlotInstance() {
-		// Explicitly define a height so flot.js can rescale the Y axis
-		$('#big-graph').css('height', '400px');
-		$('#big-graph').bind('plothover', handlePlotHover);
-
-		// Build the plot instance
 		this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS);
 	}
 

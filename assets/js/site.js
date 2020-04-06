@@ -259,6 +259,10 @@ $(document).ready(function() {
     socket.on('historyGraph', function(data) {
 		graphDisplayManager.setGraphData(data);
 
+		// Explicitly define a height so flot.js can rescale the Y axis
+		$('#big-graph').css('height', '400px');
+		$('#big-graph').bind('plothover', handlePlotHover);
+
 		graphDisplayManager.buildPlotInstance();
 
 		// Build checkbox elements for graph controls
