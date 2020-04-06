@@ -177,7 +177,9 @@ class GraphDisplayManager {
 		}
 	}
 
-	isGraphDataVisible = (serverId) => !this._hiddenServerIds.includes(serverId);
+	isGraphDataVisible(serverId) {
+		return !this._hiddenServerIds.includes(serverId);
+	}
 	
 	// Converts the backend data into the schema used by flot.js
 	getVisibleGraphData() {

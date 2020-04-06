@@ -31,9 +31,12 @@ class ServerRegistry {
 		this._serverIdsByName = [];
 		this._serverNamesById = [];
 		this._nextId = 0;
+		this._serverGraphs = [];
 	}
 
-	getServerIds = () => Object.keys(this._serverNamesById).map(Number);
+	getServerIds() {
+		return Object.keys(this._serverNamesById).map(Number);
+	}
 
 	getOrAssign(name) {
 		let serverId = this._serverIdsByName[name];
@@ -45,7 +48,9 @@ class ServerRegistry {
 		return serverId;
 	}
 
-	getServerName = (serverId) => this._serverNamesById[serverId];
+	getServerName(serverId) {
+		return this._serverNamesById[serverId];
+	}
 
 	getServerColor(serverId) {
 		const serverName = this.getServerName(serverId);
@@ -57,19 +62,6 @@ class ServerRegistry {
 		return stringToColor(name);
 	}
 
-	reset() {
-		this._serverIdsByName = [];
-		this._serverNamesById = [];
-		this._nextId = 0;
-	}
-}
-
-class PingTracker {
-	constructor() {
-		this._lastPlayerCounts = [];
-		this._serverGraphs = [];
-	}
-
 	registerServerGraph(serverId, serverGraph) {
 		this._serverGraphs[serverId] = serverGraph;
 	}
@@ -78,33 +70,27 @@ class PingTracker {
 		return this._serverGraphs[serverId];
 	}
 
-	handlePing(serverId, payload, pushToGraph) {
-		if (payload.result) {
-			const playerCount = payload.result.players.online;
-			
-			this._lastPlayerCounts[serverId] = playerCount;
-
-			if (pushToGraph) {
-				// Only update graph for successful pings
-				// This intentionally pauses the server graph when pings begin to fail
-				const serverGraph = this._serverGraphs[serverId];
-				serverGraph.handlePing(payload.info.timestamp, playerCount);
-			}
-		} else {
-			delete this._lastPlayerCounts[serverId];
-		}
-	}
-
+	// Helper method for safely defaulting value to 0
 	getPlayerCount(serverId) {
-		return this._lastPlayerCounts[serverId] || 0;
+		return this.getServerGraph(serverId)._lastPlayerCount || 0;
 	}
 
-	getTotalPlayerCount = () => this._lastPlayerCounts.reduce((sum, current) => sum + current, 0);
+	getTotalPlayerCount() {
+		return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
+			.filter(playerCount => playerCount !== undefined)
+			.reduce((sum, current) => sum + current, 0);
+	}
 
-	getActiveServerCount = () => this._lastPlayerCounts.length;
+	getActiveServerCount() {
+		return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
+			.filter(playerCount => playerCount !== undefined)
+			.length;
+	}
 
 	reset() {
-		this._lastPlayerCounts = [];
+		this._serverIdsByName = [];
+		this._serverNamesById = [];
+		this._nextId = 0;
 		this._serverGraphs = [];
 	}
 }
@@ -132,17 +118,25 @@ class ServerGraph {
 		this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0]);
 	}
 
-	handlePing(timestamp, playerCount) {
-		// #handlePing should not be fired in bulk or by the constructor
-		// Each #handlePing call redraws the flot.js plot instance
-		this._graphData.push([timestamp, playerCount]);
+	handlePing(payload, pushToGraph) {
+		if (payload.result) {
+			this._lastPlayerCount = payload.result.players.online;
 
-		// Trim graphData to within the max length by shifting out the leading elements
-		if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
-			this._graphData.shift();
+			if (pushToGraph) {
+				// Only update graph for successful pings
+				// This intentionally pauses the server graph when pings begin to fail
+				this._graphData.push([payload.info.timestamp, this._lastPlayerCount]);
+
+				// Trim graphData to within the max length by shifting out the leading elements
+				if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+					this._graphData.shift();
+				}
+
+				this.redrawIfNeeded();
+			}
+		} else {
+			this._lastPlayerCount = undefined;
 		}
-
-		this.redrawIfNeeded();
 	}
 
 	redrawIfNeeded() {

@@ -2,13 +2,14 @@ const tooltip = new Tooltip();
 const caption = new Caption();
 
 const serverRegistry = new ServerRegistry();
-const pingTracker = new PingTracker();
 const graphDisplayManager = new GraphDisplayManager();
 
 function updateServerStatus(serverId, ping, initialUpdate) {
-	// Only pushTograph when initialUpdate === false
+	const serverGraph = serverRegistry.getServerGraph(serverId);
+
+	// Only pushToGraph when initialUpdate === false
 	// Otherwise the ping value is pushed into the graphData when already present
-	pingTracker.handlePing(serverId, ping, !initialUpdate);
+	serverGraph.handlePing(ping, !initialUpdate);
 	
 	// Remap version indexes into their formatted name equivalents
 	// TODO: Only rebuild if ping.versions !== last versions listing (data not in scope)
@@ -34,9 +35,8 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 		statusHTML = 'Players: <span style="font-weight: 500;">' + formatNumber(ping.result.players.online) + '</span>';
 
 		// If the data is defined, generate a player count difference and append
-		const serverGraph = pingTracker.getServerGraph(serverId);
 		const playerCountDifference = serverGraph.getPlayerCountDifference();
-		
+
 		if (playerCountDifference !== undefined) {
             statusHTML += '<span class="color-gray"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>';
 		}
@@ -59,13 +59,13 @@ function updateServerStatus(serverId, ping, initialUpdate) {
 }
 
 function updateGlobalStats() {
-	$('#stat_totalPlayers').text(formatNumber(pingTracker.getTotalPlayerCount()));
-    $('#stat_networks').text(formatNumber(pingTracker.getActiveServerCount()));
+	$('#stat_totalPlayers').text(formatNumber(serverRegistry.getTotalPlayerCount()));
+    $('#stat_networks').text(formatNumber(serverRegistry.getActiveServerCount()));
 }
 
 function sortServers() {
 	serverRegistry.getServerIds().sort(function(a, b) {
-			return pingTracker.getPlayerCount(b) - pingTracker.getPlayerCount(a);
+			return serverRegistry.getPlayerCount(b) - serverRegistry.getPlayerCount(a);
 		}).forEach(function(serverId, i) {
 			$('#container_' + serverId).appendTo('#server-container-list');
 			$('#ranking_' + serverId).text('#' + (i + 1));
@@ -77,7 +77,7 @@ function updatePercentageBar() {
 	let leftPadding = 0;
 	
 	serverRegistry.getServerIds().sort(function(a, b) {
-			return pingTracker.getPlayerCount(a) - pingTracker.getPlayerCount(b);
+			return serverRegistry.getPlayerCount(a) - serverRegistry.getPlayerCount(b);
 		}).forEach(function(serverId) {
 			let div = $('#perc_bar_part_' + serverId);
 
@@ -94,8 +94,8 @@ function updatePercentageBar() {
 
 				// Define events once during creation
 				div.mouseover(function() {
-					const totalPlayers = pingTracker.getTotalPlayerCount();
-					const playerCount = pingTracker.getPlayerCount(serverId);
+					const totalPlayers = serverRegistry.getTotalPlayerCount();
+					const playerCount = serverRegistry.getPlayerCount(serverId);
 					const serverName = serverRegistry.getServerName(serverId);
 
 					const percentage = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
@@ -109,8 +109,8 @@ function updatePercentageBar() {
 
 			// Update position/width
 			// leftPadding is a sum of previous iterations width value
-			const totalPlayers = pingTracker.getTotalPlayerCount();
-			const playerCount = pingTracker.getPlayerCount(serverId);
+			const totalPlayers = serverRegistry.getTotalPlayerCount();
+			const playerCount = serverRegistry.getPlayerCount(serverId);
 			const width = (playerCount / totalPlayers) * parent.width();
 
 			div.css({
@@ -193,8 +193,8 @@ function addServer(serverData) {
 	serverGraph.addGraphPoints(serverData);
 	serverGraph.redrawIfNeeded();
 
-	// Register into pingTracker for downstream referencing
-	pingTracker.registerServerGraph(serverId, serverGraph);
+	// Register into serverRegistry for downstream referencing
+	serverRegistry.registerServerGraph(serverId, serverGraph);
 
 	// Handle the last known state (if any) as an incoming update
 	// This triggers the main update pipeline and enables centralized update handling
@@ -238,7 +238,6 @@ $(document).ready(function() {
 		
 		// Reset individual tracker elements to flush any held data
 		serverRegistry.reset();
-		pingTracker.reset();
 		graphDisplayManager.reset();
 
 		// Reset HTML structures that have been generated during runtime
@@ -315,7 +314,7 @@ $(document).ready(function() {
 		// The backend may send "update" events prior to receiving all "add" events
 		// A server has only been added once it's ServerGraph is defined
 		// Checking undefined protects from this race condition
-		if (pingTracker.getServerGraph(serverId) !== undefined) {
+		if (serverRegistry.getServerGraph(serverId) !== undefined) {
 			updateServerStatus(serverId, data, false);
 
 			updatePercentageBar();
