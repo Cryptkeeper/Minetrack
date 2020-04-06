@@ -48,10 +48,16 @@ class ServerRegistry {
 		return serverId;
 	}
 
-	getName = (serverId) => this._serverNamesById[serverId];
+	getServerName = (serverId) => this._serverNamesById[serverId];
 
-	getColor(serverId) {
-		return '#FFF';
+	getServerColor(serverId) {
+		const serverName = this.getServerName(serverId);
+		for (let i = 0; i < publicConfig.servers.length; i++) {
+			if (publicConfig.servers[i].name === serverName) {
+				return publicConfig.servers[i].color;
+			}
+		}
+		return stringToColor(name);
 	}
 
 	reset() {
@@ -285,7 +291,7 @@ class GraphDisplayManager {
 			// Mutate the serverIds array into server names for storage use
 			const serverNames = [];
 			this._hiddenServerIds.forEach(function(serverId) {
-				const serverName = serverRegistry.getName(serverId);
+				const serverName = serverRegistry.getServerName(serverId);
 				if (serverName && !serverNames.includes(serverName)) {
 					serverNames.push(serverName);
 				}
@@ -314,8 +320,8 @@ class GraphDisplayManager {
 				visibleGraphData.push({
 					data: this._graphData[serverId],
 					yaxis: 1,
-					label: serverRegistry.getName(serverId),
-					color: serverRegistry.getColor(serverId)
+					label: serverRegistry.getServerName(serverId),
+					color: serverRegistry.getServerColor(serverId)
 				});
 			}
 		}
@@ -366,15 +372,6 @@ function hideCaption() {
 function setPublicConfig(json) {
     publicConfig = json;
     $('#server-container-list').html('');
-}
-
-function getServerColor(name) {
-	for (let i = 0; i < publicConfig.servers.length; i++) {
-		if (publicConfig.servers[i].name === name) {
-			return publicConfig.servers[i].color;
-		}
-	}
-	return stringToColor(name);
 }
 
 function findErrorMessage(error) {

@@ -80,48 +80,45 @@ function sortServers() {
 }
 
 function updatePercentageBar() {
-	const totalPlayers = pingTracker.getTotalPlayerCount();
-
-    var parent = $('#perc-bar');
-	var leftPadding = 0;
+    const parent = $('#perc-bar');
+	let leftPadding = 0;
 	
 	serverRegistry.getServerIds().sort(function(a, b) {
 			return pingTracker.getPlayerCount(a) - pingTracker.getPlayerCount(b);
 		}).forEach(function(serverId) {
-			let playerCount = pingTracker.getPlayerCount(serverId);
+			let div = $('#perc_bar_part_' + serverId);
 
-			var div = $('#perc_bar_part_' + serverId);
-
-			// Setup the base
+			// Test if an element has been previously created
 			if (!div.length) {
 				$('<div/>', {
 					id: 'perc_bar_part_' + serverId,
 					class: 'perc-bar-part',
 					html: '',
-					style: 'background: ' + serverRegistry.getColor(serverId) + ';'
+					style: 'background: ' + serverRegistry.getServerColor(serverId) + ';'
 				}).appendTo(parent);
 
 				div = $('#perc_bar_part_' + serverId);
 
+				// Define events once during creation
 				div.mouseover(function() {
-					var totalPlayers = pingTracker.getTotalPlayerCount();
-					var playerCount = pingTracker.getPlayerCount(serverId);
-					var perc = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
+					const totalPlayers = pingTracker.getTotalPlayerCount();
+					const playerCount = pingTracker.getPlayerCount(serverId);
+					const serverName = serverRegistry.getServerName(serverId);
 
-					let serverName = serverRegistry.getName(serverId);
+					const percentage = Math.round((playerCount / totalPlayers) * 100 * 10) / 10;
+					const position = div.offset();
 
-					let position = div.offset();
-
-					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong>: ' + perc + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
+					tooltip.set(position.left + 10, position.top + parent.height() + 10, '<strong>' + serverName + '</strong>: ' + percentage + '% of ' + formatNumber(totalPlayers) + ' tracked players.<br />(' + formatNumber(playerCount) + ' online.)');
 				});
 
-				div.mouseout(function() {
-					tooltip.hide();
-				});
+				div.mouseout(tooltip.hide);
 			}
 
-			// Update our position/width
-			var width = (playerCount / totalPlayers) * parent.width();
+			// Update position/width
+			// leftPadding is a sum of previous iterations width value
+			const totalPlayers = pingTracker.getTotalPlayerCount();
+			const playerCount = pingTracker.getPlayerCount(serverId);
+			const width = (playerCount / totalPlayers) * parent.width();
 
 			div.css({
 				width: width + 'px',
@@ -143,9 +140,11 @@ function setAllGraphVisibility(visible) {
 }
 
 function validateBootTime(bootTime, socket) {
-    $('#tagline-text').text('Validating...');
+	$('#tagline-text').text('Validating...');
+	
+	bootTime = 0;
 
-    console.log('Remote bootTime is ' + bootTime + ', local is ' + publicConfig.bootTime);
+    console.log('Remote bootTime is ' + publicConfig.bootTime + ', local is ' + bootTime);
 
     if (bootTime === publicConfig.bootTime) {
         $('#tagline-text').text('Loading...');
@@ -168,7 +167,7 @@ function validateBootTime(bootTime, socket) {
     }
 }
 
-function updateServerPeak(name, time, playerCount) {
+function updateServerPeak(serverId, time, playerCount) {
 	// hack: strip the AM/PM suffix
 	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
 	var timestamp = getTimestamp(time / 1000).split(':');
@@ -179,7 +178,6 @@ function updateServerPeak(name, time, playerCount) {
 		timestamp += ' ' + end;
 	}
 	var timeLabel = msToTime(publicConfig.graphDuration);
-	const serverId = serverRegistry.getOrAssign(name);
 	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
@@ -368,11 +366,15 @@ $(document).ready(function() {
 	});
 
 	socket.on('peaks', function(data) {
-		var keys = Object.keys(data);
-		for (var i = 0; i < keys.length; i++) {
-			var val = data[keys[i]];
-			updateServerPeak(keys[i], val[0], val[1]);
-		}
+		const keys = Object.keys(data);
+
+		keys.forEach(function(serverName) {
+			const serverId = serverRegistry.getOrAssign(serverName);
+			const graphData = data[key];
+
+			// [0] and [1] indexes correspond to flot.js' graphing data structure
+			updateServerPeak(serverId, graphData[0], graphData[1]);
+		});
 	});
 
     $(document).on('click', '.graph-control', function() {
@@ -380,16 +382,30 @@ $(document).ready(function() {
 
 		graphDisplayManager.setGraphDataVisible(serverId, this.checked);
 		graphDisplayManager.redrawIfNeeded(historyPlot);
-    });
+	});
+	
+	let graphResizeTask;
 
     $(window).on('resize', function() {
-        updatePercentageBar();
+		updatePercentageBar();
+		
+		// Only resize historyPlot when defined
+		// Set a timeout to resize after resize events have not been fired for some duration of time
+		// This prevents burning CPU time for multiple, rapid resize events
+		if (historyPlot) {
+			if (graphResizeTask) {
+				clearTimeout(graphResizeTask);
+			}
 
-        if (historyPlot) {
-            historyPlot.resize();
-            historyPlot.setupGrid();
-            historyPlot.draw();
-        }
+			graphResizeTask = setTimeout(function() {
+				historyPlot.resize();
+				historyPlot.setupGrid();
+				historyPlot.draw();
+
+				// undefine value so #clearTimeout is not called
+				graphResizeTask = undefined;
+			}, 200);
+		}
 	});
 	
 	// Run the sortServers loop even if the frontend has not connected to the backend
