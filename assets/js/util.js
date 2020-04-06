@@ -12,25 +12,16 @@ function formatMinecraftServerAddress(ip, port) {
 	return addr;
 }
 
-var publicConfig;
+let publicConfig;
 
-function setPublicConfig(json) {
-    publicConfig = json;
+// Called through JSONP by index.html loading /publicConfig.json
+function setPublicConfig(payload) {
+    publicConfig = payload;
 }
 
-function findErrorMessage(error) {
-    if (error.description) {
-        return error.description;
-    } else if (error.errno) {
-        return error.errno;
-    }
-}
-
-function getTimestamp(ms) {
+function getTimestamp(millis) {
     var date = new Date(0);
-
-    date.setUTCSeconds(ms);
-
+    date.setUTCSeconds(millis / 1000);
     return date.toLocaleTimeString();
 }
 
@@ -46,48 +37,10 @@ function isMobileBrowser() {
 }
 
 function stringToColor(base) {
-    var hash;
-
-    for (var i = base.length - 1, hash = 0; i >= 0; i--) {
+    let hash;
+    for (let i = base.length - 1, hash = 0; i >= 0; i--) {
         hash = base.charCodeAt(i) + ((hash << 5) - hash);
     }
-
-    color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
-
+    let color = Math.floor(Math.abs((Math.sin(hash) * 10000) % 1 * 16777216)).toString(16);
     return '#' + Array(6 - color.length + 1).join('0') + color;
-}
-
-function msToTime(timer) {
-	var milliseconds = timer % 1000;
-	timer = (timer - milliseconds) / 1000;
-
-	var seconds = timer % 60;
-	timer = (timer - seconds) / 60;
-
-	var minutes = timer % 60;
-	var hours = (timer - minutes) / 60;
-
-	var days = Math.floor(hours / 24);
-	hours -= days * 24;
-
-	var string = '';
-
-	// hack: only format days if >1, if === 1 it will format as "24h" instead
-	if (days > 1) {
-		string += days + 'd';
-	} else if (days === 1) {
-		hours += 24;
-	}
-
-	if (hours > 0) {
-		string += hours + 'h';
-	}
-	if (minutes > 0) {
-		string += minutes + 'm';
-	}
-	if (seconds > 0) {
-		string += seconds + 's';
-	}
-
-	return string;
 }

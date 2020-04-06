@@ -50,7 +50,12 @@ function updateServerStatus(serverId, ping, isAddEvent) {
 			$('#favicon_' + serverId).attr('src', ping.result.favicon);
 		}
     } else {
-        div.html('<span class="color-red">' + (findErrorMessage(ping.error) || 'Failed to ping!') + '</span>');
+		let errorMessage = 'Unknown error';
+		if (ping.error) {
+			// Attempt to find an error cause from documented options
+			errorMessage = ping.error.description || ping.error.errno;
+		}
+        div.html('<span class="color-red">' + errorMessage + '</span>');
     }
 
     $("#stat_totalPlayers").text(formatNumber(pingTracker.getTotalPlayerCount()));
@@ -133,14 +138,14 @@ function setAllGraphVisibility(visible) {
 function updateServerPeak(serverId, time, playerCount) {
 	// hack: strip the AM/PM suffix
 	// Javascript doesn't have a nice way to format Dates with AM/PM, so we'll append it manually
-	var timestamp = getTimestamp(time / 1000).split(':');
+	var timestamp = getTimestamp(time).split(':');
 	var end = timestamp.pop().split(' ')[1];
 	timestamp = timestamp.join(':');
 	// end may be undefined for other timezones/24 hour times
 	if (end) {
 		timestamp += ' ' + end;
 	}
-	var timeLabel = msToTime(publicConfig.graphDuration);
+	const timeLabel = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000)) + 'h';
 	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
@@ -215,6 +220,13 @@ $(document).ready(function() {
     });
 
     socket.on('bootTime', function(data) {
+		// Ensure the publicConfig object has been successfully requested
+		if (!publicConfig || !publicConfig.bootTime) {
+			caption.set('Failed to load configuration.');
+
+			return;
+		}
+
 		// Compare the bootTime sent by the socket.io connection against the bootTime provided by publicConfig.json during initial page setup
 		// This prevents outdated frontends from being reconnected to updated backend instances
 		if (data !== publicConfig.bootTime) {

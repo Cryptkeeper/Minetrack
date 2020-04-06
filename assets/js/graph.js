@@ -65,7 +65,7 @@ const HISTORY_GRAPH_OPTIONS = {
 // Called by flot.js when they hover over a data point.
 function handlePlotHover(event, pos, item) {
     if (item) {
-        var text = getTimestamp(item.datapoint[0] / 1000) + '\
+        var text = getTimestamp(item.datapoint[0]) + '\
             <br />\
             ' + formatNumber(item.datapoint[1]) + ' Players';
 
