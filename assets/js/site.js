@@ -1,8 +1,6 @@
 var graphs = [];
 
 var historyPlot;
-var displayedGraphData;
-var hiddenGraphData = [];
 
 var isConnected = false;
 
@@ -139,39 +137,13 @@ function updatePercentageBar() {
 }
 
 function setAllGraphVisibility(visible) {
-    if (visible) {
-        var keys = Object.keys(hiddenGraphData);
+	graphDisplayManager.setAllGraphDataVisible(visible);
 
-        for (var i = 0; i < keys.length; i++) {
-            displayedGraphData[keys[i]] = hiddenGraphData[keys[i]];
-        }
-
-        hiddenGraphData = [];
-    } else {
-        var keys = Object.keys(displayedGraphData);
-
-        for (var i = 0; i < keys.length; i++) {
-            hiddenGraphData[keys[i]] = displayedGraphData[keys[i]];
-        }
-
-        displayedGraphData = [];
-    }
-
-    $('.graph-control').each(function(index, item) {
-        item.checked = visible;
-    });
-
-    historyPlot.setData(convertGraphData(displayedGraphData));
-    historyPlot.setupGrid();
-
-    historyPlot.draw();
-
-    // Update our localStorage
-    if (visible) {
-		graphDisplayManager.resetSavedSettings();
-    } else {
-		graphDisplayManager.setSavedSettings(Object.keys(displayedGraphData));
-    }
+    if (graphDisplayManager.redrawIfNeeded(historyPlot)) {
+		$('.graph-control').each(function(index, item) {
+			item.checked = visible;
+		});
+	}
 }
 
 function validateBootTime(bootTime, socket) {
@@ -255,31 +227,13 @@ $(document).ready(function() {
         isConnected = false;
     });
 
+	// TODO: var naming
     socket.on('historyGraph', function(rawData) {
-        var shownServers = graphDisplayManager.getSavedSettings();
+		graphDisplayManager.setGraphData(rawData);
 
-        if (shownServers) {
-            var keys = Object.keys(rawData);
+		$('#big-graph').css('height', '400px');
 
-            hiddenGraphData = [];
-            displayedGraphData = [];
-
-            for (var i = 0; i < keys.length; i++) {
-                var name = keys[i];
-
-                if (shownServers.indexOf(name) !== -1) {
-                    displayedGraphData[name] = rawData[name];
-                } else {
-                    hiddenGraphData[name] = rawData[name];
-                }
-            }
-        } else {
-            displayedGraphData = rawData;
-        }
-
-        $('#big-graph').css('height', '400px');
-
-        historyPlot = $.plot('#big-graph', convertGraphData(displayedGraphData), bigChartOptions);
+        historyPlot = $.plot('#big-graph', graphDisplayManager.getVisibleGraphData(), bigChartOptions);
 
         $('#big-graph').bind('plothover', handlePlotHover);
 
@@ -288,16 +242,18 @@ $(document).ready(function() {
         var sinceBreak = 0;
         var html = '<table><tr>';
 
-        keys.sort();
+		keys.sort();
 
         for (var i = 0; i < keys.length; i++) {
-            var checkedString = '';
+			const serverId = serverRegistry.getOrAssign(keys[i]);
 
-            if (displayedGraphData[keys[i]]) {
+			var checkedString = '';
+
+            if (graphDisplayManager.isGraphDataVisible(serverId, 'checkboxes')) {
                 checkedString = 'checked=checked';
             }
 
-            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" data-target-network="' + keys[i] + '" ' + checkedString + '> ' + keys[i] + '</input></td>';
+            html += '<td><input type="checkbox" class="graph-control" id="graph-controls" minetrack-server-id="' + serverId + '" ' + checkedString + '> ' + keys[i] + '</input></td>';
 
             if (sinceBreak >= 7) {
                 sinceBreak = 0;
@@ -309,25 +265,14 @@ $(document).ready(function() {
         }
 
         $('#big-graph-checkboxes').append(html + '</tr></table>');
-        $('#big-graph-controls').css('display', 'block');
+		$('#big-graph-controls').css('display', 'block');
     });
 
-    socket.on('updateHistoryGraph', function(rawData) {
-		// Prevent race conditions.
-		// TODO: move into centralized logic
-        if (!displayedGraphData || !hiddenGraphData) {
-            return;
-        }
-
-		const serverId = serverRegistry.getOrAssign(rawData.name);
-		let mustRedraw = graphDisplayManager.addGraphPoint(serverId, rawData.timestamp, rawData.players);
-
-		// TODO: move into displayManager directly?
-		if (mustRedraw) {
-			historyPlot.setData(graphDisplayManager.buildFlotData());
-			historyPlot.setupGrid();
-            historyPlot.draw();
-		}
+    socket.on('updateHistoryGraph', function(update) {
+		const serverId = serverRegistry.getOrAssign(update.name);
+		
+		graphDisplayManager.addGraphPoint(serverId, update.timestamp, update.players);
+		graphDisplayManager.redrawIfNeeded(historyPlot);
     });
 
 	socket.on('add', function(servers) {
@@ -403,14 +348,15 @@ $(document).ready(function() {
             return;
 		}
 
+		const serverId = serverRegistry.getOrAssign(update.info.name);
+
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
-            $('#favicon_' + serverRegistry.getOrAssign(update.info.name)).attr('src', update.result.favicon);
+            $('#favicon_' + serverId).attr('src', update.result.favicon);
         }
 
 		var graph = graphs[update.info.name];
 		
-		const serverId = serverRegistry.getOrAssign(update.info.name);
 		pingTracker.handlePing(serverId, update);
 
         updateServerStatus(update);
@@ -449,32 +395,11 @@ $(document).ready(function() {
 		}
 	});
 
-    $(document).on('click', '.graph-control', function(e) {
-        var serverIp = $(this).attr('data-target-network');
+    $(document).on('click', '.graph-control', function() {
+		const serverId = parseInt($(this).attr('minetrack-server-id'));
 
-        // Restore it, or delete it - either works.
-        if (!this.checked) {
-            hiddenGraphData[serverIp] = displayedGraphData[serverIp];
-
-            delete displayedGraphData[serverIp];
-        } else {
-            displayedGraphData[serverIp] = hiddenGraphData[serverIp];
-
-            delete hiddenGraphData[serverIp];
-        }
-
-        // Redraw the graph
-        historyPlot.setData(convertGraphData(displayedGraphData));
-        historyPlot.setupGrid();
-
-        historyPlot.draw();
-
-        // Update our localStorage
-        if (Object.keys(hiddenGraphData).length === 0) {
-			graphDisplayManager.resetSavedSettings();
-        } else {
-			graphDisplayManager.setSavedSettings(Object.keys(displayedGraphData));
-        }
+		graphDisplayManager.setGraphDataVisible(serverId, this.checked);
+		graphDisplayManager.redrawIfNeeded(historyPlot);
     });
 
     $(window).on('resize', function() {

@@ -34,7 +34,7 @@ class ServerRegistry {
 		this._nextId = 0;
 	}
 
-	getServerIds = () => Object.keys(this._serverNamesById);
+	getServerIds = () => Object.keys(this._serverNamesById).map(Number);
 
 	getOrAssign(name) {
 		let serverId = this._serverIdsByName[name];
@@ -42,6 +42,7 @@ class ServerRegistry {
 			serverId = this._nextId++;
 			this._serverIdsByName[name] = serverId;
 			this._serverNamesById[serverId] = name;
+			
 			console.log('Assigning server name %s to id %d', name, serverId);
 		}
 		return serverId;
@@ -86,61 +87,179 @@ class PingTracker {
 	}
 }
 
-const DISPLAYED_SERVERS_SETTINGS_KEY = 'displayedServers';
+const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers';
 
 class GraphDisplayManager {
 	constructor() {
-		this._visibleData = [];
-		this._hiddenData = [];
-		this._isReadyForUpdates = false;
+		this._graphData = [];
+		this._hiddenServerIds = [];
+		this._hasLoadedSettings = false;
+		this._mustRedraw = false;
 	}
 
 	addGraphPoint(serverId, timestamp, playerCount) {
-		const graphData = this.getGraphData(serverId);
-		graphData.push([timestamp, playerCount]);
-
-		// TODO: improve legacy code behavior
-		trimOldPings(graphData, publicConfig.graphDuration);
-
-		return serverId in this._visibleData;
-	}
-
-	getGraphData(serverId) {
-		if (serverId in this._visibleData) {
-			return this._visibleData[serverId];
-		} else if (serverId in this._hiddenData) {
-			return this._hiddenData[serverId];
+		if (!this._hasLoadedSettings) {
+			// _hasLoadedSettings is controlled by #setGraphData
+			// It will only be true once the context has been loaded and initial payload received
+			// #addGraphPoint should not be called prior to that since it means the data is racing
+			// and the application has received updates prior to the initial state
+			return;
 		}
-		// TODO: error?
-	}
 
-	buildFlotData() {
-		// TODO: cleanup
-		return convertGraphData(this._visibleData);
-	}
+		const graphData = this._graphData[serverId];
 
-	setSavedSettings(settings) {
-		if (!typeof(localStorage)) return;
-		localStorage.setItem(DISPLAYED_SERVERS_SETTINGS_KEY, JSON.stringify(settings));
-	}
+		// Trim any outdated entries by filtering the array into a new array
+		let startTime = new Date().getTime();
+		let newGraphData = [];
 
-	getSavedSettings() {
-		if (!typeof(localStorage)) return;
-		let settings = localStorage.getItem(DISPLAYED_SERVERS_SETTINGS_KEY);
-		if (settings) {
-			return JSON.parse(settings);
+		for (let i = 0; i < graphData.length; i++) {
+			// [0] corresponds to timestamp index, see push call @ L#131
+			const timestamp = graphData[i][0];
+
+			// TODO: remove publicConfig ref
+			if (startTime - timestamp <= publicConfig.graphDuration) {
+				newGraphData.push(graphData[i]);
+			}
+		}
+
+		// Push the new data from the method call request
+		newGraphData.push([timestamp, playerCount]);
+
+		this._graphData[serverId] = newGraphData;
+
+		// Mark mustRedraw flag if the updated graphData is to be rendered
+		if (this.isGraphDataVisible(serverId, 'addGraphPoint')) {
+			this._mustRedraw = true;
 		}
 	}
 
-	resetSavedSettings() {
+	setGraphDataVisible(serverId, visible) {
+		const indexOf = this._hiddenServerIds.indexOf(serverId);
+
+		if (!visible && indexOf < 0) {
+			this._hiddenServerIds.push(serverId);
+			this._mustRedraw = true;
+		} else if (visible && indexOf >= 0) {
+			this._hiddenServerIds.splice(indexOf, 1);
+			this._mustRedraw = true;
+		}
+
+		// Use mustRedraw as a hint to update settings
+		// This may cause unnessecary localStorage updates, but its a rare and harmless outcome
+		if (this._mustRedraw) {
+			this.updateLocalStorage();
+		}
+	}
+
+	setAllGraphDataVisible(visible) {
+		if (visible && this._hiddenServerIds.length > 0) {
+			this._hiddenServerIds = [];
+			this._mustRedraw = true;
+		} else if (!visible) {
+			this._hiddenServerIds = Object.keys(this._graphData).map(Number);
+			this._mustRedraw = true;
+		}
+
+		// Use mustRedraw as a hint to update settings
+		// This may cause unnessecary localStorage updates, but its a rare and harmless outcome
+		if (this._mustRedraw) {
+			this.updateLocalStorage();
+		}
+	}
+
+	setGraphData(graphData) {
+		// TODO: move to page init instead of lazy load?
+		if (!this._hasLoadedSettings) {
+			this._hasLoadedSettings = true;
+
+			if (typeof(localStorage)) {
+				let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY);
+				if (serverNames) {
+					serverNames = JSON.parse(serverNames);
+
+					// Mutate the server name array into serverIds for active use
+					for (let i = 0; i < serverNames.length; i++) {
+						const serverId = serverRegistry.getOrAssign(serverNames[i]);
+						this._hiddenServerIds.push(serverId);
+					}
+				}
+			}
+		}
+
+		const keys = Object.keys(graphData);
+
+		for (let i = 0; i < keys.length; i++) {
+			const serverName = keys[i];
+			const serverId = serverRegistry.getOrAssign(serverName);
+			this._graphData[serverId] = graphData[serverName];
+		}
+
+		// This isn't nessecary since #setGraphData is manually called, but it ensures
+		// consistent behavior which will make any future changes easier.
+		this._mustRedraw = true;
+	}
+
+	updateLocalStorage() {
 		if (typeof(localStorage)) {
-			localStorage.removeItem(DISPLAYED_SERVERS_SETTINGS_KEY);
+			// Mutate the serverIds array into server names for storage use
+			const serverNames = [];
+			this._hiddenServerIds.forEach(function(serverId) {
+				const serverName = serverRegistry.getName(serverId);
+				if (serverName && !serverNames.includes(serverName)) {
+					serverNames.push(serverName);
+				}
+			});
+
+			if (serverNames.length > 0) {
+				// Only save if the array contains data, otherwise clear the item
+				localStorage.setItem(HIDDEN_SERVERS_STORAGE_KEY, JSON.stringify(serverNames));
+			} else {
+				localStorage.removeItem(HIDDEN_SERVERS_STORAGE_KEY);
+			}
 		}
 	}
 
-	/*
-	 * TODO: reset logic, need to check existing legacy calls before retro-fitting
-	 */
+	isGraphDataVisible = (serverId) => !this._hiddenServerIds.includes(serverId);
+
+	// Converts the backend data into the schema used by flot.js
+	getVisibleGraphData() {
+		const keys = Object.keys(this._graphData).map(Number);
+		let visibleGraphData = [];
+
+		for (let i = 0; i < keys.length; i++) {
+			const serverId = keys[i];
+
+			if (this.isGraphDataVisible(serverId, 'getVisibleGraphData')) {
+				visibleGraphData.push({
+					data: this._graphData[serverId],
+					yaxis: 1,
+					label: serverRegistry.getName(serverId),
+					color: serverRegistry.getColor(serverId)
+				});
+			}
+		}
+
+		return visibleGraphData;
+	}
+
+	redrawIfNeeded(graphInstance) {
+		if (this._mustRedraw) {
+			this._mustRedraw = false;
+
+			// Fire calls to the provided graph instance
+			// This allows flot.js to manage redrawing and creates a helper method to reduce code duplication
+			graphInstance.setData(this.getVisibleGraphData());
+			graphInstance.setupGrid();
+			graphInstance.draw();
+			
+			// Return was redrawn for downstream context specific handling
+			return true;
+		}
+
+		return false;
+	}
+
+	// TODO: reset logic, need to check existing legacy calls before retro-fitting
 }
 
 var publicConfig;
@@ -209,24 +328,6 @@ function isMobileBrowser() {
   var check = false;
   (function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))check = true})(navigator.userAgent||navigator.vendor||window.opera);
   return check;
-}
-
-function trimOldPings(listing, graphDuration) {
-	var timeMs = new Date().getTime();
-
-	var toSplice = [];
-
-	for (var i = 0; i < listing.length; i++) {
-		var entry = listing[i];
-
-		if (timeMs - entry[0] > graphDuration) {
-			toSplice.push(i);
-		}
-	}
-
-	for (var i = 0; i < toSplice.length; i++) {
-		listing.splice(toSplice[i], 1);
-	}
 }
 
 function stringToColor(base) {
