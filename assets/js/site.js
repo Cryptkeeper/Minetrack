@@ -7,7 +7,6 @@ var hiddenGraphData = [];
 
 var isConnected = false;
 
-var mojangServicesUpdater;
 var sortServersTask;
 
 var currentServerHover;
@@ -218,7 +217,6 @@ function validateBootTime(bootTime, socket) {
         isConnected = true;
 
         // Start any special updating tasks.
-        mojangServicesUpdater = setInterval(updateMojangServices, 1000);
         sortServersTask = setInterval(sortServers, 10000);
     } else {
         $('#tagline-text').text('Updating...');
@@ -268,10 +266,7 @@ $(document).ready(function() {
     });
 
     socket.on('disconnect', function() {
-        if (mojangServicesUpdater) clearInterval(mojangServicesUpdater);
         if (sortServersTask) clearInterval(sortServersTask);
-
-        lastMojangServiceUpdate = undefined;
 
         showCaption('Disconnected! Refresh?');
 
@@ -476,9 +471,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('updateMojangServices', function(data) {
-        if (isConnected) {
-            updateMojangServices(data);
-        }
+        updateMojangServices(data);
     });
 
     socket.on('syncComplete', function() {

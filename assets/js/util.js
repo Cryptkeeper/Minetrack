@@ -2,7 +2,6 @@ var MISSING_FAVICON_BASE64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAA
 
 var tooltip = $('#tooltip');
 
-var lastMojangServiceUpdate;
 var publicConfig;
 
 function showCaption(html) {
@@ -32,23 +31,11 @@ function getServerColor(name) {
 	return stringToColor(name);
 }
 
-// Generate (and set) the HTML that displays Mojang status.
-// If nothing is passed, re-render the last update.
-// If something is passed, update and then re-render.
-function updateMojangServices(currentUpdate) {
-    if (currentUpdate) {
-    	lastMojangServiceUpdate = currentUpdate;
-    }
-
-    if (!lastMojangServiceUpdate) {
-    	return;
-    }
-
-    var keys = Object.keys(lastMojangServiceUpdate);
+function updateMojangServices(update) {
+    var keys = Object.keys(update);
 
     for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-		var status = lastMojangServiceUpdate[key];
+		var status = update[keys[i]];
 
 		// hack: ensure mojang-status is added for alignment, replace existing class to swap status color
         $('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
