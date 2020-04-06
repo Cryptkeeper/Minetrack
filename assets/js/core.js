@@ -197,7 +197,7 @@ class GraphDisplayManager {
 		this._graphData[serverId] = newGraphData;
 
 		// Mark mustRedraw flag if the updated graphData is to be rendered
-		if (this.isGraphDataVisible(serverId, 'addGraphPoint')) {
+		if (this.isGraphDataVisible(serverId)) {
 			this._mustRedraw = true;
 		}
 	}
@@ -302,7 +302,7 @@ class GraphDisplayManager {
 		for (let i = 0; i < keys.length; i++) {
 			const serverId = keys[i];
 
-			if (this.isGraphDataVisible(serverId, 'getVisibleGraphData')) {
+			if (this.isGraphDataVisible(serverId)) {
 				visibleGraphData.push({
 					data: this._graphData[serverId],
 					yaxis: 1,
