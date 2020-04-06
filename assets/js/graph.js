@@ -183,23 +183,16 @@ class GraphDisplayManager {
 	
 	// Converts the backend data into the schema used by flot.js
 	getVisibleGraphData() {
-		const keys = Object.keys(this._graphData).map(Number);
-		const visibleGraphData = [];
-
-		for (let i = 0; i < keys.length; i++) {
-			const serverId = keys[i];
-
-			if (this.isGraphDataVisible(serverId)) {
-				visibleGraphData.push({
+		return Object.keys(this._graphData).map(Number)
+			.filter(serverId => this.isGraphDataVisible(serverId))
+			.map(serverId => {
+				return {
 					data: this._graphData[serverId],
 					yaxis: 1,
 					label: serverRegistry.getServerName(serverId),
 					color: serverRegistry.getServerColor(serverId)
-				});
-			}
-		}
-
-		return visibleGraphData;
+				}
+			});
 	}
 
 	buildPlotInstance() {
