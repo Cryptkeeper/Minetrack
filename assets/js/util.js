@@ -15,6 +15,28 @@ class Tooltip {
 	hide = () => this._div.hide();
 }
 
+class ServerRegistry {
+	constructor() {
+		this._serverIdsByName = [];
+		this._nextId = 0;
+	}
+
+	getOrAssign(name) {
+		let serverId = this._serverIdsByName[name];
+		if (serverId === undefined) {
+			serverId = this._nextId++;
+			this._serverIdsByName[name] = serverId;
+			console.log('Assigning server name %s to id %d', name, serverId);
+		}
+		return serverId;
+	}
+
+	reset() {
+		this._serverIdsByName = [];
+		this._nextId = 0;
+	}
+}
+
 var publicConfig;
 
 function showCaption(html) {

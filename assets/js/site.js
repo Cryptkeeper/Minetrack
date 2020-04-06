@@ -11,15 +11,14 @@ var sortServersTask;
 
 var currentServerHover;
 
-const serverIdsByName = [];
-var nextServerId = 0;
-
 const tooltip = new Tooltip();
+
+const serverRegistry = new ServerRegistry();
 
 function updateServerStatus(lastEntry) {
 	var info = lastEntry.info;
 	
-	const serverId = serverIdsByName[info.name];
+	const serverId = serverRegistry.getOrAssign(info.name);
 
     var div = $('#status_' + serverId);
     var versionDiv = $('#version_' + serverId);
@@ -101,7 +100,7 @@ function sortServers() {
 	});
 
 	for (var i = 0; i < serverNames.length; i++) {
-		const serverId = serverIdsByName[serverNames[i]];
+		const serverId = serverRegistry.getOrAssign(serverNames[i]);
 		$('#container_' + serverId).appendTo('#server-container-list');
 		$('#ranking_' + serverId).text('#' + (i + 1));
 	}
@@ -121,7 +120,7 @@ function updatePercentageBar() {
 
     for (var i = 0; i < keys.length; i++) {
         (function(pos, server, length) {
-			const serverId = serverIdsByName[server];
+			const serverId = serverRegistry.getOrAssign(server);
             var playerCount = lastPlayerEntries[server];
 
             var div = $('#perc_bar_part_' + serverId);
@@ -251,7 +250,7 @@ function updateServerPeak(name, time, playerCount) {
 		timestamp += ' ' + end;
 	}
 	var timeLabel = msToTime(publicConfig.graphDuration);
-	const serverId = serverIdsByName[name];
+	const serverId = serverRegistry.getOrAssign(name);
 	$('#peak_' + serverId).html(timeLabel + ' Peak: ' + formatNumber(playerCount) + ' @ ' + timestamp);
 }
 
@@ -269,7 +268,9 @@ $(document).ready(function() {
     socket.on('disconnect', function() {
         if (sortServersTask) clearInterval(sortServersTask);
 
-        showCaption('Disconnected! Refresh?');
+		showCaption('Disconnected! Refresh?');
+		
+		serverRegistry.reset();
 
         lastPlayerEntries = {};
         graphs = {};
@@ -392,9 +393,8 @@ $(document).ready(function() {
             } else if (lastEntry.result) {
                 lastPlayerEntries[info.name] = lastEntry.result.players.online;
 			}
-			
-			const serverId = nextServerId++;
-			serverIdsByName[info.name] = serverId;
+
+			const serverId = serverRegistry.getOrAssign(info.name);
 
             var typeString = publicConfig.serverTypesVisible ? '<span class="type">' + info.type + '</span>' : '';
 
@@ -449,8 +449,7 @@ $(document).ready(function() {
 
         // We have a new favicon, update the old one.
         if (update.result && update.result.favicon) {
-			const serverId = serverIdsByName[update.info.name];
-            $('#favicon_' + serverId).attr('src', update.result.favicon);
+            $('#favicon_' + serverRegistry.getOrAssign(update.info.name)).attr('src', update.result.favicon);
         }
 
         var graph = graphs[update.info.name];
