@@ -245,18 +245,18 @@ $(document).ready(function() {
 		graphDisplayManager.reset();
 
 		// Reset HTML structures that have been generated during runtime
-        $('#server-container-list').html('');
-
-        $('#big-graph').html('');
-        $('#big-graph-checkboxes').html('');
-        $('#big-graph-controls').hide();
-
-        $('#perc-bar').html('');
-        $('.mojang-status').css('background', 'transparent');
-        $('.mojang-status-text').text('...');
-
-        $("#stat_totalPlayers").text(0);
-        $("#stat_networks").text(0);
+		$('#server-container-list').empty();
+        $('#big-graph').empty();
+        $('#big-graph-checkboxes').empty();
+        $('#big-graph-controls').empty();
+		$('#perc-bar').empty();
+		
+		// Strip any mojang-status-* color classes from all mojang-status classes
+		$('.mojang-status').attr('class', 'mojang-status');
+		$('.mojang-status-text').text('...');
+		
+        $('#stat_totalPlayers').text(0);
+        $('#stat_networks').text(0);
     });
 
 	// TODO: var naming
@@ -329,15 +329,13 @@ $(document).ready(function() {
 	});
 
 	socket.on('updateMojangServices', function(data) {
-		const keys = Object.keys(data);
+		Object.keys(data).forEach(function(key) {
+			const status = data[key];
 
-		for (let i = 0; i < keys.length; i++) {
-			const status = data[keys[i]];
-
-			// hack: ensure mojang-status is added for alignment, replace existing class to swap status color
+			// HACK: ensure mojang-status is added for alignment, replace existing class to swap status color
 			$('#mojang-status_' + status.name).attr('class', 'mojang-status mojang-status-' + status.title.toLowerCase());
 			$('#mojang-status-text_' + status.name).text(status.title);
-		}
+		});
     });
 
     socket.on('syncComplete', function() {
