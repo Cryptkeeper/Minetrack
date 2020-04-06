@@ -49,15 +49,7 @@ function updateServerStatus(serverId, ping, isAddEvent) {
 			$('#favicon_' + serverId).attr('src', ping.result.favicon);
 		}
     } else {
-        var newStatus = '<span class="color-red">';
-
-        if (findErrorMessage(ping.error)) {
-            newStatus += findErrorMessage(ping.error);
-        } else {
-            newStatus += 'Failed to ping!';
-        }
-
-        div.html(newStatus + '</span>');
+        div.html('<span class="color-red">' + (findErrorMessage(ping.error) || 'Failed to ping!') + '</span>');
     }
 
     $("#stat_totalPlayers").text(formatNumber(pingTracker.getTotalPlayerCount()));
@@ -66,8 +58,6 @@ function updateServerStatus(serverId, ping, isAddEvent) {
     if (ping.record) {
         $('#record_' + serverId).html('Record: ' + formatNumber(ping.record));
 	}
-
-    updatePercentageBar();
 }
 
 function sortServers() {
