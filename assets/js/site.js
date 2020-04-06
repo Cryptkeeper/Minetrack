@@ -53,7 +53,7 @@ function updateServerStatus(serverId, ping, isAddEvent) {
 		let errorMessage = 'Unknown error';
 		if (ping.error) {
 			// Attempt to find an error cause from documented options
-			errorMessage = ping.error.description || ping.error.errno;
+			errorMessage = ping.error.description || ping.error.errno || errorMessage;
 		}
         div.html('<span class="color-red">' + errorMessage + '</span>');
     }
@@ -137,7 +137,7 @@ function setAllGraphVisibility(visible) {
 
 function updateServerPeak(serverId, time, playerCount) {
 	const hourDuration = Math.floor(publicConfig.graphDuration / (60 * 60 * 1000));
-	
+
 	$('#peak_' + serverId).html(hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + getTimestamp(time));
 }
 
