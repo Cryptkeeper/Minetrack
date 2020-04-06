@@ -11,9 +11,7 @@
 	--minecraft-color-dark-blue: #00002A;
 
 	--theme-color-dark: #3B3738;
-	--theme-color-text-dark: #000;
 	--theme-color-light: #EBEBEB;
-	--theme-color-text-light: #FFF;
 	--theme-color-element: #3498DB;
 }
 
@@ -21,12 +19,12 @@
 	:root {
 		--background-color: var(--theme-color-light);
 		--text-decoration-color: var(--theme-color-dark);
-		--text-color: var(--theme-color-text-dark);
+		--text-color: #000;
 	}
 
 	body {
 		background: #212021;
-		color: var(--theme-color-text-light);
+		color: #FFF;
 	}
 }
 
@@ -34,12 +32,12 @@
 	:root {
 		--background-color: var(--theme-color-dark);
 		--text-decoration-color: var(--theme-color-light);
-		--text-color: var(--theme-color-text-light);
+		--text-color: #FFF;
 	}
 
 	body {
 		background: #1c1b1c;
-		color: var(--theme-color-text-light);
+		color: #FFF;
 	}
 }
 
