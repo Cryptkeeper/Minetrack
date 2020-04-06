@@ -7,7 +7,7 @@ class Tooltip {
 		this._div.html(html).css({
 			top: y,
 			left: x
-		}).fadeIn(0);
+		}).show();
 	}
 
 	hide = () => this._div.hide();
