@@ -120,20 +120,13 @@ class ServerGraph {
 	}
 
 	addGraphPoints(points)  {
-		// TODO: trim to fit?
-		for (let i = 0; i < points.length; i++) {
-			const point = points[i];
-
-			let playerCount = 0;
-			if (point.result) {
-				playerCount = point.result.players.online;
-			}
-
-			// TODO: filter >0?
-			
-			// Data structure used by flot.js
-			this._graphData.push([point.timestamp, playerCount]);
+		// The backend should never return more data elements than the max
+		// but trim the data result regardless for safety and performance purposes
+		if (points.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+			points.slice(points.length - SERVER_GRAPH_DATA_MAX_LENGTH, points.length);
 		}
+
+		this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0]);
 	}
 
 	handlePing(timestamp, playerCount) {
@@ -141,9 +134,8 @@ class ServerGraph {
 		// Each #handlePing call redraws the flot.js plot instance
 		this._graphData.push([timestamp, playerCount]);
 
-		// Trim graphData to within the max length by shifting the first element out
-		// This should never need to happen more than once, but a while loop ensures it will never desync
-		while (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+		// Trim graphData to within the max length by shifting out the leading elements
+		if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
 			this._graphData.shift();
 		}
 
@@ -188,21 +180,9 @@ class GraphDisplayManager {
 			return;
 		}
 
-		const graphData = this._graphData[serverId];
-
 		// Trim any outdated entries by filtering the array into a new array
-		const startTime = new Date().getTime();
-		const newGraphData = [];
-
-		for (let i = 0; i < graphData.length; i++) {
-			// [0] corresponds to timestamp index, see push call @ L#131
-			const timestamp = graphData[i][0];
-
-			// TODO: remove publicConfig ref
-			if (startTime - timestamp <= publicConfig.graphDuration) {
-				newGraphData.push(graphData[i]);
-			}
-		}
+		const startTimestamp = new Date().getTime();
+		const newGraphData = this._graphData[serverId].filter(point => startTimestamp - point[0] <= publicConfig.graphDuration);
 
 		// Push the new data from the method call request
 		newGraphData.push([timestamp, playerCount]);
@@ -277,10 +257,7 @@ class GraphDisplayManager {
 				serverNames = JSON.parse(serverNames);
 
 				// Mutate the server name array into serverIds for active use
-				for (let i = 0; i < serverNames.length; i++) {
-					const serverId = serverRegistry.getOrAssign(serverNames[i]);
-					this._hiddenServerIds.push(serverId);
-				}
+				this._hiddenServerIds = [...new Set(serverNames.map(serverName => serverRegistry.getOrAssign(serverName)))];
 			}
 		}
 	}
@@ -288,13 +265,7 @@ class GraphDisplayManager {
 	updateLocalStorage() {
 		if (typeof(localStorage)) {
 			// Mutate the serverIds array into server names for storage use
-			const serverNames = [];
-			this._hiddenServerIds.forEach(function(serverId) {
-				const serverName = serverRegistry.getServerName(serverId);
-				if (serverName && !serverNames.includes(serverName)) {
-					serverNames.push(serverName);
-				}
-			});
+			const serverNames = [...new Set(this._hiddenServerIds.map(serverRegistry.getServerName))];
 
 			if (serverNames.length > 0) {
 				// Only save if the array contains data, otherwise clear the item
