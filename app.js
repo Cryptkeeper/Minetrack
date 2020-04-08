@@ -43,8 +43,8 @@ function pingAll() {
 				}
 
 				// If we have favicon override specified, use it.
-				if (res && config.faviconOverride && config.faviconOverride[network.name]) {
-					res.favicon = config.faviconOverride[network.name];
+				if (network.favicon) {
+					res.favicon = network.favicon
 				}
 
 				handlePing(network, res, err, attemptedVersion);
