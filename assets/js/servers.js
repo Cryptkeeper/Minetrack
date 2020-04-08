@@ -105,6 +105,7 @@ export class ServerRegistration {
 
   buildPlotInstance () {
     this._plotInstance = $.plot('#chart_' + this.serverId, this._graphData, SERVER_GRAPH_OPTIONS)
+
     return $('#chart_' + this.serverId)
   }
 
