@@ -316,7 +316,8 @@ footer a:hover {
     display: inline-block;
     text-align: center;
     line-height: 20px;
-    font-size: 14px;
+		font-size: 14px;
+		margin-left: -5px;
 }
 
 .mojang-status > strong {

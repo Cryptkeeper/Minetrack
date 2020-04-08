@@ -1,4 +1,4 @@
-import formatNumber from './util'
+import { formatNumber } from './util'
 
 export class PercentageBar {
   constructor (app) {

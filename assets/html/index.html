@@ -2,76 +2,91 @@
 
 <html>
 
-	<head>
+<head>
 
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
-		<link rel="stylesheet" type="text/css" href="../css/main.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/main.css">
 
-		<link rel="icon" type="image/png" href="../images/compass.png">
+	<link rel="icon" type="image/png" href="../images/compass.png">
 
-		<meta charset="UTF-8">
+	<meta charset="UTF-8">
 
-		<title>Minetrack</title>
+	<title>Minetrack</title>
 
-	</head>
+</head>
 
-	<body>
+<body>
 
-		<div id="tooltip"></div>
+	<div id="tooltip"></div>
 
-		<div id="push">
-			
-			<header>
-				<div class="column logo-column">
-					<img class="logo-image" src="../images/compass.png">
-					<h1 class="logo-text">Minetrack</h1>
-					<p class="logo-status">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
-				</div>
+	<div id="push">
 
-				<div class="column mojang-status-column">
-					<div class="mojang-status" title="Sessions" id="mojang-status_Sessions"><i class="fa fa-gamepad"></i><br /><strong>Sessions</strong><p class="mojang-status-text" id="mojang-status-text_Sessions">...</p></div><div class="mojang-status" title="Skins" id="mojang-status_Skins"><i class="fa fa-user"></i><br /><strong>Skins</strong><p class="mojang-status-text" id="mojang-status-text_Skins">...</p></div><div class="mojang-status" title="Auth" id="mojang-status_Auth"><i class="fa fa-key"></i><br /><strong>Auth</strong><p class="mojang-status-text" id="mojang-status-text_Auth">...</p></div><div class="mojang-status" title="API" id="mojang-status_API"><i class="fa fa-wrench"></i><br /><strong>API</strong><p class="mojang-status-text" id="mojang-status-text_API">...</p></div>
-				</div>
-			</header>
-
-			<div id="perc-bar"></div>
-
-			<div id="big-graph"></div>
-
-			<div id="big-graph-controls">
-				<a id="graph-controls-toggle">Click to toggle graph controls</a>
-
-				<div id="big-graph-controls-drawer">
-					<div id="big-graph-checkboxes"></div>
-
-					<span class="graph-controls-setall">
-						<a minetrack-showall="true" class="button graph-controls-show">Show All</a>
-						<a minetrack-showall="false" class="button graph-controls-show">Hide All</a>
-					</span>
-				</div>
+		<header>
+			<div class="column logo-column">
+				<img class="logo-image" src="../images/compass.png">
+				<h1 class="logo-text">Minetrack</h1>
+				<p class="logo-status">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
 			</div>
 
-			<div id="server-list"></div>
+			<div class="column mojang-status-column">
+				<div class="mojang-status" title="Sessions" id="mojang-status_Sessions">
+					<i class="fa fa-gamepad"></i><br /><strong>Sessions</strong>
+					<p class="mojang-status-text" id="mojang-status-text_Sessions">...</p>
+				</div>
+				<div class="mojang-status" title="Skins" id="mojang-status_Skins">
+					<i class="fa fa-user"></i><br /><strong>Skins</strong>
+					<p class="mojang-status-text" id="mojang-status-text_Skins">...</p>
+				</div>
+				<div class="mojang-status" title="Auth" id="mojang-status_Auth">
+					<i class="fa fa-key"></i><br /><strong>Auth</strong>
+					<p class="mojang-status-text" id="mojang-status-text_Auth">...</p>
+				</div>
+				<div class="mojang-status" title="API" id="mojang-status_API">
+					<i class="fa fa-wrench"></i><br /><strong>API</strong>
+					<p class="mojang-status-text" id="mojang-status-text_API">...</p>
+				</div>
+			</div>
+		</header>
 
+		<div id="perc-bar"></div>
+
+		<div id="big-graph"></div>
+
+		<div id="big-graph-controls">
+			<a id="graph-controls-toggle">Click to toggle graph controls</a>
+
+			<div id="big-graph-controls-drawer">
+				<div id="big-graph-checkboxes"></div>
+
+				<span class="graph-controls-setall">
+					<a minetrack-showall="true" class="button graph-controls-show">Show All</a>
+					<a minetrack-showall="false" class="button graph-controls-show">Hide All</a>
+				</span>
+			</div>
 		</div>
-		
-		<div id="status-text">Connecting...</div>
 
-        <footer>
-			Website powered by <a href="https://github.com/Cryptkeeper/Minetrack"><i class="fa fa-github"></i> Minetrack</a>.
-		</footer>
+		<div id="server-list"></div>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-		
-		<script src="../js/core.js"></script>
-        <script src="../js/util.js"></script>
-		<script src="../js/graph.js"></script>
-		<script src="../js/mojang.js"></script>
-		<script src="../js/percbar.js"></script>
-		<script src="../js/app.js"></script>
-		<script src="../js/site.js"></script>
+	</div>
 
-	</body>
+	<div id="status-text">Connecting...</div>
+
+	<footer>
+		Website powered by <a href="https://github.com/Cryptkeeper/Minetrack"><i class="fa fa-github"></i> Minetrack</a>.
+	</footer>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+
+	<script src="../js/servers.js"></script>
+	<script src="../js/util.js"></script>
+	<script src="../js/graph.js"></script>
+	<script src="../js/mojang.js"></script>
+	<script src="../js/percbar.js"></script>
+	<script src="../js/app.js"></script>
+	<script src="../js/main.js"></script>
+
+</body>
 
 </html>
