@@ -47,9 +47,8 @@ export class ServerRegistry {
     }
   }
 
+  // TODO: remove me
   getServerId = (serverName) => this._serverIdsByName[serverName]
-
-  getServerIds = () => Object.keys(this._registeredServers).map(Number)
 
   registerServer (serverRegistration) {
     serverRegistration.data = this._serverDataById[serverRegistration.serverId]
@@ -57,15 +56,12 @@ export class ServerRegistry {
   }
 
   getServerRegistration (serverKey) {
-    let serverId
     if (typeof serverKey === 'string') {
-      serverId = this._serverIdsByName[serverKey]
+      const serverId = this._serverIdsByName[serverKey]
+      return this._registeredServers[serverId]
     } else if (typeof serverKey === 'number') {
-      serverId = serverKey
-    } else {
-      return
+      return this._registeredServers[serverKey]
     }
-    return this._registeredServers[serverId]
   }
 
   getServerRegistrations = () => Object.values(this._registeredServers)
