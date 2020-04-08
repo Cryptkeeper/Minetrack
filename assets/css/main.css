@@ -182,10 +182,6 @@ footer a:hover {
     margin-top: 5px;
 }
 
-.server .column-favicon .server-favicon .server-favicon-missing {
-	background: url('../images/missing_favicon.png');
-}
-
 .server .column-favicon .server-rank {
 	display: block;
 	width: 64px;
