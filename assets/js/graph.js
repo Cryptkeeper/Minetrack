@@ -117,6 +117,9 @@ export class GraphDisplayManager {
 
         for (let i = 0; i < serverNames.length; i++) {
           const serverRegistration = this._app.serverRegistry.getServerRegistration(serverNames[i])
+
+          // The serverName may not exist in the backend configuration anymore
+          // Ensure serverRegistration is defined before mutating data or considering valid
           if (serverRegistration) {
             serverRegistration.isVisible = false
           }
