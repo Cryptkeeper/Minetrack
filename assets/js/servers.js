@@ -159,18 +159,27 @@ export class ServerRegistration {
     // Otherwise the ping value is pushed into the graphData when already present
     this.handlePing(ping, !isInitialUpdate)
 
-    // Remap version indexes into their formatted name equivalents
-    const versionsElement = document.getElementById('version_' + this.serverId)
+    // Compare against a cached value to avoid empty updates
+    // Allow undefined ping.versions inside the if statement for text reset handling
+    if (ping.versions !== this._lastVersions) {
+      this._lastVersions = ping.versions
 
-    if (ping.versions) {
-      versionsElement.innerHTML = ping.versions.map(version => {
-        return minecraftVersions[ping.info.type][version]
-      }).join(' ')
-    } else {
-      versionsElement.innerHTML = ''
+      const versionsElement = document.getElementById('version_' + this.serverId)
+
+      if (ping.versions) {
+        // Remap version indexes into their formatted name equivalents
+        versionsElement.innerHTML = ping.versions.map(version => {
+          return minecraftVersions[ping.info.type][version]
+        }).join(' ')
+      } else {
+        versionsElement.innerHTML = ''
+      }
     }
 
-    if (ping.record) {
+    // Compare against a cached value to avoid empty updates
+    if (ping.record !== undefined && ping.record && ping.record !== this._lastRecord) {
+      this._lastRecord = ping.record
+
       document.getElementById('record_' + this.serverId).innerText = 'Record: ' + formatNumber(ping.record)
     }
 
