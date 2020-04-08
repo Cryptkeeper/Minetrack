@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp } from './util'
+import { formatNumber, formatTimestamp, isMobileBrowser } from './util'
 
 export const HISTORY_GRAPH_OPTIONS = {
   series: {
@@ -37,6 +37,11 @@ export class GraphDisplayManager {
     this._app = app
     this._graphData = []
     this._hasLoadedSettings = false
+  }
+
+  isVisible () {
+    // Only emit graph data request if not on mobile due to graph data size
+    return !isMobileBrowser()
   }
 
   addGraphPoint (serverId, timestamp, playerCount) {

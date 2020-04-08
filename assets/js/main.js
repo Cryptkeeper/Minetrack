@@ -1,5 +1,4 @@
 import { App } from './app'
-import { isMobileBrowser } from './util'
 
 const app = new App()
 
@@ -15,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
   socket.on('connect', function () {
     app.caption.set('Loading...')
 
-    // Only emit graph data request if not on mobile due to graph data size
-    if (!isMobileBrowser()) {
+    // Allow the graphDisplayManager to control whether or not the historical graph is loaded
+    if (app.graphDisplayManager.isVisible()) {
       socket.emit('requestHistoryGraph')
     }
   })
@@ -62,6 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('updateHistoryGraph', function (data) {
+    // Skip any incoming updates if the graph is disabled
+    // The backend shouldn't send these anyways
+    if (!app.graphDisplayManager.isVisible()) {
+      return
+    }
+
     const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
 
     if (serverRegistration) {
