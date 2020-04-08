@@ -1,3 +1,5 @@
+import { formatNumber, formatTimestamp } from './util'
+
 export class Tooltip {
   constructor () {
     this._div = document.getElementById('tooltip')
@@ -33,64 +35,61 @@ export class Caption {
 export class ServerRegistry {
   constructor () {
     this._serverIdsByName = []
-    this._serverNamesById = []
-    this._nextId = 0
-    this._serverGraphs = []
+    this._serverDataById = []
+    this._registeredServers = []
   }
 
-  getServerIds = () => Object.keys(this._serverNamesById).map(Number);
-
-  getOrCreateId (name) {
-    let serverId = this._serverIdsByName[name]
-    if (serverId === undefined) {
-      serverId = this._nextId++
-      this._serverIdsByName[name] = serverId
-      this._serverNamesById[serverId] = name
+  assignServers (servers) {
+    for (let i = 0; i < servers.length; i++) {
+      const data = servers[i]
+      this._serverIdsByName[data.name] = i
+      this._serverDataById[i] = data
     }
-    return serverId
   }
 
-  getServerName = (serverId) => this._serverNamesById[serverId];
+  getServerId = (serverName) => this._serverIdsByName[serverName]
 
-  registerServerGraph (serverId, serverGraph) {
-    this._serverGraphs[serverId] = serverGraph
+  getServerIds = () => Object.keys(this._registeredServers).map(Number)
+
+  registerServer (serverRegistration) {
+    serverRegistration.data = this._serverDataById[serverRegistration.serverId]
+    this._registeredServers[serverRegistration.serverId] = serverRegistration
   }
 
-  getServerGraph (serverId) {
-    return this._serverGraphs[serverId]
+  getServerRegistration (serverKey) {
+    let serverId
+    if (typeof serverKey === 'string') {
+      serverId = this._serverIdsByName[serverKey]
+    } else if (typeof serverKey === 'number') {
+      serverId = serverKey
+    } else {
+      return
+    }
+    return this._registeredServers[serverId]
   }
 
-  // Helper method for safely defaulting value to 0
-  getPlayerCount (serverId) {
-    const serverGraph = this._serverGraphs[serverId]
-    if (!serverGraph) return 0
-    return serverGraph._lastPlayerCount || 0
-  }
-
-  getTotalPlayerCount () {
-    return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
-      .filter(playerCount => playerCount !== undefined)
-      .reduce((sum, current) => sum + current, 0)
-  }
-
-  getActiveServerCount () {
-    return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
-      .filter(playerCount => playerCount !== undefined)
-      .length
-  }
+  getServerRegistrations = () => Object.values(this._registeredServers)
 
   reset () {
     this._serverIdsByName = []
-    this._serverNamesById = []
-    this._nextId = 0
-    this._serverGraphs = []
+    this._serverDataById = []
+    this._registeredServers = []
+
+    // Reset modified DOM structures
+    document.getElementById('server-list').innerHTML = ''
   }
 }
 
 const SERVER_GRAPH_DATA_MAX_LENGTH = 72
 
-export class ServerGraph {
-  constructor (plotInstance) {
+export class ServerRegistration {
+  serverId
+  data
+  playerCount = 0
+  isVisible = true
+
+  constructor (serverId, plotInstance) {
+    this.serverId = serverId
     this._plotInstance = plotInstance
     this._graphData = []
   }
@@ -112,26 +111,26 @@ export class ServerGraph {
 
   handlePing (payload, pushToGraph) {
     if (payload.result) {
-      this._lastPlayerCount = payload.result.players.online
+      this.playerCount = payload.result.players.online
 
       if (pushToGraph) {
         // Only update graph for successful pings
         // This intentionally pauses the server graph when pings begin to fail
-        this._graphData.push([payload.info.timestamp, this._lastPlayerCount])
+        this._graphData.push([payload.info.timestamp, this.playerCount])
 
         // Trim graphData to within the max length by shifting out the leading elements
         if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
           this._graphData.shift()
         }
 
-        this.redrawIfNeeded()
+        this.redraw()
       }
     } else {
-      this._lastPlayerCount = undefined
+      this.playerCount = 0
     }
   }
 
-  redrawIfNeeded () {
+  redraw () {
     // Redraw the plot instance
     this._plotInstance.setData([this._graphData])
     this._plotInstance.setupGrid()
@@ -146,6 +145,57 @@ export class ServerGraph {
       const newestPlayerCount = this._graphData[this._graphData.length - 1][1]
 
       return newestPlayerCount - oldestPlayerCount
+    }
+  }
+
+  updateServerPeak (time, playerCount, graphDuration) {
+    const hourDuration = Math.floor(graphDuration / (60 * 60 * 1000))
+
+    document.getElementById('peak_' + this.serverId).innerText = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + formatTimestamp(time)
+  }
+
+  updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
+    // Only pushToGraph when initialUpdate === false
+    // Otherwise the ping value is pushed into the graphData when already present
+    this.handlePing(ping, !isInitialUpdate)
+
+    // Remap version indexes into their formatted name equivalents
+    const versionsElement = document.getElementById('version_' + this.serverId)
+
+    if (ping.versions) {
+      versionsElement.innerHTML = ping.versions.map(version => {
+        return minecraftVersions[ping.info.type][version]
+      }).join(' ')
+    } else {
+      versionsElement.innerHTML = ''
+    }
+
+    if (ping.record) {
+      document.getElementById('record_' + this.serverId).innerText = 'Record: ' + formatNumber(ping.record)
+    }
+
+    const statusElement = document.getElementById('status_' + this.serverId)
+
+    if (ping.error) {
+      // Attempt to find an error cause from documented options
+      const errorMessage = ping.error.description || ping.error.errno || 'Unknown error'
+      statusElement.innerHTML = '<span class="server-error-message">' + errorMessage + '</span>'
+    } else if (ping.result) {
+      let statusHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>'
+
+      // If the data is defined, generate a player count difference and append
+      const playerCountDifference = this.getPlayerCountDifference()
+      if (playerCountDifference !== undefined) {
+        statusHTML += '<span class="server-player-count-diff"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>'
+      }
+
+      statusElement.innerHTML = statusHTML
+
+      // An updated favicon has been sent, update the src
+      // Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
+      if (!isInitialUpdate && ping.favicon) {
+        document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
+      }
     }
   }
 }

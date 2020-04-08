@@ -1,7 +1,9 @@
 import { Tooltip, ServerRegistry, Caption } from './core.js'
 import { GraphDisplayManager } from './graph.js'
+import { MojangUpdater } from './mojang.js'
+import { PercentageBar } from './percbar.js'
 
-import { formatNumber, formatTimestamp } from './util.js'
+import { formatNumber } from './util.js'
 
 export class App {
   publicConfig
@@ -11,44 +13,68 @@ export class App {
     this.caption = new Caption()
     this.serverRegistry = new ServerRegistry()
     this.graphDisplayManager = new GraphDisplayManager(this)
+    this.mojangUpdater = new MojangUpdater()
+    this.percentageBar = new PercentageBar(this)
+
+    this._taskIds = []
   }
 
-  getServerColor (serverName) {
-    for (let i = 0; i < this.publicConfig.servers.length; i++) {
-      const server = this.publicConfig.servers[i]
-      if (server.name === serverName) {
-        return server.color
-      }
-    }
+  setPublicConfig (publicConfig) {
+    this.publicConfig = publicConfig
+
+    this.serverRegistry.assignServers(publicConfig.servers)
+
+    // Start repeating frontend tasks once it has received enough data to be considered active
+    // This simplifies management logic at the cost of each task needing to safely handle empty data
+    this.initTasks()
+  }
+
+  initTasks () {
+    this._taskIds.push(setInterval(this.sortServers, 10000))
+    this._taskIds.push(setInterval(this.updateGlobalStats, 1000))
+    this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
 
   reset () {
+    this.tooltip.hide()
+
     // Reset individual tracker elements to flush any held data
     this.serverRegistry.reset()
     this.graphDisplayManager.reset()
+    this.mojangUpdater.reset()
+    this.percentageBar.reset()
 
     // Undefine publicConfig, resynced during the connection handshake
     this.publicConfig = undefined
+
+    // Clear all task ids, if any
+    this._taskIds.forEach(clearInterval)
+
+    this._taskIds = []
+
+    // Reset modified DOM structures
+    document.getElementById('stat_totalPlayers').innerText = 0
+    document.getElementById('stat_networks').innerText = 0
   }
 
-  updateServerPeak (serverId, time, playerCount) {
-    const hourDuration = Math.floor(this.publicConfig.graphDuration / (60 * 60 * 1000))
-
-    document.getElementById('peak_' + serverId).innerText = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + formatTimestamp(time)
+  getTotalPlayerCount () {
+    return this.serverRegistry.getServerRegistrations()
+      .map(serverRegistration => serverRegistration.playerCount)
+      .reduce((sum, current) => sum + current, 0)
   }
 
-  // Called by flot.js when they hover over a data point.
-  handlePlotHover = (event, pos, item) => {
-    if (!item) {
-      this.tooltip.hide()
-    } else {
-      let text = formatNumber(item.datapoint[1]) + ' Players<br>' + formatTimestamp(item.datapoint[0])
-      // Prefix text with the series label when possible
-      if (item.series && item.series.label) {
-        text = '<strong>' + item.series.label + '</strong><br>' + text
-      }
+  updateGlobalStats = () => {
+    document.getElementById('stat_totalPlayers').innerText = formatNumber(this.getTotalPlayerCount())
+    document.getElementById('stat_networks').innerText = formatNumber(this.serverRegistry.getServerRegistrations().length)
+  }
 
-      this.tooltip.set(item.pageX + 5, item.pageY + 5, text)
-    }
+  sortServers = () => {
+    this.serverRegistry.getServerRegistrations().sort(function (a, b) {
+      return b.playerCount - a.playerCount
+    }).forEach(function (serverRegistration, i) {
+      $('#container_' + serverRegistration.serverId).appendTo('#server-list')
+
+      document.getElementById('ranking_' + serverRegistration.serverId).innerText = '#' + (i + 1)
+    })
   }
 }

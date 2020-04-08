@@ -1,4 +1,4 @@
-import { formatNumber } from './util.js'
+import { formatNumber, formatTimestamp } from './util.js'
 
 export const SERVER_GRAPH_OPTIONS = {
   series: {
@@ -66,9 +66,7 @@ export class GraphDisplayManager {
   constructor (app) {
     this._app = app
     this._graphData = []
-    this._hiddenServerIds = []
     this._hasLoadedSettings = false
-    this._mustRedraw = false
   }
 
   addGraphPoint (serverId, timestamp, playerCount) {
@@ -88,45 +86,6 @@ export class GraphDisplayManager {
     newGraphData.push([timestamp, playerCount])
 
     this._graphData[serverId] = newGraphData
-
-    // Mark mustRedraw flag if the updated graphData is to be rendered
-    if (this.isGraphDataVisible(serverId)) {
-      this._mustRedraw = true
-    }
-  }
-
-  setGraphDataVisible (serverId, visible) {
-    const indexOf = this._hiddenServerIds.indexOf(serverId)
-
-    if (!visible && indexOf < 0) {
-      this._hiddenServerIds.push(serverId)
-      this._mustRedraw = true
-    } else if (visible && indexOf >= 0) {
-      this._hiddenServerIds.splice(indexOf, 1)
-      this._mustRedraw = true
-    }
-
-    // Use mustRedraw as a hint to update settings
-    // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
-    if (this._mustRedraw) {
-      this.updateLocalStorage()
-    }
-  }
-
-  setAllGraphDataVisible (visible) {
-    if (visible && this._hiddenServerIds.length > 0) {
-      this._hiddenServerIds = []
-      this._mustRedraw = true
-    } else if (!visible) {
-      this._hiddenServerIds = Object.keys(this._graphData).map(Number)
-      this._mustRedraw = true
-    }
-
-    // Use mustRedraw as a hint to update settings
-    // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
-    if (this._mustRedraw) {
-      this.updateLocalStorage()
-    }
   }
 
   setGraphData (graphData) {
@@ -141,8 +100,8 @@ export class GraphDisplayManager {
 
     for (let i = 0; i < keys.length; i++) {
       const serverName = keys[i]
-      const serverId = this._app.serverRegistry.getOrCreateId(serverName)
-      this._graphData[serverId] = graphData[serverName]
+      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
+      this._graphData[serverRegistration.serverId] = graphData[serverName]
     }
 
     // This isn't nessecary since #setGraphData is manually called, but it ensures
@@ -156,8 +115,12 @@ export class GraphDisplayManager {
       if (serverNames) {
         serverNames = JSON.parse(serverNames)
 
-        // Mutate the server name array into serverIds for active use
-        this._hiddenServerIds = [...new Set(serverNames.map(serverName => this._app.serverRegistry.getOrCreateId(serverName)))]
+        for (let i = 0; i < serverNames.length; i++) {
+          const serverRegistration = this._app.serverRegistry.getServerRegistration(serverNames[i])
+          if (serverRegistration) {
+            serverRegistration.isVisible = false
+          }
+        }
       }
     }
   }
@@ -165,7 +128,9 @@ export class GraphDisplayManager {
   updateLocalStorage () {
     if (typeof (localStorage) !== 'undefined') {
       // Mutate the serverIds array into server names for storage use
-      const serverNames = [...new Set(this._hiddenServerIds.map(this._app.serverRegistry.getServerName))]
+      const serverNames = this._app.serverRegistry.getServerRegistrations()
+        .filter(serverRegistration => !serverRegistration.isVisible)
+        .map(serverRegistration => serverRegistration.data.name)
 
       if (serverNames.length > 0) {
         // Only save if the array contains data, otherwise clear the item
@@ -176,21 +141,18 @@ export class GraphDisplayManager {
     }
   }
 
-  isGraphDataVisible (serverId) {
-    return !this._hiddenServerIds.includes(serverId)
-  }
-
   // Converts the backend data into the schema used by flot.js
   getVisibleGraphData () {
-    return Object.keys(this._graphData).map(Number)
-      .filter(serverId => this.isGraphDataVisible(serverId))
-      .map(serverId => {
-        const serverName = this._app.serverRegistry.getServerName(serverId)
+    return Object.keys(this._graphData)
+      .map(Number)
+      .map(serverId => this._app.serverRegistry.getServerRegistration(serverId))
+      .filter(serverRegistration => serverRegistration !== undefined && serverRegistration.isVisible)
+      .map(serverRegistration => {
         return {
-          data: this._graphData[serverId],
+          data: this._graphData[serverRegistration.serverId],
           yaxis: 1,
-          label: serverName,
-          color: this._app.getServerColor(serverName)
+          label: serverRegistration.data.name,
+          color: serverRegistration.data.color
         }
       })
   }
@@ -199,21 +161,16 @@ export class GraphDisplayManager {
     this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS)
   }
 
-  redrawIfNeeded () {
-    if (this._mustRedraw) {
-      this._mustRedraw = false
+  redraw () {
+    // Use drawing as a hint to update settings
+    // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
+    this.updateLocalStorage()
 
-      // Fire calls to the provided graph instance
-      // This allows flot.js to manage redrawing and creates a helper method to reduce code duplication
-      this._plotInstance.setData(this.getVisibleGraphData())
-      this._plotInstance.setupGrid()
-      this._plotInstance.draw()
-
-      // Return was redrawn for downstream context specific handling
-      return true
-    }
-
-    return false
+    // Fire calls to the provided graph instance
+    // This allows flot.js to manage redrawing and creates a helper method to reduce code duplication
+    this._plotInstance.setData(this.getVisibleGraphData())
+    this._plotInstance.setupGrid()
+    this._plotInstance.draw()
   }
 
   handleResizeRequest () {
@@ -243,17 +200,40 @@ export class GraphDisplayManager {
     this._resizeRequestTimeout = undefined
   }
 
+  // Called by flot.js when they hover over a data point.
+  handlePlotHover = (event, pos, item) => {
+    if (!item) {
+      this._app.tooltip.hide()
+    } else {
+      let text = formatNumber(item.datapoint[1]) + ' Players<br>' + formatTimestamp(item.datapoint[0])
+      // Prefix text with the series label when possible
+      if (item.series && item.series.label) {
+        text = '<strong>' + item.series.label + '</strong><br>' + text
+      }
+
+      this._app.tooltip.set(item.pageX + 5, item.pageY + 5, text)
+    }
+  }
+
   reset () {
     this._graphData = []
-    this._hiddenServerIds = []
-    this._hasLoadedSettings = false
-    this._mustRedraw = false
     this._plotInstance = undefined
+    this._hasLoadedSettings = false
 
     // Fire #clearTimeout if the timeout is currently defined
     if (this._resizeRequestTimeout) {
       clearTimeout(this._resizeRequestTimeout)
+
       this._resizeRequestTimeout = undefined
     }
+
+    // Reset modified DOM structures
+    document.getElementById('big-graph-checkboxes').innerHTML = ''
+    document.getElementById('big-graph-controls').style.display = 'none'
+
+    const graphElement = document.getElementById('big-graph')
+
+    graphElement.innerHTML = ''
+    graphElement.removeAttribute('style')
   }
 }
