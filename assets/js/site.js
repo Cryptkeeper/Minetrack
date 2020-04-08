@@ -29,54 +29,36 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('historyGraph', function (data) {
-    app.graphDisplayManager.setGraphData(data)
-
-    // Explicitly define a height so flot.js can rescale the Y axis
-    document.getElementById('big-graph').style.height = '400px'
-
-    $('#big-graph').bind('plothover', app.graphDisplayManager.handlePlotHover)
-
-    app.graphDisplayManager.buildPlotInstance()
+    app.graphDisplayManager.buildPlotInstance(data)
 
     // Build checkbox elements for graph controls
     let lastRowCounter = 0
-    let controlsHTML = '<table><tr>'
+    let controlsHTML = ''
 
     Object.keys(data).sort().forEach(function (serverName) {
       const serverRegistration = app.serverRegistry.getServerRegistration(serverName)
-      const isChecked = serverRegistration.isVisible ? 'checked' : ''
 
       controlsHTML += '<td>' +
-        '<input type="checkbox" class="graph-control" minetrack-server-id="' + serverRegistration.serverId + '" ' + isChecked + '>' +
+        '<input type="checkbox" class="graph-control" minetrack-server-id="' + serverRegistration.serverId + '" ' + (serverRegistration.isVisible ? 'checked' : '') + '>' +
         serverName +
         '</input></td>'
 
       // Occasionally break table rows using a magic number
-      if (lastRowCounter++ >= 7) {
-        lastRowCounter = 0
-
+      if (lastRowCounter > 0 && lastRowCounter++ % 7 === 0) {
         controlsHTML += '</tr><tr>'
       }
     })
 
-    controlsHTML += '</tr></table>'
-
     // Apply generated HTML and show controls
-    document.getElementById('big-graph-checkboxes').innerHTML = controlsHTML
+    document.getElementById('big-graph-checkboxes').innerHTML = '<table><tr>' +
+      controlsHTML +
+      '</tr></table>'
+
     document.getElementById('big-graph-controls').style.display = 'block'
 
     // Bind click event for updating graph data
     document.querySelectorAll('.graph-control').forEach(function (element) {
-      element.addEventListener('click', function (event) {
-        const serverId = parseInt(event.target.getAttribute('minetrack-server-id'))
-        const serverRegistration = app.serverRegistry.getServerRegistration(serverId)
-
-        if (serverRegistration.isVisible !== event.target.checked) {
-          serverRegistration.isVisible = event.target.checked
-
-          app.graphDisplayManager.redraw()
-        }
-      }, false)
+      element.addEventListener('click', app.graphDisplayManager.handleServerButtonClick, false)
     })
   })
 
@@ -152,36 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
     app.graphDisplayManager.requestResize()
   }, false)
 
-  document.getElementById('graph-controls-toggle').addEventListener('click', () => {
-    const element = document.getElementById('big-graph-controls-drawer')
-    if (element.style.display !== 'block') {
-      element.style.display = 'block'
-    } else {
-      element.style.display = 'none'
-    }
-  }, false)
+  document.getElementById('graph-controls-toggle').addEventListener('click', app.graphDisplayManager.handleControlsToggle, false)
 
   document.querySelectorAll('.graph-controls-show').forEach((element) => {
-    element.addEventListener('click', (event) => {
-      const visible = event.target.getAttribute('minetrack-showall') === 'true'
-
-      let redraw = false
-
-      app.serverRegistry.getServerRegistrations().forEach(function (serverRegistration) {
-        if (serverRegistration.isVisible !== visible) {
-          serverRegistration.isVisible = visible
-
-          redraw = true
-        }
-      })
-
-      if (redraw) {
-        app.graphDisplayManager.redraw()
-
-        document.querySelectorAll('.graph-control').forEach(function (checkbox) {
-          checkbox.checked = visible
-        })
-      }
-    }, false)
+    element.addEventListener('click', app.graphDisplayManager.handleShowButtonClick, false)
   })
 }, false)

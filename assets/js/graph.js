@@ -88,27 +88,6 @@ export class GraphDisplayManager {
     this._graphData[serverId] = newGraphData
   }
 
-  setGraphData (graphData) {
-    // Lazy load settings from localStorage, if any and if enabled
-    if (!this._hasLoadedSettings) {
-      this._hasLoadedSettings = true
-
-      this.loadLocalStorage()
-    }
-
-    const keys = Object.keys(graphData)
-
-    for (let i = 0; i < keys.length; i++) {
-      const serverName = keys[i]
-      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
-      this._graphData[serverRegistration.serverId] = graphData[serverName]
-    }
-
-    // This isn't nessecary since #setGraphData is manually called, but it ensures
-    // consistent behavior which will make any future changes easier.
-    this._mustRedraw = true
-  }
-
   loadLocalStorage () {
     if (typeof (localStorage) !== 'undefined') {
       let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY)
@@ -160,8 +139,25 @@ export class GraphDisplayManager {
       })
   }
 
-  buildPlotInstance () {
+  buildPlotInstance (graphData) {
+    // Lazy load settings from localStorage, if any and if enabled
+    if (!this._hasLoadedSettings) {
+      this._hasLoadedSettings = true
+
+      this.loadLocalStorage()
+    }
+
+    // Remap the incoming data from being string (serverName) keyed into serverId keys
+    for (const serverName of Object.keys(graphData)) {
+      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
+      this._graphData[serverRegistration.serverId] = graphData[serverName]
+    }
+
+    // Explicitly define a height so flot.js can rescale the Y axis
+    document.getElementById('big-graph').style.height = '400px'
+
     this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS)
+    $('#big-graph').bind('plothover', this.handlePlotHover)
   }
 
   // requestRedraw allows usages to request a redraw that may be performed, or cancelled, sometime later
@@ -239,6 +235,48 @@ export class GraphDisplayManager {
       }
 
       this._app.tooltip.set(item.pageX + 5, item.pageY + 5, text)
+    }
+  }
+
+  handleServerButtonClick = (event) => {
+    const serverId = parseInt(event.target.getAttribute('minetrack-server-id'))
+    const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
+
+    if (serverRegistration.isVisible !== event.target.checked) {
+      serverRegistration.isVisible = event.target.checked
+
+      this.redraw()
+    }
+  }
+
+  handleShowButtonClick = (event) => {
+    const visible = event.target.getAttribute('minetrack-showall') === 'true'
+
+    let redraw = false
+
+    this._app.serverRegistry.getServerRegistrations().forEach(function (serverRegistration) {
+      if (serverRegistration.isVisible !== visible) {
+        serverRegistration.isVisible = visible
+        redraw = true
+      }
+    })
+
+    if (redraw) {
+      this.redraw()
+
+      document.querySelectorAll('.graph-control').forEach(function (checkbox) {
+        checkbox.checked = visible
+      })
+    }
+  }
+
+  handleControlsToggle = () => {
+    const element = document.getElementById('big-graph-controls-drawer')
+
+    if (element.style.display !== 'block') {
+      element.style.display = 'block'
+    } else {
+      element.style.display = 'none'
     }
   }
 
