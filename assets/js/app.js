@@ -1,9 +1,8 @@
-import { Tooltip, ServerRegistry, Caption } from './servers'
-import { GraphDisplayManager } from './graph'
-import { MojangUpdater } from './mojang'
-import { PercentageBar } from './percbar'
-
-import { formatNumber } from './util'
+import ServerRegistry from './servers'
+import GraphDisplayManager from './graph'
+import MojangUpdater from './mojang'
+import PercentageBar from './percbar'
+import { Tooltip, Caption, formatNumber } from './util'
 
 export class App {
   publicConfig

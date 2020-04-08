@@ -1,3 +1,35 @@
+export class Tooltip {
+  constructor () {
+    this._div = document.getElementById('tooltip')
+  }
+
+  set (x, y, html) {
+    this._div.innerHTML = html
+    this._div.style.top = y + 'px'
+    this._div.style.left = x + 'px'
+    this._div.style.display = 'block'
+  }
+
+  hide = () => {
+    this._div.style.display = 'none'
+  }
+}
+
+export class Caption {
+  constructor () {
+    this._div = document.getElementById('status-text')
+  }
+
+  set (text) {
+    this._div.innerText = text
+    this._div.style.display = 'block'
+  }
+
+  hide () {
+    this._div.style.display = 'none'
+  }
+}
+
 // Minecraft Java Edition default server port: 25565
 // Minecraft Bedrock Edition default server port: 19132
 const MINECRAFT_DEFAULT_PORTS = [25565, 19132]

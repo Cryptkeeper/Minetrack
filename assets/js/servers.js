@@ -1,39 +1,35 @@
 import { formatNumber, formatTimestamp, formatMinecraftServerAddress } from './util'
 
-import { SERVER_GRAPH_OPTIONS } from './graph'
-
 import MISSING_FAVICON from '../images/missing_favicon.png'
 
-export class Tooltip {
-  constructor () {
-    this._div = document.getElementById('tooltip')
-  }
-
-  set (x, y, html) {
-    this._div.innerHTML = html
-    this._div.style.top = y + 'px'
-    this._div.style.left = x + 'px'
-    this._div.style.display = 'block'
-  }
-
-  hide = () => {
-    this._div.style.display = 'none'
-  }
-}
-
-export class Caption {
-  constructor () {
-    this._div = document.getElementById('status-text')
-  }
-
-  set (text) {
-    this._div.innerText = text
-    this._div.style.display = 'block'
-  }
-
-  hide () {
-    this._div.style.display = 'none'
-  }
+export const SERVER_GRAPH_OPTIONS = {
+  series: {
+    shadowSize: 0
+  },
+  xaxis: {
+    font: {
+      color: '#E3E3E3'
+    },
+    show: false
+  },
+  yaxis: {
+    minTickSize: 75,
+    tickDecimals: 0,
+    show: true,
+    tickLength: 10,
+    tickFormatter: formatNumber,
+    font: {
+      color: '#E3E3E3'
+    },
+    labelWidth: -10
+  },
+  grid: {
+    hoverable: true,
+    color: '#696969'
+  },
+  colors: [
+    '#E9E581'
+  ]
 }
 
 export class ServerRegistry {

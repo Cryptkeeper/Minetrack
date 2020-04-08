@@ -1,35 +1,5 @@
 import { formatNumber, formatTimestamp } from './util'
 
-export const SERVER_GRAPH_OPTIONS = {
-  series: {
-    shadowSize: 0
-  },
-  xaxis: {
-    font: {
-      color: '#E3E3E3'
-    },
-    show: false
-  },
-  yaxis: {
-    minTickSize: 75,
-    tickDecimals: 0,
-    show: true,
-    tickLength: 10,
-    tickFormatter: formatNumber,
-    font: {
-      color: '#E3E3E3'
-    },
-    labelWidth: -10
-  },
-  grid: {
-    hoverable: true,
-    color: '#696969'
-  },
-  colors: [
-    '#E9E581'
-  ]
-}
-
 export const HISTORY_GRAPH_OPTIONS = {
   series: {
     shadowSize: 0

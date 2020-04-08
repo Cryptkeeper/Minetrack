@@ -1,6 +1,5 @@
-import { App } from './app'
-
-import { isMobileBrowser } from './util'
+import App from './app'
+import isMobileBrowser from './util'
 
 const app = new App()
 
