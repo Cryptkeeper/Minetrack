@@ -1,6 +1,6 @@
 {
   "name": "minetrack",
-  "version": "4.0.5",
+  "version": "5",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "app.js",
   "dependencies": {
@@ -20,7 +20,7 @@
   "keywords": [
     "minetrack"
   ],
-  "author": "Cryptkeeper <hello@npm.nklow.com>",
+  "author": "Nick Krecklow <hello@npm.nklow.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Cryptkeeper/Minetrack/issues"

@@ -1,19 +1,25 @@
-**4.1** *(Apr 6 2020)*
+**5** *(Apr 8 2020)*
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
+- Adds ESLint configuration
+- Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
+- Added Parcel bundler which bundles the assets/ directory into dist/ 
+- Custom favicons are now served from "favicons/" directory and their configuration moved into servers.json. Paths in servers.json should be updated to reflect their filename without the path.
+- Added finalhandler and serve-static dependencies
+- Add ```npm run dev``` and ```npm run build``` scripts to package.json
 - publicConfig.json is now sent over the socket connection so the frontend can be safely reloaded on rebooted instances
 - Tooltips have been optimized and updated to a more readable design
 - Initial page loading has been optimized
 - MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.png to improve caching behavior (and its customizable now!)
 - Peak player count labels are formatted using the graphDuration hours and now displays the timestamp seconds
+- Fixed favicon payloads being repeatedly sent.
 - Fixed the page being broken when connecting to a freshly booted instance
 - Fixed graphs starting at 0 player count when a server is initially pinged
 - Fixed status text ocassionally not being shown
 - Fixed some elements/frontend state not being completely reset on disconnect
 - Fixed Minecraft Bedrock Edition servers showing the default port of 19132
 - Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
-- Remove #validateBootTime loop and logic
-- Removes several usages of jQuery (baby steps...)
-- Lots and lots of optimizations, legacy code removal and reorganization.
+- Removed #validateBootTime loop and logic
+- Removed mime dependency
 
 **4.0.5** *(Apr 1 2020)*
 - The frontend will now auto calculate the "24h Peak" label using your configured graphDuration in config.json
