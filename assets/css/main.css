@@ -262,7 +262,7 @@ footer a:hover {
 	display: none;
 }
 
-#big-graph-controls .graph-controls-toggle {
+#big-graph-controls #graph-controls-toggle {
     text-transform: uppercase;
 	font-size: 16px;
 	display: block;

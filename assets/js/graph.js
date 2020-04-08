@@ -127,12 +127,6 @@ export class GraphDisplayManager {
     if (this._mustRedraw) {
       this.updateLocalStorage()
     }
-
-    if (this.redrawIfNeeded()) {
-      document.querySelectorAll('.graph-control').forEach(function (element) {
-        element.checked = visible
-      })
-    }
   }
 
   setGraphData (graphData) {
@@ -247,15 +241,6 @@ export class GraphDisplayManager {
     // undefine value so #clearTimeout is not called
     // This is safe even if #resize is manually called since it removes the pending work
     this._resizeRequestTimeout = undefined
-  }
-
-  toggleControls () {
-    const element = document.getElementById('big-graph-controls-drawer')
-    if (element.style.display !== 'block') {
-      element.style.display = 'block'
-    } else {
-      element.style.display = 'none'
-    }
   }
 
   reset () {

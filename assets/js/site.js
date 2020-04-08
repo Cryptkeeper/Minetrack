@@ -3,7 +3,7 @@ import { ServerGraph } from './core.js'
 
 import { SERVER_GRAPH_OPTIONS } from './graph.js'
 
-import { formatNumber, getTimestamp, formatMinecraftServerAddress, isMobileBrowser } from './util.js'
+import { formatNumber, formatMinecraftServerAddress, isMobileBrowser } from './util.js'
 
 import MISSING_FAVICON from '../images/missing_favicon.png'
 
@@ -129,12 +129,6 @@ function updatePercentageBar () {
 
     leftPadding += width
   })
-}
-
-function updateServerPeak (serverId, time, playerCount) {
-  const hourDuration = Math.floor(app.publicConfig.graphDuration / (60 * 60 * 1000))
-
-  document.getElementById('peak_' + serverId).innerText = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' @ ' + getTimestamp(time)
 }
 
 function addServer (serverData) {
@@ -339,18 +333,16 @@ document.addEventListener('DOMContentLoaded', function () {
   socket.on('updatePeak', function (data) {
     const serverId = app.serverRegistry.getOrCreateId(data.name)
 
-    updateServerPeak(serverId, data.timestamp, data.players)
+    app.updateServerPeak(serverId, data.timestamp, data.players)
   })
 
   socket.on('peaks', function (data) {
-    const keys = Object.keys(data)
-
-    keys.forEach(function (serverName) {
+    Object.keys(data).forEach(function (serverName) {
       const serverId = app.serverRegistry.getOrCreateId(serverName)
       const graphData = data[serverName]
 
       // [0] and [1] indexes correspond to flot.js' graphing data structure
-      updateServerPeak(serverId, graphData[0], graphData[1])
+      app.updateServerPeak(serverId, graphData[0], graphData[1])
     })
   })
 
@@ -360,6 +352,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // Delegate to GraphDisplayManager which can check if the resize is necessary
     app.graphDisplayManager.handleResizeRequest()
   }, false)
+
+  document.getElementById('graph-controls-toggle').addEventListener('click', () => {
+    const element = document.getElementById('big-graph-controls-drawer')
+    if (element.style.display !== 'block') {
+      element.style.display = 'block'
+    } else {
+      element.style.display = 'none'
+    }
+  }, false)
+
+  document.querySelectorAll('.graph-controls-show').forEach((element) => {
+    element.addEventListener('click', (event) => {
+      const visible = event.target.getAttribute('minetrack-showall') === 'true'
+
+      app.graphDisplayManager.setAllGraphDataVisible(visible)
+
+      if (app.graphDisplayManager.redrawIfNeeded()) {
+        document.querySelectorAll('.graph-control').forEach(function (checkbox) {
+          checkbox.checked = visible
+        })
+      }
+    }, false)
+  })
 
   // Run the sortServers loop even if the frontend has not connected to the backend
   // It will safely handle the empty data and simplifies state logic

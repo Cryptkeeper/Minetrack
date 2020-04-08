@@ -10,7 +10,7 @@ export function formatMinecraftServerAddress (ip, port) {
   return addr
 }
 
-export function getTimestamp (millis) {
+export function formatTimestamp (millis) {
   var date = new Date(0)
   date.setUTCSeconds(millis / 1000)
   return date.toLocaleTimeString()
