@@ -1,157 +1,151 @@
-class Tooltip {
-	constructor() {
-		this._div = document.getElementById('tooltip');
-	}
+export class Tooltip {
+  constructor () {
+    this._div = document.getElementById('tooltip')
+  }
 
-	set(x, y, html) {
-		this._div.innerHTML = html;
-		this._div.style.top = y + 'px';
-		this._div.style.left = x + 'px';
-		this._div.style.display = 'block';
-	}
+  set (x, y, html) {
+    this._div.innerHTML = html
+    this._div.style.top = y + 'px'
+    this._div.style.left = x + 'px'
+    this._div.style.display = 'block'
+  }
 
-	hide = () => this._div.style.display = 'none';
+  hide = () => {
+    this._div.style.display = 'none'
+  }
 }
 
-class Caption {
-	constructor() {
-		this._div = document.getElementById('status-text');
-	}
+export class Caption {
+  constructor () {
+    this._div = document.getElementById('status-text')
+  }
 
-	set(text) {
-		this._div.innerText = text;
-		this._div.style.display = 'block';
-	}
+  set (text) {
+    this._div.innerText = text
+    this._div.style.display = 'block'
+  }
 
-	hide = () => this._div.style.display = 'none';
+  hide () {
+    this._div.style.display = 'none'
+  }
 }
 
-class ServerRegistry {
-	constructor() {
-		this._serverIdsByName = [];
-		this._serverNamesById = [];
-		this._nextId = 0;
-		this._serverGraphs = [];
-	}
+export class ServerRegistry {
+  constructor () {
+    this._serverIdsByName = []
+    this._serverNamesById = []
+    this._nextId = 0
+    this._serverGraphs = []
+  }
 
-	getServerIds = () => Object.keys(this._serverNamesById).map(Number);
+  getServerIds = () => Object.keys(this._serverNamesById).map(Number);
 
-	getOrCreateId(name) {
-		let serverId = this._serverIdsByName[name];
-		if (serverId === undefined) {
-			serverId = this._nextId++;
-			this._serverIdsByName[name] = serverId;
-			this._serverNamesById[serverId] = name;
-		}
-		return serverId;
-	}
+  getOrCreateId (name) {
+    let serverId = this._serverIdsByName[name]
+    if (serverId === undefined) {
+      serverId = this._nextId++
+      this._serverIdsByName[name] = serverId
+      this._serverNamesById[serverId] = name
+    }
+    return serverId
+  }
 
-	getServerName = (serverId) => this._serverNamesById[serverId];
+  getServerName = (serverId) => this._serverNamesById[serverId];
 
-	getServerColor(serverId) {
-		const serverName = this.getServerName(serverId);
-		for (let i = 0; i < publicConfig.servers.length; i++) {
-			if (publicConfig.servers[i].name === serverName) {
-				return publicConfig.servers[i].color;
-			}
-		}
-		return stringToColor(name);
-	}
+  registerServerGraph (serverId, serverGraph) {
+    this._serverGraphs[serverId] = serverGraph
+  }
 
-	registerServerGraph(serverId, serverGraph) {
-		this._serverGraphs[serverId] = serverGraph;
-	}
+  getServerGraph (serverId) {
+    return this._serverGraphs[serverId]
+  }
 
-	getServerGraph(serverId) {
-		return this._serverGraphs[serverId];
-	}
+  // Helper method for safely defaulting value to 0
+  getPlayerCount (serverId) {
+    const serverGraph = this._serverGraphs[serverId]
+    if (!serverGraph) return 0
+    return serverGraph._lastPlayerCount || 0
+  }
 
-	// Helper method for safely defaulting value to 0
-	getPlayerCount(serverId) {
-		const serverGraph = this._serverGraphs[serverId];
-		if (!serverGraph) return 0;
-		return serverGraph._lastPlayerCount || 0;
-	}
+  getTotalPlayerCount () {
+    return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
+      .filter(playerCount => playerCount !== undefined)
+      .reduce((sum, current) => sum + current, 0)
+  }
 
-	getTotalPlayerCount() {
-		return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
-			.filter(playerCount => playerCount !== undefined)
-			.reduce((sum, current) => sum + current, 0);
-	}
+  getActiveServerCount () {
+    return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
+      .filter(playerCount => playerCount !== undefined)
+      .length
+  }
 
-	getActiveServerCount() {
-		return this._serverGraphs.map(serverGraph => serverGraph._lastPlayerCount)
-			.filter(playerCount => playerCount !== undefined)
-			.length;
-	}
-
-	reset() {
-		this._serverIdsByName = [];
-		this._serverNamesById = [];
-		this._nextId = 0;
-		this._serverGraphs = [];
-	}
+  reset () {
+    this._serverIdsByName = []
+    this._serverNamesById = []
+    this._nextId = 0
+    this._serverGraphs = []
+  }
 }
 
-const SERVER_GRAPH_DATA_MAX_LENGTH = 72;
+const SERVER_GRAPH_DATA_MAX_LENGTH = 72
 
-class ServerGraph {
-	constructor(plotInstance) {
-		this._plotInstance = plotInstance;
-		this._graphData = [];
-	}
+export class ServerGraph {
+  constructor (plotInstance) {
+    this._plotInstance = plotInstance
+    this._graphData = []
+  }
 
-	addGraphPoints(points)  {
-		// Test if the first point contains error.placeholder === true
-		// This is sent by the backend when the server hasn't been pinged yet
-		// These points will be disregarded to prevent the graph starting at 0 player count
-		points = points.filter(point => !point.error || !point.error.placeholder);
+  addGraphPoints (points) {
+    // Test if the first point contains error.placeholder === true
+    // This is sent by the backend when the server hasn't been pinged yet
+    // These points will be disregarded to prevent the graph starting at 0 player count
+    points = points.filter(point => !point.error || !point.error.placeholder)
 
-		// The backend should never return more data elements than the max
-		// but trim the data result regardless for safety and performance purposes
-		if (points.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
-			points.slice(points.length - SERVER_GRAPH_DATA_MAX_LENGTH, points.length);
-		}
+    // The backend should never return more data elements than the max
+    // but trim the data result regardless for safety and performance purposes
+    if (points.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+      points.slice(points.length - SERVER_GRAPH_DATA_MAX_LENGTH, points.length)
+    }
 
-		this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0]);
-	}
+    this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0])
+  }
 
-	handlePing(payload, pushToGraph) {
-		if (payload.result) {
-			this._lastPlayerCount = payload.result.players.online;
+  handlePing (payload, pushToGraph) {
+    if (payload.result) {
+      this._lastPlayerCount = payload.result.players.online
 
-			if (pushToGraph) {
-				// Only update graph for successful pings
-				// This intentionally pauses the server graph when pings begin to fail
-				this._graphData.push([payload.info.timestamp, this._lastPlayerCount]);
+      if (pushToGraph) {
+        // Only update graph for successful pings
+        // This intentionally pauses the server graph when pings begin to fail
+        this._graphData.push([payload.info.timestamp, this._lastPlayerCount])
 
-				// Trim graphData to within the max length by shifting out the leading elements
-				if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
-					this._graphData.shift();
-				}
+        // Trim graphData to within the max length by shifting out the leading elements
+        if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+          this._graphData.shift()
+        }
 
-				this.redrawIfNeeded();
-			}
-		} else {
-			this._lastPlayerCount = undefined;
-		}
-	}
+        this.redrawIfNeeded()
+      }
+    } else {
+      this._lastPlayerCount = undefined
+    }
+  }
 
-	redrawIfNeeded() {
-		// Redraw the plot instance
-		this._plotInstance.setData([this._graphData]);
-		this._plotInstance.setupGrid();
-		this._plotInstance.draw();
-	}
+  redrawIfNeeded () {
+    // Redraw the plot instance
+    this._plotInstance.setData([this._graphData])
+    this._plotInstance.setupGrid()
+    this._plotInstance.draw()
+  }
 
-	getPlayerCountDifference() {
-		if (this._graphData.length >= 2) {
-			// [1] refers to playerCount data index
-			// See constructor for data structure initialization
-			let oldestPlayerCount = this._graphData[0][1];
-			let newestPlayerCount = this._graphData[this._graphData.length - 1][1];
-			
-			return newestPlayerCount - oldestPlayerCount;
-		}
-	}
+  getPlayerCountDifference () {
+    if (this._graphData.length >= 2) {
+      // [1] refers to playerCount data index
+      // See constructor for data structure initialization
+      const oldestPlayerCount = this._graphData[0][1]
+      const newestPlayerCount = this._graphData[this._graphData.length - 1][1]
+
+      return newestPlayerCount - oldestPlayerCount
+    }
+  }
 }
