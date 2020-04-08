@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Only redraw the graph if not mutating hidden data
       if (serverRegistration.isVisible) {
-        app.graphDisplayManager.redraw()
+        app.graphDisplayManager.requestRedraw()
       }
     }
   })
@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
     app.percentageBar.redraw()
 
     // Delegate to GraphDisplayManager which can check if the resize is necessary
-    app.graphDisplayManager.handleResizeRequest()
+    app.graphDisplayManager.requestResize()
   }, false)
 
   document.getElementById('graph-controls-toggle').addEventListener('click', () => {
