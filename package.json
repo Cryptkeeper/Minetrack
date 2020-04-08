@@ -39,7 +39,7 @@
     "parcel-bundler": "^1.12.4"
   },
   "scripts": {
-    "build": "parcel build assets/html/index.html",
+    "build": "eslint assets/js/*.js && parcel build assets/html/index.html",
     "dev": "parcel build assets/html/index.html --no-minify"
   }
 }
