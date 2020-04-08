@@ -50,8 +50,8 @@ function updateServerStatus (serverId, ping, initialUpdate) {
 
     // An updated favicon has been sent, update the src
     // Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
-    if (!initialUpdate && ping.result.favicon) {
-      document.getElementById('favicon_' + serverId).setAttribute('src', ping.result.favicon)
+    if (!initialUpdate && ping.favicon) {
+      document.getElementById('favicon_' + serverId).setAttribute('src', ping.favicon)
     }
   } else {
     let errorMessage = 'Unknown error'
@@ -151,10 +151,7 @@ function addServer (serverData) {
 
   // Safely default to a missing placeholder if not present
   // If a favicon is later provided in an update, it will be handled by #updateServerStatus
-  let favicon = MISSING_FAVICON
-  if (ping.result && ping.result.favicon) {
-    favicon = ping.result.favicon
-  }
+  const favicon = ping.favicon || MISSING_FAVICON
 
   // Build a placeholder element with empty data first
   const serverElement = document.createElement('div')

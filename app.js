@@ -19,6 +19,8 @@ var currentVersionIndex = {
 
 var networkVersions = [];
 
+const lastFavicons = [];
+
 var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
@@ -112,6 +114,17 @@ function handlePing(network, res, err, attemptedVersion) {
 		if (config.logToDatabase && res.players.online > highestPlayerCount[network.ip]) {
 			highestPlayerCount[network.ip] = res.players.online;
 		}
+
+		// Only emit updated favicons
+		// Favicons will otherwise be explicitly emitted during the handshake process
+		if (res.favicon) {
+			const lastFavicon = lastFavicons[network.name]
+			if (lastFavicon !== res.favicon) {
+				lastFavicons[network.name] = res.favicon
+				networkSnapshot.favicon = res.favicon // Send updated favicon directly on object
+			}
+			delete res.favicon // Never store favicons in memory outside lastFavicons
+		}
 	} else if (err) {
 		networkSnapshot.error = err;
 	}
@@ -122,11 +135,8 @@ function handlePing(network, res, err, attemptedVersion) {
 
 	// Remove our previous data that we don't need anymore.
 	for (var i = 0; i < _networkHistory.length; i++) {
+		delete _networkHistory[i].versions
         delete _networkHistory[i].info;
-
-        if (_networkHistory[i].result) {
-        	delete _networkHistory[i].result.favicon;
-        }
 	}
 
 	_networkHistory.push({
@@ -286,7 +296,13 @@ function startServices() {
 					}
 				}]]);
 			} else {
-				client.emit('add', [networkHistory[server.name]]);
+				// Append the lastFavicon to the last ping entry
+				const serverHistory = networkHistory[server.name];
+				const lastFavicon = lastFavicons[server.name];
+				if (lastFavicon) {
+					serverHistory[serverHistory.length - 1].favicon = lastFavicon
+				}
+				client.emit('add', [serverHistory])
 			}
 		}
 
