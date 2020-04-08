@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp } from './util.js'
+import { formatNumber, formatTimestamp } from './util'
 
 export const SERVER_GRAPH_OPTIONS = {
   series: {
