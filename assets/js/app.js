@@ -51,6 +51,9 @@ export class App {
 
     this._taskIds = []
 
+    // Reset hidden values created by #updateGlobalStats
+    this._lastTotalPlayerCount = undefined
+
     // Reset modified DOM structures
     document.getElementById('stat_totalPlayers').innerText = 0
     document.getElementById('stat_networks').innerText = 0
@@ -88,8 +91,15 @@ export class App {
   }
 
   updateGlobalStats = () => {
-    document.getElementById('stat_totalPlayers').innerText = formatNumber(this.getTotalPlayerCount())
-    document.getElementById('stat_networks').innerText = formatNumber(this.serverRegistry.getServerRegistrations().length)
+    // Only redraw when needed
+    const totalPlayerCount = this.getTotalPlayerCount()
+
+    if (totalPlayerCount !== this._lastTotalPlayerCount) {
+      this._lastTotalPlayerCount = totalPlayerCount
+      document.getElementById('stat_totalPlayers').innerText = formatNumber(totalPlayerCount)
+    }
+
+    document.getElementById('stat_networks').innerText = this.serverRegistry.getServerRegistrations().length
   }
 
   sortServers = () => {

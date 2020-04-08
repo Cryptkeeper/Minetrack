@@ -161,6 +161,12 @@ export class ServerRegistration {
 
     // Compare against a cached value to avoid empty updates
     // Allow undefined ping.versions inside the if statement for text reset handling
+    if (ping.versions) {
+      ping.versions.sort(function (a, b) {
+        return a - b
+      })
+    }
+
     if (ping.versions !== this._lastVersions) {
       this._lastVersions = ping.versions
 

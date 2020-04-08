@@ -16,13 +16,17 @@ export class PercentageBar {
     let leftPadding = 0
 
     for (const serverRegistration of serverRegistrations) {
-      const width = (serverRegistration.playerCount / totalPlayers) * this._parent.offsetWidth
+      const width = Math.round((serverRegistration.playerCount / totalPlayers) * this._parent.offsetWidth)
 
       // Update position/width
       // leftPadding is a sum of previous iterations width value
       const div = document.getElementById('perc-bar-part_' + serverRegistration.serverId) || this.createPart(serverRegistration)
-      div.style.width = width + 'px'
-      div.style.left = leftPadding + 'px'
+
+      // Only redraw if needed
+      if (div.style.width !== width + 'px' || div.style.left !== leftPadding + 'px') {
+        div.style.width = width + 'px'
+        div.style.left = leftPadding + 'px'
+      }
 
       leftPadding += width
     }
