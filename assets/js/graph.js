@@ -176,7 +176,7 @@ export class GraphDisplayManager {
     this._redrawRequestTimeout = setTimeout(this.redraw, 1000)
   }
 
-  redraw () {
+  redraw = () => {
     // Use drawing as a hint to update settings
     // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
     this.updateLocalStorage()

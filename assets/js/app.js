@@ -63,6 +63,31 @@ export class App {
       .reduce((sum, current) => sum + current, 0)
   }
 
+  addServer = (pings) => {
+    // Even if the backend has never pinged the server, the frontend is promised a placeholder object.
+    // result = undefined
+    // error = defined with "Waiting" description
+    // info = safely defined with configured data
+    const latestPing = pings[pings.length - 1]
+    const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.info.name)
+
+    serverRegistration.initServerStatus(latestPing, this.publicConfig.serverTypesVisible)
+
+    // Push the historical data into the graph
+    // This will trim and format the data so it is ready for the graph to render once init
+    serverRegistration.addGraphPoints(pings)
+
+    // Create the plot instance internally with the restructured and cleaned data
+    // #buildPlotInstance returns a selector for easily binding events
+    const plotInstance = serverRegistration.buildPlotInstance()
+
+    plotInstance.bind('plothover', this.graphDisplayManager.handlePlotHover)
+
+    // Handle the last known state (if any) as an incoming update
+    // This triggers the main update pipeline and enables centralized update handling
+    serverRegistration.updateServerStatus(latestPing, true, this.publicConfig.minecraftVersions)
+  }
+
   updateGlobalStats = () => {
     document.getElementById('stat_totalPlayers').innerText = formatNumber(this.getTotalPlayerCount())
     document.getElementById('stat_networks').innerText = formatNumber(this.serverRegistry.getServerRegistrations().length)

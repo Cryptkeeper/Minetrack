@@ -3,11 +3,10 @@
 const MINECRAFT_DEFAULT_PORTS = [25565, 19132]
 
 export function formatMinecraftServerAddress (ip, port) {
-  let addr = ip
   if (port && !MINECRAFT_DEFAULT_PORTS.includes(port)) {
-    addr += ':' + port
+    return ip + ':' + port
   }
-  return addr
+  return ip
 }
 
 export function formatTimestamp (millis) {

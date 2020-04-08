@@ -1,65 +1,8 @@
-import { App } from './app.js'
-import { ServerRegistration } from './core.js'
+import { App } from './app'
 
-import { SERVER_GRAPH_OPTIONS } from './graph.js'
-
-import { formatMinecraftServerAddress, isMobileBrowser } from './util.js'
-
-import MISSING_FAVICON from '../images/missing_favicon.png'
+import { isMobileBrowser } from './util'
 
 const app = new App()
-
-function addServer (serverData) {
-  // Even if the backend has never pinged the server, the frontend is promised a placeholder object.
-  // result = undefined
-  // error = defined with "Waiting" description
-  // info = safely defined with configured data
-  const ping = serverData[serverData.length - 1]
-
-  const serverId = app.serverRegistry.getServerId(ping.info.name)
-
-  // Conditional formatting given configuration
-  const serverTypeHTML = app.publicConfig.serverTypesVisible ? '<span class="server-type">' + ping.info.type + '</span>' : ''
-
-  // Build a placeholder element with empty data first
-  const serverElement = document.createElement('div')
-
-  serverElement.id = 'container_' + serverId
-  serverElement.innerHTML = '<div id="server-' + serverId + '" class="column column-favicon">' +
-      '<img class="server-favicon" src="' + (ping.favicon || MISSING_FAVICON) + '" id="favicon_' + serverId + '" title="' + ping.info.name + '\n' + formatMinecraftServerAddress(ping.info.ip, ping.info.port) + '">' +
-      '<span class="server-rank" id="ranking_' + serverId + '"></span>' +
-    '</div>' +
-    '<div class="column column-status">' +
-      '<h3 class="server-name">' + ping.info.name + serverTypeHTML + '</h3>' +
-      '<span id="status_' + serverId + '"></span>' +
-      '<span class="server-versions" id="version_' + serverId + '"></span>' +
-      '<span class="server-peak" id="peak_' + serverId + '"></span>' +
-      '<span class="server-record" id="record_' + serverId + '"></span>' +
-    '</div>' +
-    '<div class="column column-graph" id="chart_' + serverId + '"></div>'
-
-  serverElement.setAttribute('class', 'server')
-
-  document.getElementById('server-list').appendChild(serverElement)
-
-  // Create an empty plot instance
-  const plotInstance = $.plot('#chart_' + serverId, [], SERVER_GRAPH_OPTIONS)
-
-  $('#chart_' + serverId).bind('plothover', app.graphDisplayManager.handlePlotHover)
-
-  // Populate and redraw the ServerRegistration
-  const serverRegistration = new ServerRegistration(serverId, plotInstance)
-
-  serverRegistration.addGraphPoints(serverData)
-  serverRegistration.redraw()
-
-  // Register into serverRegistry for downstream referencing
-  app.serverRegistry.registerServer(serverRegistration)
-
-  // Handle the last known state (if any) as an incoming update
-  // This triggers the main update pipeline and enables centralized update handling
-  serverRegistration.updateServerStatus(ping, true, app.publicConfig.minecraftVersions)
-}
 
 document.addEventListener('DOMContentLoaded', function () {
   // eslint-disable-next-line no-undef
@@ -151,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('add', function (data) {
-    data.forEach(addServer)
+    data.forEach(app.addServer)
   })
 
   socket.on('update', function (data) {

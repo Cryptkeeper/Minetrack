@@ -1,4 +1,8 @@
-import { formatNumber, formatTimestamp } from './util'
+import { formatNumber, formatTimestamp, formatMinecraftServerAddress } from './util'
+
+import { SERVER_GRAPH_OPTIONS } from './graph'
+
+import MISSING_FAVICON from '../images/missing_favicon.png'
 
 export class Tooltip {
   constructor () {
@@ -47,12 +51,12 @@ export class ServerRegistry {
     }
   }
 
-  // TODO: remove me
-  getServerId = (serverName) => this._serverIdsByName[serverName]
-
-  registerServer (serverRegistration) {
-    serverRegistration.data = this._serverDataById[serverRegistration.serverId]
-    this._registeredServers[serverRegistration.serverId] = serverRegistration
+  createServerRegistration (serverName) {
+    const serverId = this._serverIdsByName[serverName]
+    const serverData = this._serverDataById[serverId]
+    const serverRegistration = new ServerRegistration(serverId, serverData)
+    this._registeredServers[serverId] = serverRegistration
+    return serverRegistration
   }
 
   getServerRegistration (serverKey) {
@@ -79,14 +83,12 @@ export class ServerRegistry {
 const SERVER_GRAPH_DATA_MAX_LENGTH = 72
 
 export class ServerRegistration {
-  serverId
-  data
   playerCount = 0
   isVisible = true
 
-  constructor (serverId, plotInstance) {
+  constructor (serverId, data) {
     this.serverId = serverId
-    this._plotInstance = plotInstance
+    this.data = data
     this._graphData = []
   }
 
@@ -103,6 +105,11 @@ export class ServerRegistration {
     }
 
     this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0])
+  }
+
+  buildPlotInstance () {
+    this._plotInstance = $.plot('#chart_' + this.serverId, this._graphData, SERVER_GRAPH_OPTIONS)
+    return $('#chart_' + this.serverId)
   }
 
   handlePing (payload, pushToGraph) {
@@ -193,5 +200,27 @@ export class ServerRegistration {
         document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
       }
     }
+  }
+
+  initServerStatus (latestPing, isServerTypeVisible) {
+    const serverElement = document.createElement('div')
+
+    serverElement.id = 'container_' + this.serverId
+    serverElement.innerHTML = '<div id="server-' + this.serverId + '" class="column column-favicon">' +
+        '<img class="server-favicon" src="' + (latestPing.favicon || MISSING_FAVICON) + '" id="favicon_' + this.serverId + '" title="' + this.data.name + '\n' + formatMinecraftServerAddress(this.data.ip, this.data.port) + '">' +
+        '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
+      '</div>' +
+      '<div class="column column-status">' +
+        '<h3 class="server-name">' + this.data.name + (isServerTypeVisible ? '<span class="server-type">' + this.data.type + '</span>' : '') + '</h3>' +
+        '<span id="status_' + this.serverId + '"></span>' +
+        '<span class="server-versions" id="version_' + this.serverId + '"></span>' +
+        '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
+        '<span class="server-record" id="record_' + this.serverId + '"></span>' +
+      '</div>' +
+      '<div class="column column-graph" id="chart_' + this.serverId + '"></div>'
+
+    serverElement.setAttribute('class', 'server')
+
+    document.getElementById('server-list').appendChild(serverElement)
   }
 }
