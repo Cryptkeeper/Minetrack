@@ -4,7 +4,7 @@
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "app.js",
   "dependencies": {
-    "mc-ping-updated": "0.1.0",
+    "mc-ping-updated": "0.1.1",
     "mcpe-ping-fixed": "0.0.3",
     "mime": "2.4.4",
     "request": "2.88.2",
