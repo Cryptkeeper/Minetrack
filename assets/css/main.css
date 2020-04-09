@@ -254,6 +254,7 @@ footer a:hover {
 
 /* Settings toggle */
 #settings-toggle {
+  color: var(--text-color);
   display: none;
   width: 83px;
   height: 83px;
@@ -297,6 +298,7 @@ footer a:hover {
 
 #big-graph-controls-drawer {
   background: var(--background-color);
+  color: var(--text-color);
   border-radius: 2px;
   padding-bottom: 10px;
   overflow: auto;
