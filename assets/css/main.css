@@ -20,6 +20,7 @@
     --background-color: var(--theme-color-light);
     --text-decoration-color: var(--theme-color-dark);
     --text-color: #000;
+    --text-color-inverted: #FFF;
   }
 
   body {
@@ -33,6 +34,7 @@
     --background-color: var(--theme-color-dark);
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
+    --text-color-inverted: #000;
   }
 
   body {
@@ -325,8 +327,8 @@ footer a:hover {
 }
 
 .button:hover {
-  background: var(--theme-color-element-hover);
-  color: var(--text-color);
+  background: var(--text-color);
+  color: var(--text-color-inverted);
 }
 
 /* Percentage bar */
