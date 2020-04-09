@@ -100,6 +100,7 @@ header .logo-column .logo-status {
 }
 
 header .mojang-status-column {
+  color: var(--text-color);
   padding: 20px;
   float: right;
 }
