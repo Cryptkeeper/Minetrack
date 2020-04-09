@@ -57,7 +57,7 @@ export class PercentageBar {
     const percentage = Math.round((serverRegistration.playerCount / this._app.getTotalPlayerCount()) * 100 * 10) / 10
 
     this._app.tooltip.set(event.target.offsetLeft + 10, event.target.offsetTop + this._parent.offsetTop + this._parent.offsetHeight + 10,
-      '<strong>' + serverRegistration.data.name + '</strong>' +
+      '<strong>' + serverRegistration.data.name + '</strong>' + (typeof serverRegistration.rankIndex !== 'undefined' ? ' #' + (serverRegistration.rankIndex + 1) : '') +
       '<br>' + formatNumber(serverRegistration.playerCount) + ' Players<br>' +
       '<em>' + percentage + '%</em>')
   }

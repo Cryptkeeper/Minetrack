@@ -9,8 +9,6 @@
 :root {
   --color-dark-gray: #A3A3A3;
 
-  --minecraft-color-dark-blue: #00002A;
-
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
   --theme-color-element: #3498DB;
@@ -60,7 +58,7 @@ a {
 }
 
 #push {
-    position: relative;
+  position: relative;
   min-height: 100%;
   min-width: 850px;
 }
@@ -71,13 +69,12 @@ strong {
 
 /* Header */
 header {
-  background: var(--background-color);
   color: var(--text-color);
   overflow: auto;
 }
 
 header .column {
-    float: left;
+  float: left;
 }
 
 header .logo-column {
@@ -85,24 +82,26 @@ header .logo-column {
 }
 
 header .logo-column .logo-image {
-  width: 28px;
-  height: 28px;
+  --fixed-logo-image-size: 36px;
+  width: var(--fixed-logo-image-size);
+  height: var(--fixed-logo-image-size);
   margin-right: 5px;
   display: inline-block;
 }
 
 header .logo-column .logo-text {
+  font-size: 48px;
   margin: -6px 0;
   text-transform: uppercase;
   display: inline-block;
 }
 
 header .logo-column .logo-status {
-  text-transform: uppercase;
-  font-size: 19px;
+  font-size: 21px;
 }
 
 header .mojang-status-column {
+  padding: 20px;
   float: right;
 }
 
@@ -118,10 +117,10 @@ header a:hover {
 footer {
   background: var(--background-color);
   color: var(--text-color);
-    font-size: 16px;
-    text-transform: uppercase;
-    padding: 15px 0 15px 20px;
-    margin-top: 15px;
+  font-size: 16px;
+  text-transform: uppercase;
+  padding: 15px 0 15px 20px;
+  margin-top: 15px;
 }
 
 footer a {
@@ -138,7 +137,7 @@ footer a:hover {
   position: fixed;
   width: 100%;
   top: 50%;
-    text-align: center;
+  text-align: center;
 }
 
 /* Floating tooltip */
@@ -148,7 +147,6 @@ footer a:hover {
   padding: 5px 8px;
   border-radius: 2px;
   background: rgba(0, 0, 0, 1);
-  border: 3px solid var(--minecraft-color-dark-blue);
   z-index: 10000;
 }
 
@@ -221,12 +219,11 @@ footer a:hover {
 
 .server .column-status .server-versions {
   color: var(--color-dark-gray);
-  font-size: 12px;
+  font-size: 16px;
   display: block;
 }
 
 .server .column-status .server-peak {
-  color: var(--color-dark-gray);
   font-size: 16px;
   display: block;
 }
@@ -245,6 +242,11 @@ footer a:hover {
   margin-bottom: 5px;
 }
 
+/* Global stats */
+.global-stat {
+  font-weight: 700;
+}
+
 /* The big graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
@@ -255,7 +257,7 @@ footer a:hover {
 }
 
 #big-graph {
-  margin: 20px auto 0 auto;
+  margin: 0 auto;
 }
 
 #big-graph-controls {
@@ -264,10 +266,11 @@ footer a:hover {
 }
 
 #big-graph-controls #graph-controls-toggle {
-  text-transform: uppercase;
   font-size: 16px;
-  display: block;
   text-align: center;
+  display: block;
+  width: 180px;
+  margin: 0 auto;
 }
 
 #big-graph-controls-drawer {
@@ -288,7 +291,6 @@ footer a:hover {
 .button {
   background: var(--theme-color-element);
   border-radius: 2px;
-  width: 85px;
   font-size: 16px;
   padding: 5px 10px;
 }
@@ -302,6 +304,7 @@ footer a:hover {
 #perc-bar {
   height: 35px;
   position: relative;
+  overflow-x: hidden;
 }
 
 #perc-bar .perc-bar-part {
@@ -312,13 +315,23 @@ footer a:hover {
 
 /* Mojang status */
 .mojang-status {
-  width: 85px;
-  height: 106px;
+  width: 83px;
+  height: 83px;
   display: inline-block;
   text-align: center;
   line-height: 20px;
   font-size: 14px;
   margin-left: -5px;
+}
+
+.mojang-status:first-of-type {
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+}
+
+.mojang-status:last-of-type {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
 }
 
 .mojang-status > strong {
@@ -327,7 +340,7 @@ footer a:hover {
 
 .mojang-status > span {
   display: block;
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 22px;
 }
 
@@ -347,7 +360,7 @@ footer a:hover {
 
 @media (prefers-color-scheme: dark) {
   .mojang-status-online {
-    background: #6b9963;
+    background: #66aa5a;
   }
 
   .mojang-status-unstable {

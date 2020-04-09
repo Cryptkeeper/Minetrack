@@ -108,7 +108,7 @@ export class App {
     }).forEach(function (serverRegistration, i) {
       $('#container_' + serverRegistration.serverId).appendTo('#server-list')
 
-      document.getElementById('ranking_' + serverRegistration.serverId).innerText = '#' + (i + 1)
+      serverRegistration.updateServerRankIndex(i)
     })
   }
 }

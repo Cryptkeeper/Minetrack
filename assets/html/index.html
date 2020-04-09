@@ -20,11 +20,13 @@
 
 	<div id="push">
 
+		<div id="perc-bar"></div>
+
 		<header>
 			<div class="column logo-column">
 				<img class="logo-image" src="../images/logo.svg">
 				<h1 class="logo-text">Minetrack</h1>
-				<p class="logo-status">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
+				<p class="logo-status">Counting <span class="global-stat" id="stat_totalPlayers">0</span> players on <span class="global-stat" id="stat_networks">0</span> Minecraft servers.</p>
 			</div>
 
 			<div class="column mojang-status-column">
@@ -33,7 +35,7 @@
 					<p class="mojang-status-text" id="mojang-status-text_Sessions">...</p>
 				</div>
 				<div class="mojang-status" title="Skins" id="mojang-status_Skins">
-					<span class="icon-users"></span><strong>Skins</strong>
+					<span class="icon-user-secret"></span><strong>Skins</strong>
 					<p class="mojang-status-text" id="mojang-status-text_Skins">...</p>
 				</div>
 				<div class="mojang-status" title="Auth" id="mojang-status_Auth">
@@ -41,18 +43,16 @@
 					<p class="mojang-status-text" id="mojang-status-text_Auth">...</p>
 				</div>
 				<div class="mojang-status" title="API" id="mojang-status_API">
-					<span class="icon-wrench"></span><strong>API</strong>
+					<span class="icon-code"></span><strong>API</strong>
 					<p class="mojang-status-text" id="mojang-status-text_API">...</p>
 				</div>
 			</div>
 		</header>
 
-		<div id="perc-bar"></div>
-
 		<div id="big-graph"></div>
 
 		<div id="big-graph-controls">
-			<a id="graph-controls-toggle">Click to toggle graph controls</a>
+			<a id="graph-controls-toggle" class="button"><span class="icon-gear"></span> Toggle Graph Controls</a>
 
 			<div id="big-graph-controls-drawer">
 				<div id="big-graph-checkboxes"></div>

@@ -41,6 +41,68 @@ export function formatMinecraftServerAddress (ip, port) {
   return ip
 }
 
+export function formatMinecraftVersions (versions, knownVersions) {
+  if (!versions || !versions.length) {
+    return
+  }
+
+  // Detect gaps in versions by matching their indexes to knownVersions
+  versions.sort(function (a, b) {
+    return a - b
+  })
+
+  const knownVersionKeys = Object.keys(knownVersions).map(Number)
+
+  knownVersionKeys.sort(function (a, b) {
+    return a - b
+  })
+
+  let lastKnownIndex
+  let currentVersionGroup = []
+  const versionGroups = []
+
+  for (let i = 0; i < versions.length; i++) {
+    const version = versions[i]
+
+    // Assume #indexOf won't return -1
+    // versions is derived from knownVersions by the backend
+    const knownIndex = knownVersionKeys.indexOf(version)
+
+    // Look for value mismatch between the previous matched index
+    // Require i > 0 since lastKnownIndex is undefined for i === 0
+    if (i > 0 && lastKnownIndex !== knownIndex - 1) {
+      versionGroups.push(currentVersionGroup)
+      currentVersionGroup = []
+    }
+
+    currentVersionGroup.push(version)
+    lastKnownIndex = knownIndex
+  }
+
+  // Ensure the last versionGroup is always pushed
+  if (currentVersionGroup.length > 0) {
+    versionGroups.push(currentVersionGroup)
+  }
+
+  if (versionGroups.length === 0) {
+    return
+  }
+
+  // Remap individual versionGroups values into named versions
+  return versionGroups.map(versionGroup => {
+    const startVersion = knownVersions[versionGroup[0]]
+    const endVersion = knownVersions[versionGroup[versionGroup.length - 1]]
+
+    if (versionGroup.length === 1) {
+      // A versionGroup may contain a single version, only return its name
+      // This is a cosmetic catch to avoid version labels like 1.0-1.0
+      return startVersion
+    } else {
+      return startVersion + '-' + endVersion
+    }
+  }).join(', ')
+}
+
 export function formatTimestamp (millis) {
   var date = new Date(0)
   date.setUTCSeconds(millis / 1000)
@@ -49,6 +111,21 @@ export function formatTimestamp (millis) {
 
 export function formatNumber (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+export function isArrayEqual (a, b) {
+  if (typeof a === 'undefined' || typeof a !== typeof b) {
+    return false
+  }
+  if (a.length !== b.length) {
+    return false
+  }
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      return false
+    }
+  }
+  return true
 }
 
 // From http://detectmobilebrowsers.com/
