@@ -1,4 +1,5 @@
 **5** *(Apr 8 2020)*
+- New logo!
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
 - Adds ESLint configuration
 - Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
