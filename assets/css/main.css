@@ -69,7 +69,6 @@ strong {
 
 /* Header */
 header {
-  color: var(--text-color);
   overflow: auto;
 }
 
