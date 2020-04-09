@@ -12,6 +12,7 @@
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
   --theme-color-element: #3498DB;
+  --theme-color-element-hover: #5a9fcd;
 }
 
 @media (prefers-color-scheme: light) {
@@ -324,7 +325,7 @@ footer a:hover {
 }
 
 .button:hover {
-  background: var(--background-color);
+  background: var(--theme-color-element-hover);
   color: var(--text-color);
 }
 
