@@ -17,11 +17,6 @@ var minecraft = require('./minecraft.json');
 var networkHistory = [];
 var connectedClients = 0;
 
-var currentVersionIndex = {
-	'PC': 0,
-	'PE': 0
-};
-
 var networkVersions = [];
 
 const lastFavicons = [];
@@ -30,6 +25,20 @@ var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
 var graphPeaks = {};
+
+const serverProtocolVersionIndexes = []
+
+function getNextProtocolVersion (server) {
+	const protocolVersions = config.versions[server.type]
+	let nextProtocolVersion = serverProtocolVersionIndexes[server.name]
+	if (typeof nextProtocolVersion === 'undefined' || nextProtocolVersion + 1 >= protocolVersions.length) {
+		nextProtocolVersion = 0
+	} else {
+		nextProtocolVersion++
+	}
+	serverProtocolVersionIndexes[server.name] = nextProtocolVersion
+	return protocolVersions[nextProtocolVersion]
+}
 
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
@@ -40,7 +49,7 @@ function pingAll() {
 				network.color = util.stringToColor(network.name);
 			}
 
-			var attemptedVersion = config.versions[network.type][currentVersionIndex[network.type]];
+			var attemptedVersion = getNextProtocolVersion(network)
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
@@ -55,19 +64,6 @@ function pingAll() {
 				handlePing(network, res, err, attemptedVersion);
 			}, attemptedVersion);
 		})(servers[i]);
-	}
-
-	currentVersionIndex['PC']++;
-	currentVersionIndex['PE']++;
-
-	if (currentVersionIndex['PC'] >= config.versions['PC'].length) {
-		// Loop around
-		currentVersionIndex['PC'] = 0;
-	}
-
-	if (currentVersionIndex['PE'] >= config.versions['PE'].length) {
-		// Loop around
-		currentVersionIndex['PE'] = 0;
 	}
 }
 
