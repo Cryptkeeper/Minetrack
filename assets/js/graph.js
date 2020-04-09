@@ -133,6 +133,9 @@ export class GraphDisplayManager {
 
     this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS)
     $('#big-graph').bind('plothover', this.handlePlotHover)
+
+    // Show the settings-toggle element
+    document.getElementById('settings-toggle').style.display = 'inline-block'
   }
 
   // requestRedraw allows usages to request a redraw that may be performed, or cancelled, sometime later
@@ -245,16 +248,6 @@ export class GraphDisplayManager {
     }
   }
 
-  handleControlsToggle = () => {
-    const element = document.getElementById('big-graph-controls-drawer')
-
-    if (element.style.display !== 'block') {
-      element.style.display = 'block'
-    } else {
-      element.style.display = 'none'
-    }
-  }
-
   reset () {
     this._graphData = []
     this._plotInstance = undefined
@@ -276,6 +269,8 @@ export class GraphDisplayManager {
     // Reset modified DOM structures
     document.getElementById('big-graph-checkboxes').innerHTML = ''
     document.getElementById('big-graph-controls').style.display = 'none'
+
+    document.getElementById('settings-toggle').style.display = 'none'
 
     const graphElement = document.getElementById('big-graph')
 

@@ -111,4 +111,14 @@ export class App {
       serverRegistration.updateServerRankIndex(i)
     })
   }
+
+  handleSettingsToggle = () => {
+    const element = document.getElementById('big-graph-controls-drawer')
+
+    if (element.style.display !== 'block') {
+      element.style.display = 'block'
+    } else {
+      element.style.display = 'none'
+    }
+  }
 }

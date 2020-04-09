@@ -105,6 +105,11 @@ header .mojang-status-column {
   float: right;
 }
 
+header .settings-column {
+  padding: 20px 0 20px 20px;
+  float: right;
+}
+
 header a {
   border-bottom: 1px dashed var(--text-decoration-color);
 }
@@ -247,7 +252,32 @@ footer a:hover {
   font-weight: 700;
 }
 
-/* The big graph */
+/* Settings toggle */
+#settings-toggle {
+  display: none;
+  width: 83px;
+  height: 83px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 14px;
+  margin-left: -5px;
+  cursor: pointer;
+  background: var(--theme-color-element);
+  border-radius: 2px;
+}
+
+#settings-toggle:hover {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+#settings-toggle > span {
+  display: block;
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+/* Historical graph */
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
 }
@@ -265,15 +295,11 @@ footer a:hover {
   display: none;
 }
 
-#big-graph-controls #graph-controls-toggle {
-  font-size: 16px;
-  text-align: center;
-  display: block;
-  width: 180px;
-  margin: 0 auto;
-}
-
 #big-graph-controls-drawer {
+  background: var(--background-color);
+  border-radius: 2px;
+  padding-bottom: 10px;
+  overflow: auto;
   display: none;
 }
 

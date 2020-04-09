@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
     app.graphDisplayManager.requestResize()
   }, false)
 
-  document.getElementById('graph-controls-toggle').addEventListener('click', app.graphDisplayManager.handleControlsToggle, false)
+  document.getElementById('settings-toggle').addEventListener('click', app.handleSettingsToggle, false)
 
   document.querySelectorAll('.graph-controls-show').forEach((element) => {
     element.addEventListener('click', app.graphDisplayManager.handleShowButtonClick, false)
