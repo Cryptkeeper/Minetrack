@@ -89,6 +89,7 @@ export class ServerRegistration {
     this._graphData = []
     this._lastVersions = []
     this._lastRecord = undefined
+    this._failedSequentialPings = 0
   }
 
   addGraphPoints (points) {
@@ -128,8 +129,16 @@ export class ServerRegistration {
 
         this.redraw()
       }
+
+      // Reset failed ping counter to ensure the next connection error
+      // doesn't instantly retrigger a layout change
+      this._failedSequentialPings = 0
     } else {
-      this.playerCount = 0
+      // Attempt to retain a copy of the cached playerCount for up to N failed pings
+      // This prevents minor connection issues from constantly reshuffling the layout
+      if (++this._failedSequentialPings > 5) {
+        this.playerCount = 0
+      }
     }
   }
 
