@@ -212,7 +212,7 @@ export class GraphDisplayManager {
         text = '<strong>' + item.series.label + '</strong><br>' + text
       }
 
-      this._app.tooltip.set(item.pageX + 5, item.pageY + 5, text)
+      this._app.tooltip.set(item.pageX, item.pageY, 10, 10, text)
     }
   }
 

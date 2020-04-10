@@ -3,11 +3,24 @@ export class Tooltip {
     this._div = document.getElementById('tooltip')
   }
 
-  set (x, y, html) {
+  set (x, y, offsetX, offsetY, html) {
     this._div.innerHTML = html
-    this._div.style.top = y + 'px'
-    this._div.style.left = x + 'px'
+
+    // Assign display: block so that the offsetWidth is valid
     this._div.style.display = 'block'
+
+    // Prevent the div from overflowing the page width
+    const tooltipWidth = this._div.offsetWidth
+
+    // 1.2 is a magic number used to pad the offset to ensure the tooltip
+    // never gets close or surpasses the page's X width
+    if (x + offsetX + (tooltipWidth * 1.2) > window.innerWidth) {
+      x -= tooltipWidth
+      offsetX *= -1
+    }
+
+    this._div.style.top = (y + offsetY) + 'px'
+    this._div.style.left = (x + offsetX) + 'px'
   }
 
   hide = () => {

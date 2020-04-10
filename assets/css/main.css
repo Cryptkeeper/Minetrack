@@ -176,7 +176,8 @@ footer a:hover {
   position: absolute;
   padding: 5px 8px;
   border-radius: var(--border-radius);
-  background: rgba(0, 0, 0, 1);
+  background: var(--background-color);
+  color: var(--text-color);
   z-index: 10000;
 }
 
