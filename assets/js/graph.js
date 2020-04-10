@@ -12,7 +12,7 @@ export const HISTORY_GRAPH_OPTIONS = {
   },
   yaxis: {
     show: true,
-    tickSize: 2000,
+    tickSize: 5000,
     tickLength: 10,
     tickFormatter: formatNumber,
     font: {

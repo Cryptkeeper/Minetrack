@@ -13,7 +13,7 @@ export const SERVER_GRAPH_OPTIONS = {
     show: false
   },
   yaxis: {
-    minTickSize: 75,
+    minTickSize: 100,
     tickDecimals: 0,
     show: true,
     tickLength: 10,
