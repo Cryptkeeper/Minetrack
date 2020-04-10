@@ -100,6 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
     app.setPublicConfig(data)
 
     // Display the main page component
+    // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
+    // Otherwise flot.js will cause visual alignment bugs
     app.setPageReady(true)
   })
 
