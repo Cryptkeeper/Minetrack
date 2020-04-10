@@ -2,6 +2,7 @@
 - New logo!
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
 - Adds ESLint configuration
+- Adds a button for mobile devices to manually request the historical graph
 - Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
 - Added Parcel bundler which bundles the assets/ directory into dist/ 
 - Custom favicons are now served from "favicons/" directory and their configuration moved into servers.json. Paths in servers.json should be updated to reflect their filename without the path.

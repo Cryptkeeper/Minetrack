@@ -13,13 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // The backend will automatically push data once connected
   socket.on('connect', function () {
     app.caption.set('Loading...')
-
-    // Allow the graphDisplayManager to control whether or not the historical graph is loaded
-    if (app.graphDisplayManager.isVisible) {
-      socket.emit('requestHistoryGraph')
-    } else {
-      document.getElementById('big-graph-mobile-load-request').style.display = 'block'
-    }
   })
 
   socket.on('disconnect', function () {
@@ -112,6 +105,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
     // Otherwise flot.js will cause visual alignment bugs
     app.setPageReady(true)
+
+    // Allow the graphDisplayManager to control whether or not the historical graph is loaded
+    // Defer to isGraphVisible from the publicConfig to understand if the frontend will ever receive a graph payload
+    if (data.isGraphVisible) {
+      if (app.graphDisplayManager.isVisible) {
+        socket.emit('requestHistoryGraph')
+      } else {
+        document.getElementById('big-graph-mobile-load-request').style.display = 'block'
+      }
+    }
   })
 
   // Fired once the backend has sent all requested data

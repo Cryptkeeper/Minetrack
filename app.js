@@ -270,7 +270,8 @@ function startServices() {
 			graphDuration: config.graphDuration,
 			servers: servers,
 			serverTypesVisible: config.serverTypesVisible || false,
-			minecraftVersions: minecraft.versions
+			minecraftVersions: minecraft.versions,
+			isGraphVisible: config.logToDatabase
 		});
 
 		// Send them our previous data, so they have somewhere to start.
