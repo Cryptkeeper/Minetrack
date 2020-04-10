@@ -13,6 +13,8 @@
   --theme-color-light: #EBEBEB;
   --theme-color-element: #3498DB;
   --theme-color-element-hover: #5a9fcd;
+
+  --border-radius: 1px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -144,12 +146,18 @@ footer a:hover {
 
 /* Status overly */
 #status-overlay {
+  padding: 20px 0;
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
   text-align: center;
   height: 150px;
-  width: 100%;
+  width: 350px;
   position: fixed;
   top: 50%;
-  margin-top: -75px;
+  left: 50%;
+  margin-top: -95px;
+  margin-left: -175px;
 }
 
 #status-overlay .logo-image {
@@ -167,7 +175,7 @@ footer a:hover {
   display: none;
   position: absolute;
   padding: 5px 8px;
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   background: rgba(0, 0, 0, 1);
   z-index: 10000;
 }
@@ -199,7 +207,7 @@ footer a:hover {
   --fixed-server-favicon-size: 64px;
   width: var(--fixed-server-favicon-size);
   height: var(--fixed-server-favicon-size);
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   margin-top: 5px;
 }
 
@@ -220,7 +228,7 @@ footer a:hover {
 
 .server .column-status .server-type {
   padding: 1px 5px;
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   border: 1px solid #A09E9E;
   font-size: 12px;
   margin-left: 10px;
@@ -281,7 +289,7 @@ footer a:hover {
   margin-left: -5px;
   cursor: pointer;
   background: var(--theme-color-element);
-  border-radius: 2px;
+  border-radius: var(--border-radius);
 }
 
 #settings-toggle:hover {
@@ -316,7 +324,7 @@ footer a:hover {
 #big-graph-controls-drawer {
   background: var(--background-color);
   color: var(--text-color);
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   padding-bottom: 10px;
   overflow: auto;
   display: none;
@@ -335,7 +343,7 @@ footer a:hover {
 /* Basic elements */
 .button {
   background: var(--theme-color-element);
-  border-radius: 2px;
+  border-radius: var(--border-radius);
   font-size: 16px;
   padding: 5px 10px;
 }
@@ -370,13 +378,13 @@ footer a:hover {
 }
 
 .mojang-status:first-of-type {
-  border-top-left-radius: 2px;
-  border-bottom-left-radius: 2px;
+  border-top-left-radius: var(--border-radius);
+  border-bottom-left-radius: var(--border-radius);
 }
 
 .mojang-status:last-of-type {
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
+  border-top-right-radius: var(--border-radius);
+  border-bottom-right-radius: var(--border-radius);
 }
 
 .mojang-status > strong {

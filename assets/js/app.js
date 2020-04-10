@@ -59,6 +59,7 @@ export class App {
 
     // Reset hidden values created by #updateGlobalStats
     this._lastTotalPlayerCount = undefined
+    this._lastServerRegistrationCount = undefined
 
     // Reset modified DOM structures
     document.getElementById('stat_totalPlayers').innerText = 0
@@ -103,6 +104,7 @@ export class App {
 
   updateGlobalStats = () => {
     // Only redraw when needed
+    // These operations are relatively cheap, but the site already does too much rendering
     const totalPlayerCount = this.getTotalPlayerCount()
 
     if (totalPlayerCount !== this._lastTotalPlayerCount) {
@@ -110,7 +112,14 @@ export class App {
       document.getElementById('stat_totalPlayers').innerText = formatNumber(totalPlayerCount)
     }
 
-    document.getElementById('stat_networks').innerText = this.serverRegistry.getServerRegistrations().length
+    // Only redraw when needed
+    // These operations are relatively cheap, but the site already does too much rendering
+    const serverRegistrationCount = this.serverRegistry.getServerRegistrations().length
+
+    if (serverRegistrationCount !== this._lastServerRegistrationCount) {
+      this._lastServerRegistrationCount = serverRegistrationCount
+      document.getElementById('stat_networks').innerText = serverRegistrationCount
+    }
   }
 
   sortServers = () => {

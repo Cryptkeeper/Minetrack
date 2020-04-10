@@ -98,17 +98,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
   socket.on('setPublicConfig', function (data) {
     app.setPublicConfig(data)
+
+    // Display the main page component
+    app.setPageReady(true)
   })
 
   // Fired once the backend has sent all requested data
   socket.on('syncComplete', function () {
-    // Display the main page component
-    app.setPageReady(true)
-
     app.caption.hide()
 
     // Run a single bulk server sort instead of per-add event since there may be multiple
     app.sortServers()
+    app.percentageBar.redraw()
   })
 
   socket.on('updatePeak', function (data) {
