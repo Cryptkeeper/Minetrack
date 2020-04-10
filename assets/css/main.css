@@ -305,6 +305,21 @@ footer a:hover {
 }
 
 /* Historical graph */
+#big-graph-mobile-load-request {
+  background: var(--background-color);
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  text-align: center;
+  display: none;
+  width: 450px;
+  margin: 0 auto 10px auto;
+}
+
+#big-graph-mobile-load-request a {
+  display: inline-block;
+}
+
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
 }

@@ -33,15 +33,13 @@ export const HISTORY_GRAPH_OPTIONS = {
 const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers'
 
 export class GraphDisplayManager {
+  // Only emit graph data request if not on mobile due to graph data size
+  isVisible = !isMobileBrowser()
+
   constructor (app) {
     this._app = app
     this._graphData = []
     this._hasLoadedSettings = false
-  }
-
-  isVisible () {
-    // Only emit graph data request if not on mobile due to graph data size
-    return !isMobileBrowser()
   }
 
   addGraphPoint (serverId, timestamp, playerCount) {

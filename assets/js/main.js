@@ -15,16 +15,25 @@ document.addEventListener('DOMContentLoaded', function () {
     app.caption.set('Loading...')
 
     // Allow the graphDisplayManager to control whether or not the historical graph is loaded
-    if (app.graphDisplayManager.isVisible()) {
+    if (app.graphDisplayManager.isVisible) {
       socket.emit('requestHistoryGraph')
+    } else {
+      document.getElementById('big-graph-mobile-load-request').style.display = 'block'
     }
   })
 
   socket.on('disconnect', function () {
     app.handleDisconnect()
+
+    // Reset modified DOM structures
+    document.getElementById('big-graph-mobile-load-request').style.display = 'none'
   })
 
   socket.on('historyGraph', function (data) {
+    // Consider the graph visible since a payload has been received
+    // This is used for the manual graph load request behavior
+    app.graphDisplayManager.isVisible = true
+
     app.graphDisplayManager.buildPlotInstance(data)
 
     // Build checkbox elements for graph controls
@@ -61,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
   socket.on('updateHistoryGraph', function (data) {
     // Skip any incoming updates if the graph is disabled
     // The backend shouldn't send these anyways
-    if (!app.graphDisplayManager.isVisible()) {
+    if (!app.graphDisplayManager.isVisible) {
       return
     }
 
@@ -147,4 +156,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('.graph-controls-show').forEach((element) => {
     element.addEventListener('click', app.graphDisplayManager.handleShowButtonClick, false)
   })
+
+  document.getElementById('big-graph-mobile-load-request-button').addEventListener('click', function () {
+    // Send a graph data request to the backend
+    socket.emit('requestHistoryGraph')
+
+    // Hide the activation link to avoid multiple requests
+    document.getElementById('big-graph-mobile-load-request').style.display = 'none'
+  }, false)
 }, false)
