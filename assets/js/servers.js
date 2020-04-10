@@ -169,7 +169,7 @@ export class ServerRegistration {
   updateServerPeak (time, playerCount, graphDuration) {
     const hourDuration = Math.floor(graphDuration / (60 * 60 * 1000))
     const peakElement = document.getElementById('peak_' + this.serverId)
-    peakElement.innerHTML = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' <span class="icon-clock-o"></span>'
+    peakElement.innerHTML = hourDuration + 'h Peak: ' + formatNumber(playerCount) + ' (' + formatTimestamp(time) + ')'
     peakElement.title = 'At ' + formatTimestamp(time)
   }
 
@@ -196,7 +196,7 @@ export class ServerRegistration {
 
       // Safely handle legacy recordData that may not include the timestamp payload
       if (recordData.timestamp !== -1) {
-        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' <span class="icon-clock-o"></span>'
+        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
         recordElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
       } else {
         recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount)
