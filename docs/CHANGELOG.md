@@ -7,6 +7,7 @@
 - Custom favicons are now served from "favicons/" directory and their configuration moved into servers.json. Paths in servers.json should be updated to reflect their filename without the path.
 - Added finalhandler and serve-static dependencies
 - Add ```npm run dev``` and ```npm run build``` scripts to package.json
+- Added a distinct loading/connection status screen to simplify state management
 - publicConfig.json is now sent over the socket connection so the frontend can be safely reloaded on rebooted instances
 - Tooltips have been optimized and updated to a more readable design
 - Initial page loading has been optimized
@@ -18,6 +19,9 @@
 - Fixed status text ocassionally not being shown
 - Fixed some elements/frontend state not being completely reset on disconnect
 - Fixed Minecraft Bedrock Edition servers showing the default port of 19132
+- Fixed tooltips overflowing the page width
+- Fixed backend bug causing servers to skip some Minecraft versions
+- Minor connection blips have a grace period before the UI is updated, this prevents page reshuffle spam when experiencing minor connection issues
 - Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
 - Removed #validateBootTime loop and logic
 - Removed mime dependency
