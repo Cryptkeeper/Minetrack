@@ -4,7 +4,7 @@ const app = new App()
 
 document.addEventListener('DOMContentLoaded', function () {
   // eslint-disable-next-line no-undef
-  const socket = io.connect({
+  const socket = io.connect('http://localhost:8080', {
     reconnect: true,
     reconnectDelay: 1000,
     reconnectionAttempts: 10
@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('disconnect', function () {
-    app.caption.set('Disconnected! Please refresh.')
-
-    app.reset()
+    app.handleDisconnect()
   })
 
   socket.on('historyGraph', function (data) {
@@ -42,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '</input></td>'
 
       // Occasionally break table rows using a magic number
-      if (++lastRowCounter % 7 === 0) {
+      if (++lastRowCounter % 6 === 0) {
         controlsHTML += '</tr><tr>'
       }
     })
@@ -102,8 +100,11 @@ document.addEventListener('DOMContentLoaded', function () {
     app.setPublicConfig(data)
   })
 
+  // Fired once the backend has sent all requested data
   socket.on('syncComplete', function () {
-    // Fired once the backend has sent all requested data
+    // Display the main page component
+    app.setPageReady(true)
+
     app.caption.hide()
 
     // Run a single bulk server sort instead of per-add event since there may be multiple

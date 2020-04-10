@@ -61,6 +61,7 @@ a {
 }
 
 #push {
+  display: none;
   position: relative;
   min-height: 100%;
   min-width: 850px;
@@ -123,6 +124,7 @@ header a:hover {
 
 /* Footer */
 footer {
+  display: none;
   background: var(--background-color);
   color: var(--text-color);
   font-size: 16px;
@@ -140,12 +142,24 @@ footer a:hover {
   border-bottom: 1px dashed var(--text-decoration-color);
 }
 
-/* Status */
-#status-text {
-  position: fixed;
-  width: 100%;
-  top: 50%;
+/* Status overly */
+#status-overlay {
   text-align: center;
+  height: 150px;
+  width: 100%;
+  position: fixed;
+  top: 50%;
+  margin-top: -75px;
+}
+
+#status-overlay .logo-image {
+  --fixed-logo-image-size: 72px;
+  width: var(--fixed-logo-image-size);
+  height: var(--fixed-logo-image-size);
+}
+
+#status-overlay .logo-text {
+  text-transform: uppercase;
 }
 
 /* Floating tooltip */

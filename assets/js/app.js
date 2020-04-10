@@ -18,6 +18,12 @@ export class App {
     this._taskIds = []
   }
 
+  setPageReady (isReady) {
+    document.getElementById('push').style.display = isReady ? 'block' : 'none'
+    document.getElementById('footer').style.display = isReady ? 'block' : 'none'
+    document.getElementById('status-overlay').style.display = isReady ? 'none' : 'block'
+  }
+
   setPublicConfig (publicConfig) {
     this.publicConfig = publicConfig
 
@@ -34,7 +40,7 @@ export class App {
     this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
 
-  reset () {
+  handleDisconnect () {
     this.tooltip.hide()
 
     // Reset individual tracker elements to flush any held data
@@ -57,6 +63,11 @@ export class App {
     // Reset modified DOM structures
     document.getElementById('stat_totalPlayers').innerText = 0
     document.getElementById('stat_networks').innerText = 0
+
+    // Modify page state to display loading overlay
+    this.caption.set('Lost connection! Please refresh.')
+
+    this.setPageReady(false)
   }
 
   getTotalPlayerCount () {
