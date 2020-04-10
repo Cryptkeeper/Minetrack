@@ -117,9 +117,15 @@ export function formatMinecraftVersions (versions, knownVersions) {
 }
 
 export function formatTimestamp (millis) {
-  var date = new Date(0)
+  const date = new Date(0)
   date.setUTCSeconds(millis / 1000)
   return date.toLocaleTimeString()
+}
+
+export function formatDate (millis) {
+  const date = new Date(0)
+  date.setUTCSeconds(millis / 1000)
+  return date.toLocaleDateString()
 }
 
 export function formatNumber (x) {

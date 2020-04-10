@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual } from './util'
+import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual } from './util'
 
 import MISSING_FAVICON from '../images/missing_favicon.png'
 
@@ -188,10 +188,19 @@ export class ServerRegistration {
     }
 
     // Compare against a cached value to avoid empty updates
-    if (ping.record !== undefined && ping.record !== this._lastRecord) {
-      this._lastRecord = ping.record
+    if (ping.recordData !== undefined && ping.recordData.playerCount !== this._lastRecord) {
+      this._lastRecord = ping.recordData.playerCount
 
-      document.getElementById('record_' + this.serverId).innerText = 'Record: ' + formatNumber(ping.record)
+      const recordData = ping.recordData
+      const recordElement = document.getElementById('record_' + this.serverId)
+
+      // Safely handle legacy recordData that may not include the timestamp payload
+      if (recordData.timestamp !== -1) {
+        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' <span class="icon-clock-o"></span>'
+        recordElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
+      } else {
+        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount)
+      }
     }
 
     const statusElement = document.getElementById('status_' + this.serverId)

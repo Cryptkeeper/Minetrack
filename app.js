@@ -96,25 +96,34 @@ function handlePing(network, res, err, attemptedVersion) {
 		}
 	}
 
+	const timestamp = util.getCurrentTimeMs()
+
+	if (res) {
+		const recordData = highestPlayerCount[network.ip]
+
+		// Validate that we have logToDatabase enabled otherwise in memory pings
+		// will create a record that's only valid for the runtime duration.
+		if (config.logToDatabase && (!recordData || res.players.online > recordData.playerCount)) {
+			highestPlayerCount[network.ip] = {
+				playerCount: res.players.online,
+				timestamp: timestamp
+			}
+		}
+	}
+
 	// Update the clients
 	var networkSnapshot = {
 		info: {
 			name: network.name,
-			timestamp: util.getCurrentTimeMs(),
+			timestamp: timestamp,
 			type: network.type
 		},
 		versions: _networkVersions,
-		record: highestPlayerCount[network.ip]
+		recordData: highestPlayerCount[network.ip]
 	};
 
 	if (res) {
 		networkSnapshot.result = res;
-
-		// Validate that we have logToDatabase enabled otherwise in memory pings
-		// will create a record that's only valid for the runtime duration.
-		if (config.logToDatabase && res.players.online > highestPlayerCount[network.ip]) {
-			highestPlayerCount[network.ip] = res.players.online;
-		}
 
 		// Only emit updated favicons
 		// Favicons will otherwise be explicitly emitted during the handshake process
@@ -144,7 +153,7 @@ function handlePing(network, res, err, attemptedVersion) {
 		error: err,
 		result: res,
 		versions: _networkVersions,
-		timestamp: util.getCurrentTimeMs(),
+		timestamp: timestamp,
         info: {
             ip: network.ip,
             port: network.port,
@@ -160,18 +169,16 @@ function handlePing(network, res, err, attemptedVersion) {
 
 	// Log it to the database if needed.
 	if (config.logToDatabase) {
-		db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
+		db.log(network.ip, timestamp, res ? res.players.online : 0);
 	}
 
-	// Push it to our graphs.
-	var timeMs = util.getCurrentTimeMs();
 
 	// The same mechanic from trimUselessPings is seen here.
 	// If we dropped the ping, then to avoid destroying the graph, ignore it.
 	// However if it's been too long since the last successful ping, we'll send it anyways.
 	if (config.logToDatabase) {
-		if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
-			lastGraphPush[network.ip] = timeMs;
+		if (!lastGraphPush[network.ip] || (timestamp - lastGraphPush[network.ip] >= 60 * 1000 && res) || timestamp - lastGraphPush[network.ip] >= 70 * 1000) {
+			lastGraphPush[network.ip] = timestamp;
 
 			// Don't have too much data!
 			util.trimOldPings(graphData);
@@ -180,14 +187,14 @@ function handlePing(network, res, err, attemptedVersion) {
 				graphData[network.name] = [];
 			}
 
-			graphData[network.name].push([timeMs, res ? res.players.online : 0]);
+			graphData[network.name].push([timestamp, res ? res.players.online : 0]);
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
 				ip: network.ip,
 				name: network.name,
 				players: (res ? res.players.online : 0),
-				timestamp: timeMs
+				timestamp: timestamp
 			});
 		}
 
@@ -349,10 +356,13 @@ if (config.logToDatabase) {
 			}
 
 			(function(server) {
-				db.getTotalRecord(server.ip, function(record) {
-					logger.log('info', 'Computed total record %s (%d)', server.ip, record);
+				db.getTotalRecord(server.ip, function(playerCount, timestamp) {
+					logger.log('info', 'Computed total record %s (%d) @ %d', server.ip, playerCount, timestamp);
 
-					highestPlayerCount[server.ip] = record;
+					highestPlayerCount[server.ip] = {
+						playerCount: playerCount,
+						timestamp: timestamp
+					};
 
 					completedQueries += 1;
 
