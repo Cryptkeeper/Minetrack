@@ -64,6 +64,23 @@ export class ServerRegistry {
     }
   }
 
+  getServerRankBy (serverRegistration, x, sort) {
+    const records = Object.values(this._registeredServers)
+      .map(x)
+      .filter(val => val !== undefined)
+
+    // Invalidate any results that do not account for all serverRegistrations
+    if (records.length === this._registeredServers.length) {
+      records.sort(sort)
+
+      // Pull matching data from target serverRegistration
+      // Assume indexOf cannot be -1 or val undefined since they have been pre-tested in the map call above
+      const val = x(serverRegistration)
+      const indexOf = records.indexOf(val)
+      return indexOf + 1
+    }
+  }
+
   getServerRegistrations = () => Object.values(this._registeredServers)
 
   reset () {
@@ -80,15 +97,17 @@ const SERVER_GRAPH_DATA_MAX_LENGTH = 72
 
 export class ServerRegistration {
   playerCount = 0
+  maxPlayerCount = 0
   isVisible = true
   rankIndex
   lastRecordData
+  lastVersions = []
+  lastPeak
 
   constructor (serverId, data) {
     this.serverId = serverId
     this.data = data
     this._graphData = []
-    this._lastVersions = []
     this._failedSequentialPings = 0
   }
 
@@ -169,8 +188,15 @@ export class ServerRegistration {
   updateServerPeak (time, playerCount, graphDuration) {
     const hourDuration = Math.floor(graphDuration / (60 * 60 * 1000))
     const peakElement = document.getElementById('peak_' + this.serverId)
+
     peakElement.innerHTML = hourDuration + 'h Peak: ' + formatNumber(playerCount)
     peakElement.title = 'At ' + formatTimestamp(time)
+
+    this.lastPeakData = {
+      timestamp: time,
+      playerCount: playerCount,
+      hourDuration: hourDuration
+    }
   }
 
   updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
@@ -180,8 +206,8 @@ export class ServerRegistration {
 
     // Compare against a cached value to avoid empty updates
     // Allow undefined ping.versions inside the if statement for text reset handling
-    if (ping.versions && !isArrayEqual(ping.versions, this._lastVersions)) {
-      this._lastVersions = ping.versions
+    if (ping.versions && !isArrayEqual(ping.versions, this.lastVersions)) {
+      this.lastVersions = ping.versions
 
       const versionsElement = document.getElementById('version_' + this.serverId)
       versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[ping.info.type]) || ''
@@ -196,7 +222,7 @@ export class ServerRegistration {
 
       // Safely handle legacy recordData that may not include the timestamp payload
       if (recordData.timestamp !== -1) {
-        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
+        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' &middot; ' + formatDate(recordData.timestamp)
         recordElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
       } else {
         recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount)
@@ -225,6 +251,8 @@ export class ServerRegistration {
       if (!isInitialUpdate && ping.favicon) {
         document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
       }
+
+      this.maxPlayerCount = ping.result.players.max
     }
   }
 
@@ -232,7 +260,7 @@ export class ServerRegistration {
     const serverElement = document.createElement('div')
 
     serverElement.id = 'container_' + this.serverId
-    serverElement.innerHTML = '<div id="server-' + this.serverId + '" class="column column-favicon">' +
+    serverElement.innerHTML = '<div class="column column-favicon">' +
         '<img class="server-favicon" src="' + (latestPing.favicon || MISSING_FAVICON) + '" id="favicon_' + this.serverId + '" title="' + this.data.name + '\n' + formatMinecraftServerAddress(this.data.ip, this.data.port) + '">' +
         '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
       '</div>' +

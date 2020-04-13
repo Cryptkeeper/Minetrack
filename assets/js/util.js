@@ -113,6 +113,11 @@ export function formatDate (millis) {
   return date.toLocaleDateString()
 }
 
+export function formatPercent (x, over) {
+  const val = Math.round((x / over) * 100 * 10) / 10
+  return val + '%'
+}
+
 export function formatNumber (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

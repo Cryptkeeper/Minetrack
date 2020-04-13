@@ -39,6 +39,7 @@ export class App {
   initTasks () {
     this._taskIds.push(setInterval(this.sortServers, 10000))
     this._taskIds.push(setInterval(this.updateGlobalStats, 1000))
+    this._taskIds.push(setInterval(this.focusManager.updateFocusIfSet, 2000))
     this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
 
@@ -92,7 +93,7 @@ export class App {
 
     // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
     document.getElementById('container_' + serverRegistration.serverId).addEventListener('click', (event) => {
-      this.focusManager.setFocus(event, serverRegistration)
+      this.focusManager.setFocus(serverRegistration)
     }, false)
 
     // Push the historical data into the graph

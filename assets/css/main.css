@@ -20,6 +20,7 @@
 @media (prefers-color-scheme: light) {
   :root {
     --background-color: var(--theme-color-light);
+    --background-color-inverted: #1c1b1c;
     --text-decoration-color: var(--theme-color-dark);
     --text-color: #000;
     --text-color-inverted: #FFF;
@@ -34,6 +35,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: var(--theme-color-dark);
+    --background-color-inverted: #212021;
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
     --text-color-inverted: #000;
@@ -195,10 +197,11 @@ footer a:hover {
   width: 800px;
   display: inline-block;
   border: 1px solid transparent;
+  border-radius: var(--border-radius);
 }
 
 .server:hover {
-  border: 1px solid red;
+  border: 1px solid var(--theme-color-element);
   cursor: pointer;
 }
 
@@ -390,7 +393,23 @@ footer a:hover {
 
 /* Focus box */
 #focus-box {
-  border: 1px solid green;
+  padding: 10px 0 5px 0;
+  clear: both;
+  font-size: 15px;
+}
+
+#focus-box table {
+  width: 100%;
+  border-spacing: 0;
+}
+
+#focus-box tr:nth-of-type(odd) {
+  background: var(--background-color-inverted);
+  border-radius: var(--border-radius);
+}
+
+#focus-box td {
+  padding: 5px;
 }
 
 /* Mojang status */

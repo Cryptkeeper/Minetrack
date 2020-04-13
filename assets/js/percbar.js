@@ -1,4 +1,4 @@
-import { formatNumber } from './util'
+import { formatNumber, formatPercent } from './util'
 
 export class PercentageBar {
   constructor (app) {
@@ -54,13 +54,11 @@ export class PercentageBar {
     const serverId = parseInt(event.target.getAttribute('minetrack-server-id'))
     const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
 
-    const percentage = Math.round((serverRegistration.playerCount / this._app.getTotalPlayerCount()) * 100 * 10) / 10
-
     this._app.tooltip.set(event.target.offsetLeft, event.target.offsetTop, 10, this._parent.offsetTop + this._parent.offsetHeight + 10,
       (typeof serverRegistration.rankIndex !== 'undefined' ? '#' + (serverRegistration.rankIndex + 1) + ' ' : '') +
       serverRegistration.data.name +
       '<br>' + formatNumber(serverRegistration.playerCount) + ' Players<br>' +
-      '<strong>' + percentage + '%</strong>')
+      '<strong>' + formatPercent(serverRegistration.playerCount, this._app.getTotalPlayerCount()) + '</strong>')
   }
 
   handleMouseOut = () => {
