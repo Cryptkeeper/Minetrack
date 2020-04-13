@@ -55,7 +55,7 @@ export function formatMinecraftServerAddress (ip, port) {
 }
 
 export function formatMinecraftVersions (versions, knownVersions) {
-  if (!versions || !versions.length) {
+  if (!versions || !versions.length || !knownVersions || !knownVersions.length) {
     return
   }
 
