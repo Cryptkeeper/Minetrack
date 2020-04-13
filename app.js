@@ -12,7 +12,7 @@ var db = require('./lib/database');
 
 var config = require('./config.json');
 var servers = require('./servers.json');
-var minecraft = require('./minecraft.json');
+var minecraftVersions = require('./minecraft_versions.json');
 
 var networkHistory = [];
 var connectedClients = 0;
@@ -29,7 +29,14 @@ var graphPeaks = {};
 const serverProtocolVersionIndexes = []
 
 function getNextProtocolVersion (server) {
-	const protocolVersions = config.versions[server.type]
+	// Minecraft Bedrock Edition does not have protocol versions
+	if (server.type === 'PE') {
+		return {
+			protocolId: 0,
+			protocolIndex: 0
+		}
+	}
+	const protocolVersions = minecraftVersions[server.type]
 	let nextProtocolVersion = serverProtocolVersionIndexes[server.name]
 	if (typeof nextProtocolVersion === 'undefined' || nextProtocolVersion + 1 >= protocolVersions.length) {
 		nextProtocolVersion = 0
@@ -37,7 +44,10 @@ function getNextProtocolVersion (server) {
 		nextProtocolVersion++
 	}
 	serverProtocolVersionIndexes[server.name] = nextProtocolVersion
-	return protocolVersions[nextProtocolVersion]
+	return {
+		protocolId: protocolVersions[nextProtocolVersion].protocolId,
+		protocolIndex: nextProtocolVersion
+	}
 }
 
 function pingAll() {
@@ -49,7 +59,7 @@ function pingAll() {
 				network.color = util.stringToColor(network.name);
 			}
 
-			var attemptedVersion = getNextProtocolVersion(network)
+			const attemptedVersion = getNextProtocolVersion(network)
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
@@ -62,7 +72,7 @@ function pingAll() {
 				}
 
 				handlePing(network, res, err, attemptedVersion);
-			}, attemptedVersion);
+			}, attemptedVersion.protocolId);
 		})(servers[i]);
 	}
 }
@@ -80,19 +90,17 @@ function handlePing(network, res, err, attemptedVersion) {
 		networkVersions[network.name] = [];
 	}
 
+	const serverVersionHistory = networkVersions[network.name]
+
 	// If the result version matches the attempted version, the version is supported
-	var _networkVersions = networkVersions[network.name];
-	if (res) {
-		if (res.version == attemptedVersion) {
-			if (_networkVersions.indexOf(res.version) == -1) {
-				_networkVersions.push(res.version);
-			}
-		} else {
-			// Mismatch, so remove the version from the supported version list
-			var index = _networkVersions.indexOf(attemptedVersion);
-			if (index != -1) {
-				_networkVersions.splice(index, 1);
-			}
+	if (res && res.version !== undefined) {
+		const indexOf = serverVersionHistory.indexOf(attemptedVersion.protocolIndex)
+
+		// Test indexOf to avoid inserting previously recorded protocolIndex values
+		if (res.version === attemptedVersion.protocolId && indexOf === -1) {
+			serverVersionHistory.push(attemptedVersion.protocolIndex)
+		} else if (res.version !== attemptedVersion.protocolId && indexOf >= 0) {
+			serverVersionHistory.splice(indexOf, 1)
 		}
 	}
 
@@ -118,7 +126,7 @@ function handlePing(network, res, err, attemptedVersion) {
 			timestamp: timestamp,
 			type: network.type
 		},
-		versions: _networkVersions,
+		versions: serverVersionHistory,
 		recordData: highestPlayerCount[network.ip]
 	};
 
@@ -152,7 +160,7 @@ function handlePing(network, res, err, attemptedVersion) {
 	_networkHistory.push({
 		error: err,
 		result: res,
-		versions: _networkVersions,
+		versions: serverVersionHistory,
 		timestamp: timestamp,
         info: {
             ip: network.ip,
@@ -272,12 +280,17 @@ function startServices() {
 			}
 		});
 
+		const minecraftVersionNames = {}
+		Object.keys(minecraftVersions).forEach(function (key) {
+			minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
+		})
+
 		// Send configuration data for rendering the page
 		client.emit('setPublicConfig', {
 			graphDuration: config.graphDuration,
 			servers: servers,
 			serverTypesVisible: config.serverTypesVisible || false,
-			minecraftVersions: minecraft.versions,
+			minecraftVersions: minecraftVersionNames,
 			isGraphVisible: config.logToDatabase
 		});
 

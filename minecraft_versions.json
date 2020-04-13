@@ -1,0 +1,44 @@
+{
+	"PC": [
+		{
+			"name": "1.7.2",
+			"protocolId": 4
+		},
+		{
+			"name": "1.7.10",
+			"protocolId": 5
+		},
+		{
+			"name": "1.8",
+			"protocolId": 47
+		},
+		{
+			"name": "1.9",
+			"protocolId": 107
+		},
+		{
+			"name": "1.10",
+			"protocolId": 210
+		},
+		{
+			"name": "1.11",
+			"protocolId": 315
+		},
+		{
+			"name": "1.12",
+			"protocolId": 335
+		},
+		{
+			"name": "1.13",
+			"protocolId": 393
+		},
+		{
+			"name": "1.14",
+			"protocolId": 477
+		},
+		{
+			"name": "1.15.1",
+			"protocolId": 575
+		}
+	]
+}

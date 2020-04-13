@@ -54,42 +54,26 @@ export function formatMinecraftServerAddress (ip, port) {
   return ip
 }
 
+// Detect gaps in versions by matching their indexes to knownVersions
 export function formatMinecraftVersions (versions, knownVersions) {
   if (!versions || !versions.length || !knownVersions || !knownVersions.length) {
     return
   }
 
-  // Detect gaps in versions by matching their indexes to knownVersions
-  versions.sort(function (a, b) {
-    return a - b
-  })
-
-  const knownVersionKeys = Object.keys(knownVersions).map(Number)
-
-  knownVersionKeys.sort(function (a, b) {
-    return a - b
-  })
-
-  let lastKnownIndex
   let currentVersionGroup = []
   const versionGroups = []
 
   for (let i = 0; i < versions.length; i++) {
-    const version = versions[i]
+    const versionIndex = versions[i]
 
-    // Assume #indexOf won't return -1
-    // versions is derived from knownVersions by the backend
-    const knownIndex = knownVersionKeys.indexOf(version)
-
-    // Look for value mismatch between the previous matched index
-    // Require i > 0 since lastKnownIndex is undefined for i === 0
-    if (i > 0 && lastKnownIndex !== knownIndex - 1) {
+    // Look for value mismatch between the previous index
+    // Require i > 0 since lastVersionIndex is undefined for i === 0
+    if (i > 0 && versions[i] - 1 !== versionIndex - 1) {
       versionGroups.push(currentVersionGroup)
       currentVersionGroup = []
     }
 
-    currentVersionGroup.push(version)
-    lastKnownIndex = knownIndex
+    currentVersionGroup.push(versionIndex)
   }
 
   // Ensure the last versionGroup is always pushed
@@ -104,13 +88,14 @@ export function formatMinecraftVersions (versions, knownVersions) {
   // Remap individual versionGroups values into named versions
   return versionGroups.map(versionGroup => {
     const startVersion = knownVersions[versionGroup[0]]
-    const endVersion = knownVersions[versionGroup[versionGroup.length - 1]]
 
     if (versionGroup.length === 1) {
       // A versionGroup may contain a single version, only return its name
       // This is a cosmetic catch to avoid version labels like 1.0-1.0
       return startVersion
     } else {
+      const endVersion = knownVersions[versionGroup[versionGroup.length - 1]]
+
       return startVersion + '-' + endVersion
     }
   }).join(', ')

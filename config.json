@@ -11,22 +11,5 @@
 	},
 	"logToDatabase": true,
 	"graphDuration": 86400000,
-	"versions": {
-		"PC": [
-			4,
-			5,
-			47,
-			107,
-			210,
-			315,
-			335,
-			393,
-			477,
-			575
-		],
-		"PE": [
-			0
-		]
-	},
 	"serverTypesVisible": true
 }
