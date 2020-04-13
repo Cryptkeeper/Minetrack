@@ -89,7 +89,7 @@ export class App {
     const latestPing = pings[pings.length - 1]
     const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.info.name)
 
-    serverRegistration.initServerStatus(latestPing, this.publicConfig.serverTypesVisible)
+    serverRegistration.initServerStatus(latestPing)
 
     // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
     document.getElementById('container_' + serverRegistration.serverId).addEventListener('click', (event) => {

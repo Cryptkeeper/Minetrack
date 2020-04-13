@@ -236,15 +236,6 @@ footer a:hover {
   width: 282px;
 }
 
-.server .column-status .server-type {
-  padding: 1px 5px;
-  border-radius: var(--border-radius);
-  border: 1px solid #A09E9E;
-  font-size: 12px;
-  margin-left: 10px;
-  vertical-align: middle;
-}
-
 .server .column-status .server-player-count {
   font-weight: 700;
 }

@@ -256,7 +256,7 @@ export class ServerRegistration {
     }
   }
 
-  initServerStatus (latestPing, isServerTypeVisible) {
+  initServerStatus (latestPing) {
     const serverElement = document.createElement('div')
 
     serverElement.id = 'container_' + this.serverId
@@ -265,7 +265,7 @@ export class ServerRegistration {
         '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
       '</div>' +
       '<div class="column column-status">' +
-        '<h3 class="server-name">' + this.data.name + (isServerTypeVisible ? '<span class="server-type">' + this.data.type + '</span>' : '') + '</h3>' +
+        '<h3 class="server-name">' + this.data.name + '</h3>' +
         '<span id="status_' + this.serverId + '"></span>' +
         '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
         '<span class="server-record" id="record_' + this.serverId + '"></span>' +

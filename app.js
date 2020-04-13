@@ -289,7 +289,6 @@ function startServices() {
 		client.emit('setPublicConfig', {
 			graphDuration: config.graphDuration,
 			servers: servers,
-			serverTypesVisible: config.serverTypesVisible || false,
 			minecraftVersions: minecraftVersionNames,
 			isGraphVisible: config.logToDatabase
 		});
