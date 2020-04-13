@@ -1,4 +1,5 @@
 import { ServerRegistry } from './servers'
+import { FocusManager } from './focus'
 import { GraphDisplayManager } from './graph'
 import { MojangUpdater } from './mojang'
 import { PercentageBar } from './percbar'
@@ -11,6 +12,7 @@ export class App {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
     this.serverRegistry = new ServerRegistry()
+    this.focusManager = new FocusManager(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.mojangUpdater = new MojangUpdater()
     this.percentageBar = new PercentageBar(this)
@@ -45,6 +47,7 @@ export class App {
 
     // Reset individual tracker elements to flush any held data
     this.serverRegistry.reset()
+    this.focusManager.reset()
     this.graphDisplayManager.reset()
     this.mojangUpdater.reset()
     this.percentageBar.reset()
@@ -86,6 +89,9 @@ export class App {
     const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.info.name)
 
     serverRegistration.initServerStatus(latestPing, this.publicConfig.serverTypesVisible)
+
+    // Bind to the DOM element for proxying click events to FocusManager
+    document.getElementById('container_' + serverRegistration.serverId).addEventListener('click', this.focusManager.setFocus, false)
 
     // Push the historical data into the graph
     // This will trim and format the data so it is ready for the graph to render once init

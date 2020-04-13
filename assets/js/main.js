@@ -4,7 +4,7 @@ const app = new App()
 
 document.addEventListener('DOMContentLoaded', function () {
   // eslint-disable-next-line no-undef
-  const socket = io.connect({
+  const socket = io.connect('http://localhost:8080/', {
     reconnect: true,
     reconnectDelay: 1000,
     reconnectionAttempts: 10

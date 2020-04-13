@@ -194,6 +194,12 @@ footer a:hover {
   margin: 0 5px;
   width: 800px;
   display: inline-block;
+  border: 1px solid transparent;
+}
+
+.server:hover {
+  border: 1px solid red;
+  cursor: pointer;
 }
 
 .server .column {
