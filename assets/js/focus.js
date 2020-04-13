@@ -6,6 +6,7 @@ export class FocusManager {
   reset () {
   }
 
-  setFocus = (event) => {
+  setFocus = (event, serverRegistration) => {
+    console.log(serverRegistration.data.name)
   }
 }

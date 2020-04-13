@@ -90,8 +90,10 @@ export class App {
 
     serverRegistration.initServerStatus(latestPing, this.publicConfig.serverTypesVisible)
 
-    // Bind to the DOM element for proxying click events to FocusManager
-    document.getElementById('container_' + serverRegistration.serverId).addEventListener('click', this.focusManager.setFocus, false)
+    // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
+    document.getElementById('container_' + serverRegistration.serverId).addEventListener('click', (event) => {
+      this.focusManager.setFocus(event, serverRegistration)
+    }, false)
 
     // Push the historical data into the graph
     // This will trim and format the data so it is ready for the graph to render once init

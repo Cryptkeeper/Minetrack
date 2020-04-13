@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual } from './util'
+import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual, isObjectEqual } from './util'
 
 import MISSING_FAVICON from '../images/missing_favicon.png'
 
@@ -82,13 +82,13 @@ export class ServerRegistration {
   playerCount = 0
   isVisible = true
   rankIndex
+  lastRecordData
 
   constructor (serverId, data) {
     this.serverId = serverId
     this.data = data
     this._graphData = []
     this._lastVersions = []
-    this._lastRecord = undefined
     this._failedSequentialPings = 0
   }
 
@@ -188,8 +188,8 @@ export class ServerRegistration {
     }
 
     // Compare against a cached value to avoid empty updates
-    if (ping.recordData !== undefined && ping.recordData.playerCount !== this._lastRecord) {
-      this._lastRecord = ping.recordData.playerCount
+    if (ping.recordData !== undefined && !isObjectEqual(ping.recordData, this.lastRecordData, ['playerCount', 'timestamp'])) {
+      this.lastRecordData = ping.recordData
 
       const recordData = ping.recordData
       const recordElement = document.getElementById('record_' + this.serverId)

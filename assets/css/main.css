@@ -388,6 +388,11 @@ footer a:hover {
   position: absolute;
 }
 
+/* Focus box */
+#focus-box {
+  border: 1px solid green;
+}
+
 /* Mojang status */
 .mojang-status {
   width: 83px;
