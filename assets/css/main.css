@@ -12,7 +12,6 @@
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
   --theme-color-element: #3498DB;
-  --theme-color-element-hover: #5a9fcd;
 
   --border-radius: 1px;
 }
@@ -232,7 +231,7 @@ footer a:hover {
 }
 
 .server .column-status .server-show-more:hover {
-  color: var(--theme-color-element-hover);
+  color: var(--background-color);
   cursor: pointer;
 }
 
