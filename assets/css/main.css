@@ -75,6 +75,11 @@ strong {
     font-weight: 700;
 }
 
+/* Logo */
+.logo-text {
+  letter-spacing: -3px;
+}
+
 /* Header */
 header {
   overflow: auto;
@@ -99,7 +104,6 @@ header .logo-column .logo-image {
 header .logo-column .logo-text {
   font-size: 48px;
   margin: -6px 0;
-  text-transform: uppercase;
   display: inline-block;
 }
 
@@ -131,19 +135,17 @@ footer {
   display: none;
   background: var(--background-color);
   color: var(--text-color);
-  font-size: 16px;
-  text-transform: uppercase;
-  padding: 15px 0 15px 20px;
+  padding: 15px 0;
   margin-top: 15px;
+  text-align: center;
 }
 
 footer a {
-  font-weight: 700;
-  border-bottom: 1px dashed transparent;
+  border-bottom: 1px dashed var(--text-decoration-color);
 }
 
 footer a:hover {
-  border-bottom: 1px dashed var(--text-decoration-color);
+  border-bottom: 1px dashed transparent;
 }
 
 /* Status overly */
@@ -166,10 +168,6 @@ footer a:hover {
   --fixed-logo-image-size: 72px;
   width: var(--fixed-logo-image-size);
   height: var(--fixed-logo-image-size);
-}
-
-#status-overlay .logo-text {
-  text-transform: uppercase;
 }
 
 /* Floating tooltip */
@@ -226,10 +224,6 @@ footer a:hover {
   width: 64px;
   padding-top: 4px;
   text-align: center;
-}
-
-.server .column-status .server-name {
-  text-transform: uppercase;
 }
 
 .server .column-status {
