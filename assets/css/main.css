@@ -20,7 +20,6 @@
 @media (prefers-color-scheme: light) {
   :root {
     --background-color: var(--theme-color-light);
-    --background-color-inverted: #1c1b1c;
     --text-decoration-color: var(--theme-color-dark);
     --text-color: #000;
     --text-color-inverted: #FFF;
@@ -35,7 +34,6 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: var(--theme-color-dark);
-    --background-color-inverted: #212021;
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
     --text-color-inverted: #000;
@@ -135,6 +133,7 @@ footer {
   display: none;
   background: var(--background-color);
   color: var(--text-color);
+  font-size: 16px;
   padding: 15px 0;
   margin-top: 15px;
   text-align: center;
@@ -194,13 +193,6 @@ footer a:hover {
   margin: 0 5px;
   width: 800px;
   display: inline-block;
-  border: 1px solid transparent;
-  border-radius: var(--border-radius);
-}
-
-.server:hover {
-  border: 1px solid var(--theme-color-element);
-  cursor: pointer;
 }
 
 .server .column {
@@ -228,6 +220,23 @@ footer a:hover {
 
 .server .column-status {
   width: 282px;
+}
+
+.server .column-status .server-name {
+  display: inline-block;
+}
+
+.server .column-status .server-show-more {
+  font-size: 16px;
+}
+
+.server .column-status .server-show-more:hover {
+  color: var(--theme-color-element-hover);
+  cursor: pointer;
+}
+
+.server .column-status .server-status {
+  display: block;
 }
 
 .server .column-status .server-player-count {
@@ -377,24 +386,21 @@ footer a:hover {
 }
 
 /* Focus box */
-#focus-box {
-  padding: 10px 0 5px 0;
+.focus-box {
+  width: 780px;
+  display: inline-block;
+  margin-top: 5px;
+  padding: 5px 10px;
   clear: both;
-  font-size: 15px;
-}
-
-#focus-box table {
-  width: 100%;
-  border-spacing: 0;
-}
-
-#focus-box tr:nth-of-type(odd) {
-  background: var(--background-color-inverted);
+  font-size: 16px;
+  background: var(--background-color);
+  color: var(--text-color);
   border-radius: var(--border-radius);
 }
 
-#focus-box td {
-  padding: 5px;
+.focus-box table {
+  width: 100%;
+  border-spacing: 0;
 }
 
 /* Mojang status */

@@ -1,68 +1,75 @@
-import { formatNumber, formatTimestamp, formatDate, formatPercent, isObjectEqual } from './util'
+import { formatNumber, formatTimestamp, formatDate, formatPercent, formatMinecraftVersions } from './util'
 
 export class FocusManager {
   constructor (app) {
     this._app = app
-    this._currentFocus = undefined
+    this._createdElements = []
   }
 
   reset () {
-    this.clearFocus()
+    // Reset of modified DOM structures is handled by ServerRegistry#reset
+    // This is because focus-box elements are appended inside #server-list
+    this._createdElements = []
   }
 
-  setFocus = (serverRegistration) => {
-    if (isObjectEqual(this._currentFocus, serverRegistration, ['serverId'])) {
-      this.clearFocus()
-    } else {
-      // Ensure the old focusElement is removed
-      this.clearFocus()
+  handleClick = (serverRegistration) => {
+    const indexOf = this._createdElements.indexOf(serverRegistration.serverId)
+    const focusElementId = 'focus-box_' + serverRegistration.serverId
 
-      this._currentFocus = serverRegistration
-
+    if (indexOf < 0) {
       // Create a focus-box element and generate its innerHTML
       const focusElement = document.createElement('div')
 
-      focusElement.id = 'focus-box'
-      focusElement.innerHTML = this.buildFocusHTML()
+      focusElement.id = focusElementId
+      focusElement.innerHTML = this.buildFocusHTML(serverRegistration)
+
+      focusElement.setAttribute('class', 'focus-box')
 
       // Append the focus-box as a child of the serverRegistration's container
       // This automatically aligns it as needed
       document.getElementById('container_' + serverRegistration.serverId).appendChild(focusElement)
-    }
-  }
 
-  clearFocus = () => {
-    if (this._currentFocus) {
-      this._currentFocus = undefined
-
+      // Track the created element for #reset logic
+      this._createdElements.push(serverRegistration.serverId)
+    } else {
       // Remove any appended focus-box element
-      // It is manually initialized by #setFocus
-      const focusElement = document.getElementById('focus-box')
+      const focusElement = document.getElementById(focusElementId)
 
       if (focusElement) {
         focusElement.remove()
+
+        // Remove from created elements since it is no longer in the DOM
+        this._createdElements.splice(indexOf, 1)
       }
     }
   }
 
-  updateFocusIfSet = () => {
-    if (this._currentFocus) {
-      document.getElementById('focus-box').innerHTML = this.buildFocusHTML()
+  redraw = () => {
+    for (const serverId of this._createdElements) {
+      const focusElement = document.getElementById('focus-box_' + serverId)
+
+      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
+
+      // If the DOM contains a div for this serverId, it is visible and open
+      // Rebuild the inner HTML - this could be optimized
+      if (focusElement) {
+        focusElement.innerHTML = this.buildFocusHTML(serverRegistration)
+      }
     }
   }
 
-  buildRecordRow () {
-    if (!this._currentFocus.lastRecordData) {
+  buildRecordRow (serverRegistration) {
+    if (!serverRegistration.lastRecordData) {
       return
     }
 
-    let innerText = formatNumber(this._currentFocus.lastRecordData.playerCount)
+    let innerText = formatNumber(serverRegistration.lastRecordData.playerCount)
 
-    if (this._currentFocus.lastRecordData.timestamp !== -1) {
-      innerText += ' (' + formatTimestamp(this._currentFocus.lastRecordData.timestamp) + ' ' + formatDate(this._currentFocus.lastRecordData.timestamp) + ')'
+    if (serverRegistration.lastRecordData.timestamp !== -1) {
+      innerText += ' (' + formatTimestamp(serverRegistration.lastRecordData.timestamp) + ' ' + formatDate(serverRegistration.lastRecordData.timestamp) + ')'
     }
 
-    const rank = this._app.serverRegistry.getServerRankBy(this._currentFocus, (serverRegistration) => {
+    const rank = this._app.serverRegistry.getServerRankBy(serverRegistration, (serverRegistration) => {
       if (serverRegistration.lastRecordData) {
         return serverRegistration.lastRecordData.playerCount
       }
@@ -75,14 +82,14 @@ export class FocusManager {
     }
   }
 
-  buildPeakRow () {
-    if (!this._currentFocus.lastPeakData) {
+  buildPeakRow (serverRegistration) {
+    if (!serverRegistration.lastPeakData) {
       return
     }
 
-    const peakData = this._currentFocus.lastPeakData
+    const peakData = serverRegistration.lastPeakData
 
-    const rank = this._app.serverRegistry.getServerRankBy(this._currentFocus, (serverRegistration) => {
+    const rank = this._app.serverRegistry.getServerRankBy(serverRegistration, (serverRegistration) => {
       if (serverRegistration.lastPeakData) {
         return serverRegistration.lastPeakData.playerCount
       }
@@ -95,38 +102,46 @@ export class FocusManager {
     }
   }
 
-  buildTotalPlayerCapacityRow () {
-    const rank = this._app.serverRegistry.getServerRankBy(this._currentFocus, (serverRegistration) => {
+  buildTotalPlayerCapacityRow (serverRegistration) {
+    const rank = this._app.serverRegistry.getServerRankBy(serverRegistration, (serverRegistration) => {
       return serverRegistration.maxPlayerCount
     }, (a, b) => b - a)
 
     return {
       name: 'Total player capacity',
-      value: formatNumber(this._currentFocus.maxPlayerCount),
+      value: formatNumber(serverRegistration.maxPlayerCount),
       rank: rank
     }
   }
 
-  buildMarketShareRow () {
+  buildMarketShareRow (serverRegistration) {
     const totalPlayerCount = this._app.getTotalPlayerCount()
 
-    const rank = this._app.serverRegistry.getServerRankBy(this._currentFocus, (serverRegistration) => {
+    const rank = this._app.serverRegistry.getServerRankBy(serverRegistration, (serverRegistration) => {
       return serverRegistration.playerCount / totalPlayerCount
     }, (a, b) => b - a)
 
     return {
       name: 'Market share',
-      value: formatPercent(this._currentFocus.playerCount, totalPlayerCount) + ' of ' + formatNumber(totalPlayerCount) + ' counted players',
+      value: formatPercent(serverRegistration.playerCount, totalPlayerCount) + ' of ' + formatNumber(totalPlayerCount) + ' counted players',
       rank: rank
     }
   }
 
-  buildMinecraftEditionRow () {
+  buildMinecraftEditionRow (serverRegistration) {
     let minecraftEdition = '(Unknown)'
 
-    if (this._currentFocus.data.type === 'PC') {
+    if (serverRegistration.data.type === 'PC') {
       minecraftEdition = 'Java'
-    } else if (this._currentFocus.data.type === 'PE') {
+
+      if (serverRegistration.lastVersions.length > 0) {
+        const versions = formatMinecraftVersions(serverRegistration.lastVersions, this._app.publicConfig.minecraftVersions[serverRegistration.data.type])
+
+        if (versions) {
+          minecraftEdition += ' (Compatible with ' + versions + ')'
+        }
+      }
+    } else if (serverRegistration.data.type === 'PE') {
       minecraftEdition = 'Bedrock'
     }
 
@@ -136,27 +151,21 @@ export class FocusManager {
     }
   }
 
-  buildFocusHTML () {
+  buildFocusHTML (serverRegistration) {
     const rows = [
-      this.buildRecordRow(),
-      this.buildPeakRow(),
-      this.buildMarketShareRow(),
-      this.buildTotalPlayerCapacityRow(),
-      this.buildMinecraftEditionRow()
+      this.buildRecordRow(serverRegistration),
+      this.buildPeakRow(serverRegistration),
+      this.buildMarketShareRow(serverRegistration),
+      this.buildTotalPlayerCapacityRow(serverRegistration),
+      this.buildMinecraftEditionRow(serverRegistration)
     ]
 
     const innerHTML = rows
       .filter(row => row !== undefined)
       .map(row => {
-        let rankHTML = ''
-        if (row.rank !== undefined) {
-          rankHTML = '#' + row.rank
-        }
-
         return '<tr>' +
           '<td>' + row.name + '</td>' +
           '<td>' + row.value + '</td>' +
-          '<td>' + rankHTML + '</td>' +
           '</tr>'
       })
       .join('')
