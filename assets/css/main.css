@@ -88,17 +88,18 @@ strong {
 /* Header */
 header {
   overflow: auto;
-}
-
-header .column {
-  float: left;
-}
-
-header .logo-column {
   padding: 20px;
 }
 
-header .logo-column .logo-image {
+header .column-left {
+  float: left;
+}
+
+header .column-right {
+  float: right;
+}
+
+header .logo-image {
   --fixed-logo-image-size: 36px;
   width: var(--fixed-logo-image-size);
   height: var(--fixed-logo-image-size);
@@ -106,29 +107,14 @@ header .logo-column .logo-image {
   display: inline-block;
 }
 
-header .logo-column .logo-text {
+header .logo-text {
   font-size: 48px;
   margin: -6px 0;
   display: inline-block;
 }
 
-header .logo-column .logo-status {
+header .logo-status {
   font-size: 21px;
-}
-
-header .mojang-status-column {
-  padding: 20px;
-  float: right;
-}
-
-header .settings-column {
-  padding: 20px 0 20px 20px;
-  float: right;
-}
-
-header .sort-by-column {
-  padding: 20px 0 20px 20px;
-  float: right;
 }
 
 header a {
@@ -146,7 +132,6 @@ header .header-button {
   text-align: center;
   line-height: 20px;
   font-size: 14px;
-  margin-left: -5px;
 }
 
 header .header-button > span:first-of-type {
@@ -157,9 +142,11 @@ header .header-button > span:first-of-type {
 
 header .header-button-group {
   display: inline-block;
+  margin-left: -5px;
 }
 
 header .header-button-group:first-of-type {
+  margin-left: 0 !important;
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
 }
@@ -173,6 +160,7 @@ header .header-button-single {
   display: none;
   cursor: pointer;
   border-radius: var(--border-radius);
+  margin-right: 20px;
 }
 
 header .header-button-single:hover {
