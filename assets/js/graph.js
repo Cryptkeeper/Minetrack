@@ -40,6 +40,7 @@ export class GraphDisplayManager {
     this._app = app
     this._graphData = []
     this._hasLoadedSettings = false
+    this._initEventListenersOnce = false
   }
 
   addGraphPoint (serverId, timestamp, playerCount) {
@@ -130,7 +131,6 @@ export class GraphDisplayManager {
     document.getElementById('big-graph').style.height = '400px'
 
     this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS)
-    $('#big-graph').bind('plothover', this.handlePlotHover)
 
     // Show the settings-toggle element
     document.getElementById('settings-toggle').style.display = 'inline-block'
@@ -212,6 +212,26 @@ export class GraphDisplayManager {
 
       this._app.tooltip.set(item.pageX, item.pageY, 10, 10, text)
     }
+  }
+
+  initEventListeners () {
+    if (!this._initEventListenersOnce) {
+      this._initEventListenersOnce = true
+
+      // These listeners should only be init once since they attach to persistent elements
+      document.getElementById('settings-toggle').addEventListener('click', this.handleSettingsToggle, false)
+
+      document.querySelectorAll('.graph-controls-show').forEach((element) => {
+        element.addEventListener('click', this.handleShowButtonClick, false)
+      })
+    }
+
+    $('#big-graph').bind('plothover', this.handlePlotHover)
+
+    // These listeners should be bound each #initEventListeners call since they are for newly created elements
+    document.querySelectorAll('.graph-control').forEach((element) => {
+      element.addEventListener('click', this.handleServerButtonClick, false)
+    })
   }
 
   handleServerButtonClick = (event) => {

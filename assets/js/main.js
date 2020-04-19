@@ -56,9 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('big-graph-controls').style.display = 'block'
 
     // Bind click event for updating graph data
-    document.querySelectorAll('.graph-control').forEach(function (element) {
-      element.addEventListener('click', app.graphDisplayManager.handleServerButtonClick, false)
-    })
+    app.graphDisplayManager.initEventListeners()
   })
 
   socket.on('updateHistoryGraph', function (data) {
@@ -157,12 +155,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Delegate to GraphDisplayManager which can check if the resize is necessary
     app.graphDisplayManager.requestResize()
   }, false)
-
-  document.getElementById('settings-toggle').addEventListener('click', app.graphDisplayManager.handleSettingsToggle, false)
-
-  document.querySelectorAll('.graph-controls-show').forEach((element) => {
-    element.addEventListener('click', app.graphDisplayManager.handleShowButtonClick, false)
-  })
 
   document.getElementById('big-graph-mobile-load-request-button').addEventListener('click', function () {
     // Send a graph data request to the backend
