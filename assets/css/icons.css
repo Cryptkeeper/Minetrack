@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('../fonts/icomoon.ttf?c102qm') format('truetype'),
-    url('../fonts/icomoon.woff?c102qm') format('woff'),
-    url('../fonts/icomoon.svg?c102qm#icomoon') format('svg');
+    url('../fonts/icomoon.ttf?gn52nv') format('truetype'),
+    url('../fonts/icomoon.woff?gn52nv') format('woff'),
+    url('../fonts/icomoon.svg?gn52nv#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -32,6 +32,12 @@
 }
 .icon-lock:before {
   content: "\f023";
+}
+.icon-eye:before {
+  content: "\f06e";
+}
+.icon-eye-slash:before {
+  content: "\f070";
 }
 .icon-cogs:before {
   content: "\f085";
