@@ -307,12 +307,10 @@ footer a:hover {
 
 /* Highlighted values */
 .server-highlighted-label {
-  color: var(--text-color);
   font-size: 18px;
 }
 
 .server-highlighted-value {
-  color: var(--text-color);
   font-size: 18px;
   font-weight: 700;
 }
