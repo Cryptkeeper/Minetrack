@@ -1,10 +1,11 @@
 **5** *(Apr 8 2020)*
 - New logo!
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
-- Adds ESLint configuration
 - Adds a button for mobile devices to manually request the historical graph
 - Adds timestamp to each server's player count record
 - Adds the ability to favorite servers so they'll always be sorted first
+- Adds "Sort By" option for controlling the server listing sort order
+- Adds ESLint configuration
 - The versions section, and minecraft.json file, have been merged into minecraft_versions.json
 - Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
 - Added Parcel bundler which bundles the assets/ directory into dist/ 
