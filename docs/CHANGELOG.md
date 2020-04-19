@@ -5,6 +5,7 @@
 - Adds timestamp to each server's player count record
 - Adds the ability to favorite servers so they'll always be sorted first
 - Adds "Sort By" option for controlling the server listing sort order
+- Adds "Only Favorites" button to graph controls
 - Adds ESLint configuration
 - New missing favicon icon
 - The versions section, and minecraft.json file, have been merged into minecraft_versions.json
