@@ -6,6 +6,7 @@
 - Adds the ability to favorite servers so they'll always be sorted first
 - Adds "Sort By" option for controlling the server listing sort order
 - Adds ESLint configuration
+- New missing favicon icon
 - The versions section, and minecraft.json file, have been merged into minecraft_versions.json
 - Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
 - Added Parcel bundler which bundles the assets/ directory into dist/ 
@@ -16,7 +17,7 @@
 - publicConfig.json is now sent over the socket connection so the frontend can be safely reloaded on rebooted instances
 - Tooltips have been optimized and updated to a more readable design
 - Initial page loading has been optimized
-- MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.png to improve caching behavior (and its customizable now!)
+- MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.svg to improve caching behavior (and its customizable now!)
 - Peak player count labels are formatted using the graphDuration hours and now displays the timestamp seconds
 - Fixed favicon payloads being repeatedly sent.
 - Fixed the page being broken when connecting to a freshly booted instance

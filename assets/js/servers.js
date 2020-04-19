@@ -1,6 +1,6 @@
 import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual, isObjectEqual } from './util'
 
-import MISSING_FAVICON from '../images/missing_favicon.png'
+import MISSING_FAVICON from '../images/missing_favicon.svg'
 
 export const SERVER_GRAPH_OPTIONS = {
   series: {
