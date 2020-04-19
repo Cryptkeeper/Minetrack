@@ -265,7 +265,7 @@ export class ServerRegistration {
         '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
       '</div>' +
       '<div class="column column-status">' +
-        '<h3 class="server-name">' + this.data.name + ' <span class="server-show-more icon-clock-o" id="show-more_' + this.serverId + '"></span></h3>' +
+        '<h3 class="server-name"><span class="server-show-more"><span class="icon-chevron-circle-down" id="show-more_' + this.serverId + '"></span></span> ' + this.data.name + '</h3>' +
         '<span class="server-status" id="status_' + this.serverId + '"></span>' +
         '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
         '<span class="server-record" id="record_' + this.serverId + '"></span>' +

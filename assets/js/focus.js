@@ -12,11 +12,14 @@ export class FocusManager {
     this._createdElements = []
   }
 
-  handleClick = (serverRegistration) => {
+  handleClick = (target, serverRegistration) => {
     const indexOf = this._createdElements.indexOf(serverRegistration.serverId)
     const focusElementId = 'focus-box_' + serverRegistration.serverId
 
     if (indexOf < 0) {
+      // Change action icon
+      target.setAttribute('class', 'icon-chevron-circle-up')
+
       // Create a focus-box element and generate its innerHTML
       const focusElement = document.createElement('div')
 
@@ -32,6 +35,9 @@ export class FocusManager {
       // Track the created element for #reset logic
       this._createdElements.push(serverRegistration.serverId)
     } else {
+      // Change action icon
+      target.setAttribute('class', 'icon-chevron-circle-down')
+
       // Remove any appended focus-box element
       const focusElement = document.getElementById(focusElementId)
 

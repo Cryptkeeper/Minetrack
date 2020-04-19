@@ -93,7 +93,7 @@ export class App {
 
     // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
     document.getElementById('show-more_' + serverRegistration.serverId).addEventListener('click', (event) => {
-      this.focusManager.handleClick(serverRegistration)
+      this.focusManager.handleClick(event.target, serverRegistration)
     }, false)
 
     // Push the historical data into the graph
