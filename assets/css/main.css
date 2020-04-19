@@ -8,6 +8,7 @@
 
 :root {
   --color-dark-gray: #A3A3A3;
+  --color-gold: #FFD700;
 
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
@@ -224,18 +225,9 @@ footer a:hover {
   display: inline-block;
 }
 
-.server .column-status .server-show-more {
-  color: var(--theme-color-element);
-}
-
-.server .column-status .server-show-more:hover {
-  color: var(--background-color);
-  cursor: pointer;
-}
-
 .server .column-status .server-is-favorite {
   cursor: pointer;
-  color: gold;
+  color: var(--color-gold);
 }
 
 .server .column-status .server-is-favorite:hover::before {
@@ -248,7 +240,7 @@ footer a:hover {
 }
 
 .server .column-status .server-is-not-favorite:hover {
-  color: gold;
+  color: var(--color-gold);
 }
 
 .server .column-status .server-status {

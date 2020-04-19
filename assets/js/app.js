@@ -1,5 +1,4 @@
 import { ServerRegistry } from './servers'
-import { FocusManager } from './focus'
 import { GraphDisplayManager } from './graph'
 import { MojangUpdater } from './mojang'
 import { PercentageBar } from './percbar'
@@ -13,7 +12,6 @@ export class App {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
     this.serverRegistry = new ServerRegistry(this)
-    this.focusManager = new FocusManager(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.mojangUpdater = new MojangUpdater()
     this.percentageBar = new PercentageBar(this)
@@ -41,7 +39,6 @@ export class App {
   initTasks () {
     this._taskIds.push(setInterval(this.sortServers, 10000))
     this._taskIds.push(setInterval(this.updateGlobalStats, 1000))
-    this._taskIds.push(setInterval(this.focusManager.redraw, 1000))
     this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
 
@@ -50,7 +47,6 @@ export class App {
 
     // Reset individual tracker elements to flush any held data
     this.serverRegistry.reset()
-    this.focusManager.reset()
     this.graphDisplayManager.reset()
     this.mojangUpdater.reset()
     this.percentageBar.reset()
