@@ -429,24 +429,6 @@ footer a:hover {
   position: absolute;
 }
 
-/* Focus box */
-.focus-box {
-  width: 780px;
-  display: inline-block;
-  margin-top: 5px;
-  padding: 5px 10px;
-  clear: both;
-  font-size: 16px;
-  background: var(--background-color);
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-}
-
-.focus-box table {
-  width: 100%;
-  border-spacing: 0;
-}
-
 @media (prefers-color-scheme: light) {
   .mojang-status-online {
     background: #87D37C;
