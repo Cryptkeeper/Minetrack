@@ -54,7 +54,7 @@ export class FavoritesManager {
 
     // Request the app controller instantly re-sort the server listing
     // This handles the favorite sorting logic internally
-    this._app.sortServers()
+    this._app.sortController.sortServers()
 
     // Write an updated settings payload
     this.updateLocalStorage()

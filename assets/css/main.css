@@ -120,6 +120,11 @@ header .settings-column {
   float: right;
 }
 
+header .sort-by-column {
+  padding: 20px 0 20px 20px;
+  float: right;
+}
+
 header a {
   border-bottom: 1px dashed var(--text-decoration-color);
 }
@@ -213,7 +218,6 @@ footer a:hover {
 .server .column-favicon .server-rank {
   display: block;
   width: 64px;
-  padding-top: 4px;
   text-align: center;
 }
 
@@ -286,6 +290,36 @@ footer a:hover {
 
 /* Global stats */
 .global-stat {
+  font-weight: 700;
+}
+
+/* Sort by */
+#sort-by {
+  color: var(--text-color);
+  display: none;
+  width: 83px;
+  height: 83px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 14px;
+  margin-left: -5px;
+  cursor: pointer;
+  background: var(--theme-color-element);
+  border-radius: var(--border-radius);
+}
+
+#sort-by:hover {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+#sort-by > span:first-of-type {
+  display: block;
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+#sort-by #sort-by-text {
   font-weight: 700;
 }
 

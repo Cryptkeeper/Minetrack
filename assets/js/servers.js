@@ -98,13 +98,12 @@ const SERVER_GRAPH_DATA_MAX_LENGTH = 72
 
 export class ServerRegistration {
   playerCount = 0
-  maxPlayerCount = 0
   isVisible = true
   isFavorite = false
   rankIndex
   lastRecordData
   lastVersions = []
-  lastPeak
+  lastPeakData
 
   constructor (app, serverId, data) {
     this._app = app
@@ -131,8 +130,6 @@ export class ServerRegistration {
 
   buildPlotInstance () {
     this._plotInstance = $.plot('#chart_' + this.serverId, [this._graphData], SERVER_GRAPH_OPTIONS)
-
-    return $('#chart_' + this.serverId)
   }
 
   handlePing (payload, pushToGraph) {
@@ -189,16 +186,14 @@ export class ServerRegistration {
   }
 
   updateServerPeak (time, playerCount, graphDuration) {
-    const hourDuration = Math.floor(graphDuration / (60 * 60 * 1000))
     const peakElement = document.getElementById('peak_' + this.serverId)
 
-    peakElement.innerHTML = hourDuration + 'h Peak: ' + formatNumber(playerCount)
+    peakElement.innerHTML = Math.floor(graphDuration / (60 * 60 * 1000)) + 'h Peak: ' + formatNumber(playerCount)
     peakElement.title = 'At ' + formatTimestamp(time)
 
     this.lastPeakData = {
       timestamp: time,
-      playerCount: playerCount,
-      hourDuration: hourDuration
+      playerCount: playerCount
     }
   }
 
@@ -254,8 +249,6 @@ export class ServerRegistration {
       if (!isInitialUpdate && ping.favicon) {
         document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
       }
-
-      this.maxPlayerCount = ping.result.players.max
     }
   }
 
@@ -282,6 +275,8 @@ export class ServerRegistration {
   }
 
   initEventListeners () {
+    $('#chart_' + this.serverId).bind('plothover', this._app.graphDisplayManager.handlePlotHover)
+
     document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', (event) => {
       this._app.favoritesManager.handleFavoriteButtonClick(event)
     }, false)

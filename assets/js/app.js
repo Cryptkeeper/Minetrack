@@ -1,4 +1,5 @@
 import { ServerRegistry } from './servers'
+import { SortController } from './sort'
 import { GraphDisplayManager } from './graph'
 import { MojangUpdater } from './mojang'
 import { PercentageBar } from './percbar'
@@ -12,6 +13,7 @@ export class App {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
     this.serverRegistry = new ServerRegistry(this)
+    this.sortController = new SortController(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.mojangUpdater = new MojangUpdater()
     this.percentageBar = new PercentageBar(this)
@@ -36,8 +38,19 @@ export class App {
     this.initTasks()
   }
 
+  handleSyncComplete () {
+    this.caption.hide()
+
+    // Load favorites since all servers are registered
+    this.favoritesManager.loadLocalStorage()
+
+    // Run a single bulk server sort instead of per-add event since there may be multiple
+    this.sortController.show()
+    this.percentageBar.redraw()
+  }
+
   initTasks () {
-    this._taskIds.push(setInterval(this.sortServers, 10000))
+    this._taskIds.push(setInterval(this.sortController.sortServers, 5000))
     this._taskIds.push(setInterval(this.updateGlobalStats, 1000))
     this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
@@ -47,6 +60,7 @@ export class App {
 
     // Reset individual tracker elements to flush any held data
     this.serverRegistry.reset()
+    this.sortController.reset()
     this.graphDisplayManager.reset()
     this.mojangUpdater.reset()
     this.percentageBar.reset()
@@ -89,22 +103,19 @@ export class App {
 
     serverRegistration.initServerStatus(latestPing)
 
-    // Allow the ServerRegistration to bind any DOM events with app instance context
-    serverRegistration.initEventListeners()
-
     // Push the historical data into the graph
     // This will trim and format the data so it is ready for the graph to render once init
     serverRegistration.addGraphPoints(pings)
 
     // Create the plot instance internally with the restructured and cleaned data
-    // #buildPlotInstance returns a selector for easily binding events
-    const plotInstance = serverRegistration.buildPlotInstance()
-
-    plotInstance.bind('plothover', this.graphDisplayManager.handlePlotHover)
+    serverRegistration.buildPlotInstance()
 
     // Handle the last known state (if any) as an incoming update
     // This triggers the main update pipeline and enables centralized update handling
     serverRegistration.updateServerStatus(latestPing, true, this.publicConfig.minecraftVersions)
+
+    // Allow the ServerRegistration to bind any DOM events with app instance context
+    serverRegistration.initEventListeners()
   }
 
   updateGlobalStats = () => {
@@ -125,26 +136,5 @@ export class App {
       this._lastServerRegistrationCount = serverRegistrationCount
       document.getElementById('stat_networks').innerText = serverRegistrationCount
     }
-  }
-
-  sortServers = () => {
-    // Sort a ServerRegistration list by player count ONLY
-    // This is used to determine the ServerRegistration's rankIndex without #isFavorite skewing values
-    const playerCountSortedRegistrations = this.serverRegistry.getServerRegistrations().sort(function (a, b) {
-      return b.playerCount - a.playerCount
-    })
-
-    this.serverRegistry.getServerRegistrations().sort(function (a, b) {
-      if (a.isFavorite && !b.isFavorite) {
-        return -1
-      } else if (b.isFavorite && !a.isFavorite) {
-        return 1
-      }
-      return b.playerCount - a.playerCount
-    }).forEach(function (serverRegistration) {
-      $('#container_' + serverRegistration.serverId).appendTo('#server-list')
-
-      serverRegistration.updateServerRankIndex(playerCountSortedRegistrations.indexOf(serverRegistration))
-    })
   }
 }
