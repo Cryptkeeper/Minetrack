@@ -1,5 +1,7 @@
 import { formatNumber, formatTimestamp, isMobileBrowser } from './util'
 
+import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
+
 export const HISTORY_GRAPH_OPTIONS = {
   series: {
     shadowSize: 0
@@ -31,6 +33,7 @@ export const HISTORY_GRAPH_OPTIONS = {
 }
 
 const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers'
+const SHOW_FAVORITES_STORAGE_KEY = 'minetrack_show_favorites'
 
 export class GraphDisplayManager {
   // Only emit graph data request if not on mobile due to graph data size
@@ -41,6 +44,7 @@ export class GraphDisplayManager {
     this._graphData = []
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
+    this._showOnlyFavorites = false
   }
 
   addGraphPoint (serverId, timestamp, playerCount) {
@@ -64,17 +68,32 @@ export class GraphDisplayManager {
 
   loadLocalStorage () {
     if (typeof localStorage !== 'undefined') {
-      let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY)
+      const showOnlyFavorites = localStorage.getItem(SHOW_FAVORITES_STORAGE_KEY)
+      if (showOnlyFavorites) {
+        this._showOnlyFavorites = true
+      }
+
+      // If only favorites mode is active, use the stored favorite servers data instead
+      let serverNames
+      if (this._showOnlyFavorites) {
+        serverNames = localStorage.getItem(FAVORITE_SERVERS_STORAGE_KEY)
+      } else {
+        serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY)
+      }
+
       if (serverNames) {
         serverNames = JSON.parse(serverNames)
 
-        for (let i = 0; i < serverNames.length; i++) {
-          const serverRegistration = this._app.serverRegistry.getServerRegistration(serverNames[i])
-
-          // The serverName may not exist in the backend configuration anymore
-          // Ensure serverRegistration is defined before mutating data or considering valid
-          if (serverRegistration) {
-            serverRegistration.isVisible = false
+        // Iterate over all active serverRegistrations
+        // This merges saved state with current state to prevent desyncs
+        for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
+          // isVisible will be true if showOnlyFavorites && contained in FAVORITE_SERVERS_STORAGE_KEY
+          // OR, if it is NOT contains within HIDDEN_SERVERS_STORAGE_KEY
+          // Checks between FAVORITE/HIDDEN keys are mutually exclusive
+          if (this._showOnlyFavorites) {
+            serverRegistration.isVisible = serverNames.indexOf(serverRegistration.data.name) >= 0
+          } else {
+            serverRegistration.isVisible = serverNames.indexOf(serverRegistration.data.name) < 0
           }
         }
       }
@@ -88,11 +107,19 @@ export class GraphDisplayManager {
         .filter(serverRegistration => !serverRegistration.isVisible)
         .map(serverRegistration => serverRegistration.data.name)
 
-      if (serverNames.length > 0) {
-        // Only save if the array contains data, otherwise clear the item
+      // Only store if the array contains data, otherwise clear the item
+      // If showOnlyFavorites is true, do NOT store serverNames since the state will be auto managed instead
+      if (serverNames.length > 0 && !this._showOnlyFavorites) {
         localStorage.setItem(HIDDEN_SERVERS_STORAGE_KEY, JSON.stringify(serverNames))
       } else {
         localStorage.removeItem(HIDDEN_SERVERS_STORAGE_KEY)
+      }
+
+      // Only store SHOW_FAVORITES_STORAGE_KEY if true
+      if (this._showOnlyFavorites) {
+        localStorage.setItem(SHOW_FAVORITES_STORAGE_KEY, true)
+      } else {
+        localStorage.removeItem(SHOW_FAVORITES_STORAGE_KEY)
       }
     }
   }
@@ -241,28 +268,43 @@ export class GraphDisplayManager {
     if (serverRegistration.isVisible !== event.target.checked) {
       serverRegistration.isVisible = event.target.checked
 
+      // Any manual changes automatically disables "Only Favorites" mode
+      // Otherwise the auto management might overwrite their manual changes
+      this._showOnlyFavorites = false
+
       this.redraw()
     }
   }
 
   handleShowButtonClick = (event) => {
-    const visible = event.target.getAttribute('minetrack-showall') === 'true'
+    const showType = event.target.getAttribute('minetrack-show-type')
+
+    // If set to "Only Favorites", set internal state so that
+    // visible graphData is automatically updating when a ServerRegistration's #isVisible changes
+    // This is also saved and loaded by #loadLocalStorage & #updateLocalStorage
+    this._showOnlyFavorites = showType === 'favorites'
 
     let redraw = false
 
     this._app.serverRegistry.getServerRegistrations().forEach(function (serverRegistration) {
-      if (serverRegistration.isVisible !== visible) {
-        serverRegistration.isVisible = visible
+      let isVisible
+      if (showType === 'all') {
+        isVisible = true
+      } else if (showType === 'none') {
+        isVisible = false
+      } else if (showType === 'favorites') {
+        isVisible = serverRegistration.isFavorite
+      }
+
+      if (serverRegistration.isVisible !== isVisible) {
+        serverRegistration.isVisible = isVisible
         redraw = true
       }
     })
 
     if (redraw) {
       this.redraw()
-
-      document.querySelectorAll('.graph-control').forEach(function (checkbox) {
-        checkbox.checked = visible
-      })
+      this.updateCheckboxes()
     }
   }
 
@@ -274,6 +316,26 @@ export class GraphDisplayManager {
     } else {
       element.style.display = 'none'
     }
+  }
+
+  handleServerIsFavoriteUpdate = (serverRegistration) => {
+    // When in "Only Favorites" mode, visibility is dependent on favorite status
+    // Redraw and update elements as needed
+    if (this._showOnlyFavorites && serverRegistration.isVisible !== serverRegistration.isFavorite) {
+      serverRegistration.isVisible = serverRegistration.isFavorite
+
+      this.redraw()
+      this.updateCheckboxes()
+    }
+  }
+
+  updateCheckboxes () {
+    document.querySelectorAll('.graph-control').forEach((checkbox) => {
+      const serverId = parseInt(checkbox.getAttribute('minetrack-server-id'))
+      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
+
+      checkbox.checked = serverRegistration.isVisible
+    })
   }
 
   reset () {

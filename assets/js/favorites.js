@@ -1,4 +1,4 @@
-const FAVORITE_SERVERS_STORAGE_KEY = 'minetrack_favorite_servers'
+export const FAVORITE_SERVERS_STORAGE_KEY = 'minetrack_favorite_servers'
 
 export class FavoritesManager {
   constructor (app) {
@@ -43,10 +43,7 @@ export class FavoritesManager {
     }
   }
 
-  handleFavoriteButtonClick = (event) => {
-    const serverId = parseInt(event.target.getAttribute('minetrack-server-id'))
-    const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
-
+  handleFavoriteButtonClick = (serverRegistration) => {
     serverRegistration.isFavorite = !serverRegistration.isFavorite
 
     // Update the displayed favorite icon
@@ -55,6 +52,8 @@ export class FavoritesManager {
     // Request the app controller instantly re-sort the server listing
     // This handles the favorite sorting logic internally
     this._app.sortController.sortServers()
+
+    this._app.graphDisplayManager.handleServerIsFavoriteUpdate(serverRegistration)
 
     // Write an updated settings payload
     this.updateLocalStorage()

@@ -382,6 +382,10 @@ footer a:hover {
   display: none;
 }
 
+#big-graph-controls .icon-star {
+  color: var(--color-gold);
+}
+
 #big-graph-controls-drawer {
   background: var(--background-color);
   color: var(--text-color);

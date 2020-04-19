@@ -254,7 +254,7 @@ export class ServerRegistration {
         '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
       '</div>' +
       '<div class="column column-status">' +
-        '<h3 class="server-name"><span class="' + this._app.favoritesManager.getIconClass(this.isFavorite) + '" id="favorite-toggle_' + this.serverId + '" minetrack-server-id="' + this.serverId + '"></span> ' + this.data.name + '</h3>' +
+        '<h3 class="server-name"><span class="' + this._app.favoritesManager.getIconClass(this.isFavorite) + '" id="favorite-toggle_' + this.serverId + '"></span> ' + this.data.name + '</h3>' +
         '<span class="server-status" id="status_' + this.serverId + '"></span>' +
         '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
         '<span class="server-record" id="record_' + this.serverId + '"></span>' +
@@ -270,8 +270,8 @@ export class ServerRegistration {
   initEventListeners () {
     $('#chart_' + this.serverId).bind('plothover', this._app.graphDisplayManager.handlePlotHover)
 
-    document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', (event) => {
-      this._app.favoritesManager.handleFavoriteButtonClick(event)
+    document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', () => {
+      this._app.favoritesManager.handleFavoriteButtonClick(this)
     }, false)
   }
 }
