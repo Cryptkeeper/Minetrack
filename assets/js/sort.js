@@ -138,15 +138,10 @@ export class SortController {
 
   updateSortOption = () => {
     const sortOption = SORT_OPTIONS[this._sortOptionIndex]
+    const sortOptionMarker = (this._sortOptionIndex !== SORT_OPTION_INDEX_DEFAULT) ? '*' : ''
 
     // Pass app instance so sortOption names can be dynamically generated
-    this._textElement.innerText = sortOption.getName(this._app)
-
-    if (this._sortOptionIndex !== SORT_OPTION_INDEX_DEFAULT) {
-      this._textElement.style.fontStyle = 'italic'
-    } else {
-      this._textElement.style.fontStyle = 'normal'
-    }
+    this._textElement.innerText = sortOption.getName(this._app) + sortOptionMarker
 
     this.sortServers()
   }
