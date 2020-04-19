@@ -53,6 +53,7 @@ const SORT_OPTIONS = [
   }
 ]
 
+const SORT_OPTION_INDEX_DEFAULT = 0
 const SORT_OPTION_INDEX_STORAGE_KEY = 'minetrack_sort_option_index'
 
 export class SortController {
@@ -60,7 +61,7 @@ export class SortController {
     this._app = app
     this._buttonElement = document.getElementById('sort-by')
     this._textElement = document.getElementById('sort-by-text')
-    this._sortOptionIndex = 0
+    this._sortOptionIndex = SORT_OPTION_INDEX_DEFAULT
   }
 
   reset () {
@@ -85,7 +86,7 @@ export class SortController {
 
   updateLocalStorage () {
     if (typeof localStorage !== 'undefined') {
-      if (this._sortOptionIndex !== 0) {
+      if (this._sortOptionIndex !== SORT_OPTION_INDEX_DEFAULT) {
         localStorage.setItem(SORT_OPTION_INDEX_STORAGE_KEY, this._sortOptionIndex)
       } else {
         localStorage.removeItem(SORT_OPTION_INDEX_STORAGE_KEY)
