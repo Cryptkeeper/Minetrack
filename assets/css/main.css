@@ -179,10 +179,6 @@ header .header-button-single:hover {
   background: var(--background-color) !important;
 }
 
-header .header-button strong {
-  text-transform: uppercase;
-}
-
 /* Footer */
 footer {
   display: none;
