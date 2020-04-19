@@ -3,18 +3,18 @@ import { isArrayEqual } from './util'
 const SORT_OPTIONS = [
   {
     getName: () => 'Players',
-    func: (a, b) => b.playerCount - a.playerCount
+    sortFunc: (a, b) => b.playerCount - a.playerCount
   },
   {
     getName: (app) => {
       return Math.floor(app.publicConfig.graphDuration / (60 * 60 * 1000)) + 'h Peak'
     },
-    func: (a, b) => {
+    sortFunc: (a, b) => {
       if (!a.lastPeakData && !b.lastPeakData) {
         return 0
-      } else if (a.lastPeakData) {
+      } else if (a.lastPeakData && !b.lastPeakData) {
         return -1
-      } else if (b.lastPeakData) {
+      } else if (b.lastPeakData && !a.lastPeakData) {
         return 1
       }
       return b.lastPeakData.playerCount - a.lastPeakData.playerCount
@@ -31,12 +31,12 @@ const SORT_OPTIONS = [
   },
   {
     getName: () => 'Record',
-    func: (a, b) => {
+    sortFunc: (a, b) => {
       if (!a.lastRecordData && !b.lastRecordData) {
         return 0
-      } else if (a.lastRecordData) {
+      } else if (a.lastRecordData && !b.lastRecordData) {
         return -1
-      } else if (b.lastRecordData) {
+      } else if (b.lastRecordData && !a.lastRecordData) {
         return 1
       }
       return b.lastRecordData.playerCount - a.lastRecordData.playerCount
@@ -52,6 +52,8 @@ const SORT_OPTIONS = [
     }
   }
 ]
+
+const SORT_OPTION_INDEX_STORAGE_KEY = 'minetrack_sort_option_index'
 
 export class SortController {
   constructor (app) {
@@ -72,7 +74,29 @@ export class SortController {
     this._buttonElement.removeEventListener('click', this.handleSortByButtonClick)
   }
 
+  loadLocalStorage () {
+    if (typeof localStorage !== 'undefined') {
+      const sortOptionIndex = localStorage.getItem(SORT_OPTION_INDEX_STORAGE_KEY)
+      if (sortOptionIndex) {
+        this._sortOptionIndex = parseInt(sortOptionIndex)
+      }
+    }
+  }
+
+  updateLocalStorage () {
+    if (typeof localStorage !== 'undefined') {
+      if (this._sortOptionIndex !== 0) {
+        localStorage.setItem(SORT_OPTION_INDEX_STORAGE_KEY, this._sortOptionIndex)
+      } else {
+        localStorage.removeItem(SORT_OPTION_INDEX_STORAGE_KEY)
+      }
+    }
+  }
+
   show () {
+    // Load the saved option selection, if any
+    this.loadLocalStorage()
+
     this.updateSortOption()
 
     // Bind DOM event listeners
@@ -100,6 +124,9 @@ export class SortController {
 
     // Redraw the button and sort the servers
     this.updateSortOption()
+
+    // Save the updated option selection
+    this.updateLocalStorage()
   }
 
   updateSortOption = () => {
@@ -121,7 +148,7 @@ export class SortController {
         return 1
       }
 
-      return sortOption.func(a, b)
+      return sortOption.sortFunc(a, b)
     })
 
     // Test if sortedServers has changed from the previous listing
@@ -134,7 +161,7 @@ export class SortController {
 
     // Sort a ServerRegistration list by the sortOption ONLY
     // This is used to determine the ServerRegistration's rankIndex without #isFavorite skewing values
-    const rankIndexSort = this._app.serverRegistry.getServerRegistrations().sort(sortOption.func)
+    const rankIndexSort = this._app.serverRegistry.getServerRegistrations().sort(sortOption.sortFunc)
 
     // Update the DOM structure
     sortedServers.forEach(function (serverRegistration) {
