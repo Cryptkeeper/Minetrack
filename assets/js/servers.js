@@ -168,28 +168,22 @@ export class ServerRegistration {
     this._plotInstance.draw()
   }
 
-  getPlayerCountDifference () {
-    if (this._graphData.length >= 2) {
-      // [1] refers to playerCount data index
-      // See constructor for data structure initialization
-      const oldestPlayerCount = this._graphData[0][1]
-      const newestPlayerCount = this._graphData[this._graphData.length - 1][1]
-
-      return newestPlayerCount - oldestPlayerCount
-    }
-  }
-
   updateServerRankIndex (rankIndex) {
     this.rankIndex = rankIndex
 
     document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
   }
 
-  updateServerPeak (time, playerCount, graphDuration) {
-    const peakElement = document.getElementById('peak_' + this.serverId)
+  updateServerPeak (time, playerCount) {
+    const peakLabelElement = document.getElementById('peak_' + this.serverId)
 
-    peakElement.innerHTML = Math.floor(graphDuration / (60 * 60 * 1000)) + 'h Peak: ' + formatNumber(playerCount)
-    peakElement.title = 'At ' + formatTimestamp(time)
+    // Always set label once any peak data has been received
+    peakLabelElement.style.display = 'block'
+
+    const peakValueElement = document.getElementById('peak-value_' + this.serverId)
+
+    peakValueElement.innerText = formatNumber(playerCount)
+    peakLabelElement.title = 'At ' + formatTimestamp(time)
 
     this.lastPeakData = {
       timestamp: time,
@@ -208,6 +202,8 @@ export class ServerRegistration {
       this.lastVersions = ping.versions
 
       const versionsElement = document.getElementById('version_' + this.serverId)
+
+      versionsElement.style.display = 'block'
       versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[ping.info.type]) || ''
     }
 
@@ -215,27 +211,40 @@ export class ServerRegistration {
     if (ping.recordData !== undefined && !isObjectEqual(ping.recordData, this.lastRecordData, ['playerCount', 'timestamp'])) {
       this.lastRecordData = ping.recordData
 
+      // Always set label once any record data has been received
+      const recordLabelElement = document.getElementById('record_' + this.serverId)
+
+      recordLabelElement.style.display = 'block'
+
+      const recordValueElement = document.getElementById('record-value_' + this.serverId)
+
       const recordData = ping.recordData
-      const recordElement = document.getElementById('record_' + this.serverId)
 
       // Safely handle legacy recordData that may not include the timestamp payload
       if (recordData.timestamp !== -1) {
-        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount) + ' &middot; ' + formatDate(recordData.timestamp)
-        recordElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
+        recordValueElement.innerHTML = formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
+        recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
       } else {
-        recordElement.innerHTML = 'Record: ' + formatNumber(recordData.playerCount)
+        recordValueElement.innerText = formatNumber(recordData.playerCount)
       }
     }
 
-    const statusElement = document.getElementById('status_' + this.serverId)
+    const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
+    const errorElement = document.getElementById('error_' + this.serverId)
 
     if (ping.error) {
-      // Attempt to find an error cause from documented options
-      const errorMessage = ping.error.description || ping.error.errno || 'Unknown error'
+      // Hide any visible player-count and show the error element
+      playerCountLabelElement.style.display = 'none'
+      errorElement.style.display = 'block'
 
-      statusElement.innerHTML = '<span class="server-error-message">' + errorMessage + '</span>'
+      // Attempt to find an error cause from documented options
+      errorElement.innerText = ping.error.description || ping.error.errno || 'Unknown error'
     } else if (ping.result) {
-      statusElement.innerHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>'
+      // Ensure the player-count element is visible and hide the error element
+      playerCountLabelElement.style.display = 'block'
+      errorElement.style.display = 'none'
+
+      document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.result.players.online)
 
       // An updated favicon has been sent, update the src
       // Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
@@ -246,6 +255,8 @@ export class ServerRegistration {
   }
 
   initServerStatus (latestPing) {
+    const peakHourDuration = Math.floor(this._app.publicConfig.graphDuration / (60 * 60 * 1000)) + 'h Peak: '
+
     const serverElement = document.createElement('div')
 
     serverElement.id = 'container_' + this.serverId
@@ -255,16 +266,32 @@ export class ServerRegistration {
       '</div>' +
       '<div class="column column-status">' +
         '<h3 class="server-name"><span class="' + this._app.favoritesManager.getIconClass(this.isFavorite) + '" id="favorite-toggle_' + this.serverId + '"></span> ' + this.data.name + '</h3>' +
-        '<span class="server-status" id="status_' + this.serverId + '"></span>' +
-        '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
-        '<span class="server-record" id="record_' + this.serverId + '"></span>' +
-        '<span class="server-versions" id="version_' + this.serverId + '"></span>' +
+        '<span class="server-error" id="error_' + this.serverId + '"></span>' +
+        '<span class="server-label" id="player-count_' + this.serverId + '">Players: <span class="server-value" id="player-count-value_' + this.serverId + '"></span></span>' +
+        '<span class="server-label" id="peak_' + this.serverId + '">' + peakHourDuration + '<span class="server-value" id="peak-value_' + this.serverId + '">-</span></span>' +
+        '<span class="server-label" id="record_' + this.serverId + '">Record: <span class="server-value" id="record-value_' + this.serverId + '">-</span></span>' +
+        '<span class="server-label" id="version_' + this.serverId + '"></span>' +
       '</div>' +
       '<div class="column column-graph" id="chart_' + this.serverId + '"></div>'
 
     serverElement.setAttribute('class', 'server')
 
     document.getElementById('server-list').appendChild(serverElement)
+  }
+
+  updateHighlightedValue (selectedCategory) {
+    ['player-count', 'peak', 'record'].forEach((category) => {
+      const labelElement = document.getElementById(category + '_' + this.serverId)
+      const valueElement = document.getElementById(category + '-value_' + this.serverId)
+
+      if (selectedCategory && category === selectedCategory) {
+        labelElement.setAttribute('class', 'server-highlighted-label')
+        valueElement.setAttribute('class', 'server-highlighted-value')
+      } else {
+        labelElement.setAttribute('class', 'server-label')
+        valueElement.setAttribute('class', 'server-value')
+      }
+    })
   }
 
   initEventListeners () {

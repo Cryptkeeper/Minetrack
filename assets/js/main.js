@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
 
     if (serverRegistration) {
-      serverRegistration.updateServerPeak(data.timestamp, data.players, app.publicConfig.graphDuration)
+      serverRegistration.updateServerPeak(data.timestamp, data.players)
     }
   })
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const graphData = data[serverName]
 
         // [0] and [1] indexes correspond to flot.js' graphing data structure
-        serverRegistration.updateServerPeak(graphData[0], graphData[1], app.publicConfig.graphDuration)
+        serverRegistration.updateServerPeak(graphData[0], graphData[1])
       }
     })
   })

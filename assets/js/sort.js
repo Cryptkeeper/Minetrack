@@ -3,7 +3,8 @@ import { isArrayEqual } from './util'
 const SORT_OPTIONS = [
   {
     getName: () => 'Players',
-    sortFunc: (a, b) => b.playerCount - a.playerCount
+    sortFunc: (a, b) => b.playerCount - a.playerCount,
+    highlightedValue: 'player-count'
   },
   {
     getName: (app) => {
@@ -27,7 +28,8 @@ const SORT_OPTIONS = [
         }
       }
       return false
-    }
+    },
+    highlightedValue: 'peak'
   },
   {
     getName: () => 'Record',
@@ -49,13 +51,8 @@ const SORT_OPTIONS = [
         }
       }
       return false
-    }
-  },
-  {
-    getName: () => 'Growth',
-    sortFunc: (a, b) => {
-      return (b.getPlayerCountDifference() || 0) - (a.getPlayerCountDifference() || 0)
-    }
+    },
+    highlightedValue: 'record'
   }
 ]
 
@@ -138,10 +135,14 @@ export class SortController {
 
   updateSortOption = () => {
     const sortOption = SORT_OPTIONS[this._sortOptionIndex]
-    const sortOptionMarker = (this._sortOptionIndex !== SORT_OPTION_INDEX_DEFAULT) ? '*' : ''
 
     // Pass app instance so sortOption names can be dynamically generated
-    this._textElement.innerText = sortOption.getName(this._app) + sortOptionMarker
+    this._textElement.innerText = sortOption.getName(this._app)
+
+    // Update all servers highlighted values
+    for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
+      serverRegistration.updateHighlightedValue(sortOption.highlightedValue)
+    }
 
     this.sortServers()
   }

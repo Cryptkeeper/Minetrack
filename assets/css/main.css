@@ -297,33 +297,20 @@ footer a:hover {
   color: var(--color-gold);
 }
 
-.server .column-status .server-status {
-  display: block;
-}
-
-.server .column-status .server-player-count {
-  font-weight: 700;
-}
-
-.server .column-status .server-error-message {
+.server .column-status .server-error {
+  display: none;
   color: #e74c3c;
 }
 
-.server .column-status .server-versions {
+.server .column-status .server-label {
   color: var(--color-dark-gray);
   font-size: 16px;
-  display: block;
+  display: none;
 }
 
-.server .column-status .server-peak {
-  font-size: 16px;
-  display: block;
-}
-
-.server .column-status .server-record {
+.server .column-status .server-value {
   color: var(--color-dark-gray);
   font-size: 16px;
-  display: block;
 }
 
 .server .column-graph {
@@ -332,6 +319,18 @@ footer a:hover {
   width: 400px;
   margin-right: -3px;
   margin-bottom: 5px;
+}
+
+/* Highlighted values */
+.server-highlighted-label {
+  color: var(--text-color);
+  font-size: 18px;
+}
+
+.server-highlighted-value {
+  color: var(--text-color);
+  font-size: 18px;
+  font-weight: 700;
 }
 
 /* Global stats */
