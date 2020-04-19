@@ -142,6 +142,12 @@ export class SortController {
     // Pass app instance so sortOption names can be dynamically generated
     this._textElement.innerText = sortOption.getName(this._app)
 
+    if (this._sortOptionIndex !== SORT_OPTION_INDEX_DEFAULT) {
+      this._textElement.style.fontStyle = 'italic'
+    } else {
+      this._textElement.style.fontStyle = 'normal'
+    }
+
     this.sortServers()
   }
 
