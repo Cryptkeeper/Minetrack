@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('../fonts/icomoon.ttf?9gu414') format('truetype'),
-    url('../fonts/icomoon.woff?9gu414') format('woff'),
-    url('../fonts/icomoon.svg?9gu414#icomoon') format('svg');
+    url('../fonts/icomoon.ttf?c102qm') format('truetype'),
+    url('../fonts/icomoon.woff?c102qm') format('woff'),
+    url('../fonts/icomoon.svg?c102qm#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -38,9 +38,6 @@
 }
 .icon-gears:before {
   content: "\f085";
-}
-.icon-github:before {
-  content: "\f09b";
 }
 .icon-globe:before {
   content: "\f0ac";
