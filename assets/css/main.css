@@ -11,7 +11,8 @@
   --color-gold: #FFD700;
   --color-dark-purple: #6c5ce7;
   --color-light-purple: #a29bfe;
-  --color-light-blue: #3498DB;
+  --color-dark-blue: #0984e3;
+  --color-light-blue: #74b9ff;
 
   --theme-color-dark: #3B3738;
   --theme-color-light: #EBEBEB;
@@ -22,6 +23,7 @@
 @media (prefers-color-scheme: light) {
   :root {
     --color-purple: var(--color-light-purple);
+    --color-blue: var(--color-light-blue);
     --background-color: var(--theme-color-light);
     --text-decoration-color: var(--theme-color-dark);
     --text-color: #000;
@@ -37,6 +39,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --color-purple: var(--color-dark-purple);
+    --color-blue: var(--color-dark-blue);
     --background-color: var(--theme-color-dark);
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
@@ -114,7 +117,6 @@ header .logo-column .logo-status {
 }
 
 header .mojang-status-column {
-  color: var(--text-color);
   padding: 20px;
   float: right;
 }
@@ -348,7 +350,7 @@ footer a:hover {
 
 /* Settings toggle */
 #settings-toggle {
-  background: var(--color-light-blue);
+  background: var(--color-blue);
 }
 
 /* Historical graph */
@@ -405,7 +407,7 @@ footer a:hover {
 
 /* Basic elements */
 .button {
-  background: var(--color-light-blue);
+  background: var(--color-blue);
   border-radius: var(--border-radius);
   font-size: 16px;
   padding: 5px 10px;
