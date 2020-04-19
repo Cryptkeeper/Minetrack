@@ -50,6 +50,12 @@ const SORT_OPTIONS = [
       }
       return false
     }
+  },
+  {
+    getName: () => 'Growth',
+    sortFunc: (a, b) => {
+      return (b.getPlayerCountDifference() || 0) - (a.getPlayerCountDifference() || 0)
+    }
   }
 ]
 

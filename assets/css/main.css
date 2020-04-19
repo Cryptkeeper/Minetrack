@@ -305,10 +305,6 @@ footer a:hover {
   font-weight: 700;
 }
 
-.server .column-status .server-player-count-diff {
-  color: #C4C4C4;
-}
-
 .server .column-status .server-error-message {
   color: #e74c3c;
 }

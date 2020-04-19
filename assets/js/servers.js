@@ -232,17 +232,10 @@ export class ServerRegistration {
     if (ping.error) {
       // Attempt to find an error cause from documented options
       const errorMessage = ping.error.description || ping.error.errno || 'Unknown error'
+
       statusElement.innerHTML = '<span class="server-error-message">' + errorMessage + '</span>'
     } else if (ping.result) {
-      let statusHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>'
-
-      // If the data is defined, generate a player count difference and append
-      const playerCountDifference = this.getPlayerCountDifference()
-      if (playerCountDifference !== undefined) {
-        statusHTML += '<span class="server-player-count-diff"> (' + (playerCountDifference >= 0 ? '+' : '') + formatNumber(playerCountDifference) + ')</span>'
-      }
-
-      statusElement.innerHTML = statusHTML
+      statusElement.innerHTML = 'Players: <span class="server-player-count">' + formatNumber(ping.result.players.online) + '</span>'
 
       // An updated favicon has been sent, update the src
       // Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
