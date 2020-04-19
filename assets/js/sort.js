@@ -154,11 +154,13 @@ export class SortController {
 
     // Test if sortedServers has changed from the previous listing
     // This avoids DOM updates and graphs being redrawn
-    if (isArrayEqual(sortedServers, this._lastSortedServers)) {
+    const sortedServerIds = sortedServers.map(server => server.serverId)
+
+    if (isArrayEqual(sortedServerIds, this._lastSortedServers)) {
       return
     }
 
-    this._lastSortedServers = sortedServers
+    this._lastSortedServers = sortedServerIds
 
     // Sort a ServerRegistration list by the sortOption ONLY
     // This is used to determine the ServerRegistration's rankIndex without #isFavorite skewing values
