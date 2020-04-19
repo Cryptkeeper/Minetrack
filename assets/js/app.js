@@ -3,6 +3,7 @@ import { FocusManager } from './focus'
 import { GraphDisplayManager } from './graph'
 import { MojangUpdater } from './mojang'
 import { PercentageBar } from './percbar'
+import { FavoritesManager } from './favorites'
 import { Tooltip, Caption, formatNumber } from './util'
 
 export class App {
@@ -11,11 +12,12 @@ export class App {
   constructor () {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
-    this.serverRegistry = new ServerRegistry()
+    this.serverRegistry = new ServerRegistry(this)
     this.focusManager = new FocusManager(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.mojangUpdater = new MojangUpdater()
     this.percentageBar = new PercentageBar(this)
+    this.favoritesManager = new FavoritesManager(this)
 
     this._taskIds = []
   }
@@ -91,10 +93,8 @@ export class App {
 
     serverRegistration.initServerStatus(latestPing)
 
-    // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
-    document.getElementById('show-more_' + serverRegistration.serverId).addEventListener('click', (event) => {
-      this.focusManager.handleClick(event.target, serverRegistration)
-    }, false)
+    // Allow the ServerRegistration to bind any DOM events with app instance context
+    serverRegistration.initEventListeners()
 
     // Push the historical data into the graph
     // This will trim and format the data so it is ready for the graph to render once init
@@ -132,12 +132,23 @@ export class App {
   }
 
   sortServers = () => {
-    this.serverRegistry.getServerRegistrations().sort(function (a, b) {
+    // Sort a ServerRegistration list by player count ONLY
+    // This is used to determine the ServerRegistration's rankIndex without #isFavorite skewing values
+    const playerCountSortedRegistrations = this.serverRegistry.getServerRegistrations().sort(function (a, b) {
       return b.playerCount - a.playerCount
-    }).forEach(function (serverRegistration, i) {
+    })
+
+    this.serverRegistry.getServerRegistrations().sort(function (a, b) {
+      if (a.isFavorite && !b.isFavorite) {
+        return -1
+      } else if (b.isFavorite && !a.isFavorite) {
+        return 1
+      }
+      return b.playerCount - a.playerCount
+    }).forEach(function (serverRegistration) {
       $('#container_' + serverRegistration.serverId).appendTo('#server-list')
 
-      serverRegistration.updateServerRankIndex(i)
+      serverRegistration.updateServerRankIndex(playerCountSortedRegistrations.indexOf(serverRegistration))
     })
   }
 }

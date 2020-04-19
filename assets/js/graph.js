@@ -62,7 +62,7 @@ export class GraphDisplayManager {
   }
 
   loadLocalStorage () {
-    if (typeof (localStorage) !== 'undefined') {
+    if (typeof localStorage !== 'undefined') {
       let serverNames = localStorage.getItem(HIDDEN_SERVERS_STORAGE_KEY)
       if (serverNames) {
         serverNames = JSON.parse(serverNames)
@@ -81,7 +81,7 @@ export class GraphDisplayManager {
   }
 
   updateLocalStorage () {
-    if (typeof (localStorage) !== 'undefined') {
+    if (typeof localStorage !== 'undefined') {
       // Mutate the serverIds array into server names for storage use
       const serverNames = this._app.serverRegistry.getServerRegistrations()
         .filter(serverRegistration => !serverRegistration.isVisible)

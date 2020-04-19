@@ -122,6 +122,9 @@ document.addEventListener('DOMContentLoaded', function () {
   socket.on('syncComplete', function () {
     app.caption.hide()
 
+    // Load favorites since all servers are registered
+    app.favoritesManager.loadLocalStorage()
+
     // Run a single bulk server sort instead of per-add event since there may be multiple
     app.sortServers()
     app.percentageBar.redraw()

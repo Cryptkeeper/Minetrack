@@ -33,7 +33,8 @@ export const SERVER_GRAPH_OPTIONS = {
 }
 
 export class ServerRegistry {
-  constructor () {
+  constructor (app) {
+    this._app = app
     this._serverIdsByName = []
     this._serverDataById = []
     this._registeredServers = []
@@ -50,7 +51,7 @@ export class ServerRegistry {
   createServerRegistration (serverName) {
     const serverId = this._serverIdsByName[serverName]
     const serverData = this._serverDataById[serverId]
-    const serverRegistration = new ServerRegistration(serverId, serverData)
+    const serverRegistration = new ServerRegistration(this._app, serverId, serverData)
     this._registeredServers[serverId] = serverRegistration
     return serverRegistration
   }
@@ -99,12 +100,14 @@ export class ServerRegistration {
   playerCount = 0
   maxPlayerCount = 0
   isVisible = true
+  isFavorite = false
   rankIndex
   lastRecordData
   lastVersions = []
   lastPeak
 
-  constructor (serverId, data) {
+  constructor (app, serverId, data) {
+    this._app = app
     this.serverId = serverId
     this.data = data
     this._graphData = []
@@ -265,7 +268,7 @@ export class ServerRegistration {
         '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
       '</div>' +
       '<div class="column column-status">' +
-        '<h3 class="server-name"><span class="server-show-more"><span class="icon-chevron-circle-down" id="show-more_' + this.serverId + '"></span></span> ' + this.data.name + '</h3>' +
+        '<h3 class="server-name"><span class="' + this._app.favoritesManager.getIconClass(this.isFavorite) + '" id="favorite-toggle_' + this.serverId + '" minetrack-server-id="' + this.serverId + '"></span> <span class="server-show-more"><span class="icon-chevron-circle-down" id="show-more_' + this.serverId + '"></span></span> ' + this.data.name + '</h3>' +
         '<span class="server-status" id="status_' + this.serverId + '"></span>' +
         '<span class="server-peak" id="peak_' + this.serverId + '"></span>' +
         '<span class="server-record" id="record_' + this.serverId + '"></span>' +
@@ -276,5 +279,16 @@ export class ServerRegistration {
     serverElement.setAttribute('class', 'server')
 
     document.getElementById('server-list').appendChild(serverElement)
+  }
+
+  initEventListeners () {
+    // Bind to the DOM element for proxying click events and ServerRegistrations to FocusManager
+    document.getElementById('show-more_' + this.serverId).addEventListener('click', (event) => {
+      this._app.focusManager.handleClick(event.target, this)
+    }, false)
+
+    document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', (event) => {
+      this._app.favoritesManager.handleFavoriteButtonClick(event)
+    }, false)
   }
 }

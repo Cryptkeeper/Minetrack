@@ -233,6 +233,24 @@ footer a:hover {
   cursor: pointer;
 }
 
+.server .column-status .server-is-favorite {
+  cursor: pointer;
+  color: gold;
+}
+
+.server .column-status .server-is-favorite:hover::before {
+  content: "\f006";
+}
+
+.server .column-status .server-is-not-favorite {
+  cursor: pointer;
+  color: var(--background-color);
+}
+
+.server .column-status .server-is-not-favorite:hover {
+  color: gold;
+}
+
 .server .column-status .server-status {
   display: block;
 }
