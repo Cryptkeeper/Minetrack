@@ -340,6 +340,7 @@ footer a:hover {
 
 #big-graph-mobile-load-request a {
   display: inline-block;
+  color: var(--text-color);
 }
 
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
