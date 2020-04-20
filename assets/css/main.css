@@ -126,7 +126,7 @@ header .logo-status {
 header .header-button {
   color: var(--text-color);
   width: 83px;
-  height: 83px;
+  height: 112px;
   text-align: center;
   line-height: 20px;
   font-size: 14px;
@@ -135,7 +135,7 @@ header .header-button {
 
 header .header-button > span:first-of-type {
   display: block;
-  margin-top: 10px;
+  margin-top: 25px;
   font-size: 22px;
 }
 
@@ -171,7 +171,7 @@ footer {
   color: var(--text-color);
   border-top-right-radius: var(--border-radius);
   border-top-left-radius: var(--border-radius);
-  padding: 5px 0;
+  padding: 10px 0;
   text-align: center;
   width: 90%;
   margin: 15px auto 0 auto;
@@ -445,22 +445,6 @@ footer a:hover {
   }
 }
 
-/* minetrack.me sites */
-#minetrack-sites {
-  background: var(--background-color);
-  color: var(--text-color);
-  text-align: left;
-  padding: 5px 10px;
-}
-
-#minetrack-sites a {
-  color: var(--color-blue-inverted);
-}
-
-#minetrack-sites a:hover {
-  color: var(--text-color);
-}
-
 /* Header rows */
 @media only screen and (max-width: 1050px) {
   header {
@@ -475,9 +459,5 @@ footer a:hover {
 
   .header-possible-row-break:last-of-type {
     margin-bottom: 20px;
-  }
-
-  #minetrack-sites {
-    text-align: center;
   }
 }
