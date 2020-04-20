@@ -184,6 +184,10 @@ footer a:hover {
   border-bottom: 1px dashed transparent;
 }
 
+footer a:hover {
+  color: var(--text-color);
+}
+
 /* Status overly */
 #status-overlay {
   padding: 20px 0;
