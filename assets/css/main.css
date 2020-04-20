@@ -178,6 +178,10 @@ footer a {
   color: var(--color-blue-inverted);
 }
 
+footer a:hover {
+  color: var(--text-color);
+}
+
 /* Status overly */
 #status-overlay {
   padding: 20px 0;
