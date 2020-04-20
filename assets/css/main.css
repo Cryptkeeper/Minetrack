@@ -53,9 +53,10 @@
 }
 
 body {
-    font-family: "Open Sans", sans-serif;
-    font-size: 18px;
-    font-weight: 300;
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  min-width: 800px;
 }
 
 /* Page layout */
@@ -73,7 +74,6 @@ a {
   display: none;
   position: relative;
   min-height: 100%;
-  min-width: 1070px;
 }
 
 strong {
@@ -132,6 +132,7 @@ header .header-button {
   text-align: center;
   line-height: 20px;
   font-size: 14px;
+  margin-left: -5px;
 }
 
 header .header-button > span:first-of-type {
@@ -142,11 +143,9 @@ header .header-button > span:first-of-type {
 
 header .header-button-group {
   display: inline-block;
-  margin-left: -5px;
 }
 
 header .header-button-group:first-of-type {
-  margin-left: 0 !important;
   border-top-left-radius: var(--border-radius);
   border-bottom-left-radius: var(--border-radius);
 }
@@ -334,12 +333,11 @@ footer a:hover {
 #big-graph-mobile-load-request {
   background: var(--background-color);
   color: var(--text-color);
-  border-radius: var(--border-radius);
-  padding: 10px;
+  padding: 10px 0;
   text-align: center;
   display: none;
-  width: 450px;
-  margin: 0 auto 10px auto;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 #big-graph-mobile-load-request a {
@@ -412,6 +410,7 @@ footer a:hover {
   position: absolute;
 }
 
+/* Mojang status colors */
 @media (prefers-color-scheme: light) {
   .mojang-status-online {
     background: #87D37C;
@@ -437,5 +436,22 @@ footer a:hover {
 
   .mojang-status-offline {
     background: #A6453B;
+  }
+}
+
+/* Header rows */
+@media only screen and (max-width: 1050px) {
+  header {
+    padding: 0 !important;
+  }
+
+  .header-possible-row-break {
+    padding-top: 20px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .header-possible-row-break:last-of-type {
+    margin-bottom: 20px;
   }
 }
