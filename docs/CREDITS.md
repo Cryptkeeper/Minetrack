@@ -1,1 +1,0 @@
-Compass icon by PixelBuddha: https://www.iconfinder.com/PixelBuddha
