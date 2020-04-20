@@ -24,6 +24,7 @@
   :root {
     --color-purple: var(--color-light-purple);
     --color-blue: var(--color-light-blue);
+    --color-blue-inverted: var(--color-dark-blue);
     --background-color: var(--theme-color-light);
     --text-decoration-color: var(--theme-color-dark);
     --text-color: #000;
@@ -40,6 +41,7 @@
   :root {
     --color-purple: var(--color-dark-purple);
     --color-blue: var(--color-dark-blue);
+    --color-blue-inverted: var(--color-light-blue);
     --background-color: var(--theme-color-dark);
     --text-decoration-color: var(--theme-color-light);
     --text-color: #FFF;
@@ -65,9 +67,13 @@ html, body {
 }
 
 a {
-  cursor: pointer;
-  color: inherit;
   text-decoration: none;
+  color: var(--color-blue);
+}
+
+a:hover {
+  color: var(--background-color);
+  cursor: pointer;
 }
 
 #push {
@@ -117,14 +123,6 @@ header .logo-status {
   font-size: 21px;
 }
 
-header a {
-  border-bottom: 1px dashed var(--text-decoration-color);
-}
-
-header a:hover {
-  border-bottom: 1px dashed transparent;
-}
-
 header .header-button {
   color: var(--text-color);
   width: 83px;
@@ -171,17 +169,13 @@ footer {
   display: none;
   background: var(--background-color);
   color: var(--text-color);
-  padding: 10px 0 15px 0;
+  padding: 10px 0;
   text-align: center;
   margin-top: 15px;
 }
 
 footer a {
-  border-bottom: 1px dashed var(--text-decoration-color);
-}
-
-footer a:hover {
-  border-bottom: 1px dashed transparent;
+  color: var(--color-blue-inverted);
 }
 
 /* Status overly */
