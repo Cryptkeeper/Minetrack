@@ -1,0 +1,59 @@
+@font-face {
+  font-family: 'icomoon';
+  src:
+    url('../fonts/icomoon.ttf?gn52nv') format('truetype'),
+    url('../fonts/icomoon.woff?gn52nv') format('woff'),
+    url('../fonts/icomoon.svg?gn52nv#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-star:before {
+  content: "\f005";
+}
+.icon-star-o:before {
+  content: "\f006";
+}
+.icon-lock:before {
+  content: "\f023";
+}
+.icon-eye:before {
+  content: "\f06e";
+}
+.icon-eye-slash:before {
+  content: "\f070";
+}
+.icon-cogs:before {
+  content: "\f085";
+}
+.icon-gears:before {
+  content: "\f085";
+}
+.icon-globe:before {
+  content: "\f0ac";
+}
+.icon-code:before {
+  content: "\f121";
+}
+.icon-sort-amount-desc:before {
+  content: "\f161";
+}
+.icon-street-view:before {
+  content: "\f21d";
+}

@@ -1,3 +1,8 @@
+/**
+ * THIS IS LEGACY, UNMAINTAINED CODE
+ * IT MAY (AND LIKELY DOES) CONTAIN BUGS
+ * USAGE IS NOT RECOMMENDED
+ */
 var server = require('./lib/server');
 var ping = require('./lib/ping');
 var logger = require('./lib/logger');
@@ -7,21 +12,43 @@ var db = require('./lib/database');
 
 var config = require('./config.json');
 var servers = require('./servers.json');
+var minecraftVersions = require('./minecraft_versions.json');
 
 var networkHistory = [];
 var connectedClients = 0;
 
-var currentVersionIndex = {
-	'PC': 0,
-	'PE': 0
-};
-
 var networkVersions = [];
+
+const lastFavicons = [];
 
 var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
 var graphPeaks = {};
+
+const serverProtocolVersionIndexes = []
+
+function getNextProtocolVersion (server) {
+	// Minecraft Bedrock Edition does not have protocol versions
+	if (server.type === 'PE') {
+		return {
+			protocolId: 0,
+			protocolIndex: 0
+		}
+	}
+	const protocolVersions = minecraftVersions[server.type]
+	let nextProtocolVersion = serverProtocolVersionIndexes[server.name]
+	if (typeof nextProtocolVersion === 'undefined' || nextProtocolVersion + 1 >= protocolVersions.length) {
+		nextProtocolVersion = 0
+	} else {
+		nextProtocolVersion++
+	}
+	serverProtocolVersionIndexes[server.name] = nextProtocolVersion
+	return {
+		protocolId: protocolVersions[nextProtocolVersion].protocolId,
+		protocolIndex: nextProtocolVersion
+	}
+}
 
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
@@ -32,7 +59,7 @@ function pingAll() {
 				network.color = util.stringToColor(network.name);
 			}
 
-			var attemptedVersion = config.versions[network.type][currentVersionIndex[network.type]];
+			const attemptedVersion = getNextProtocolVersion(network)
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
@@ -40,26 +67,13 @@ function pingAll() {
 				}
 
 				// If we have favicon override specified, use it.
-				if (res && config.faviconOverride && config.faviconOverride[network.name]) {
-					res.favicon = config.faviconOverride[network.name];
+				if (network.favicon) {
+					res.favicon = network.favicon
 				}
 
 				handlePing(network, res, err, attemptedVersion);
-			}, attemptedVersion);
+			}, attemptedVersion.protocolId);
 		})(servers[i]);
-	}
-
-	currentVersionIndex['PC']++;
-	currentVersionIndex['PE']++;
-
-	if (currentVersionIndex['PC'] >= config.versions['PC'].length) {
-		// Loop around
-		currentVersionIndex['PC'] = 0;
-	}
-
-	if (currentVersionIndex['PE'] >= config.versions['PE'].length) {
-		// Loop around
-		currentVersionIndex['PE'] = 0;
 	}
 }
 
@@ -76,18 +90,31 @@ function handlePing(network, res, err, attemptedVersion) {
 		networkVersions[network.name] = [];
 	}
 
+	const serverVersionHistory = networkVersions[network.name]
+
 	// If the result version matches the attempted version, the version is supported
-	var _networkVersions = networkVersions[network.name];
+	if (res && res.version !== undefined) {
+		const indexOf = serverVersionHistory.indexOf(attemptedVersion.protocolIndex)
+
+		// Test indexOf to avoid inserting previously recorded protocolIndex values
+		if (res.version === attemptedVersion.protocolId && indexOf === -1) {
+			serverVersionHistory.push(attemptedVersion.protocolIndex)
+		} else if (res.version !== attemptedVersion.protocolId && indexOf >= 0) {
+			serverVersionHistory.splice(indexOf, 1)
+		}
+	}
+
+	const timestamp = util.getCurrentTimeMs()
+
 	if (res) {
-		if (res.version == attemptedVersion) {
-			if (_networkVersions.indexOf(res.version) == -1) {
-				_networkVersions.push(res.version);
-			}
-		} else {
-			// Mismatch, so remove the version from the supported version list
-			var index = _networkVersions.indexOf(attemptedVersion);
-			if (index != -1) {
-				_networkVersions.splice(index, 1);
+		const recordData = highestPlayerCount[network.ip]
+
+		// Validate that we have logToDatabase enabled otherwise in memory pings
+		// will create a record that's only valid for the runtime duration.
+		if (config.logToDatabase && (!recordData || res.players.online > recordData.playerCount)) {
+			highestPlayerCount[network.ip] = {
+				playerCount: res.players.online,
+				timestamp: timestamp
 			}
 		}
 	}
@@ -96,20 +123,25 @@ function handlePing(network, res, err, attemptedVersion) {
 	var networkSnapshot = {
 		info: {
 			name: network.name,
-			timestamp: util.getCurrentTimeMs(),
+			timestamp: timestamp,
 			type: network.type
 		},
-		versions: _networkVersions,
-		record: highestPlayerCount[network.ip]
+		versions: serverVersionHistory,
+		recordData: highestPlayerCount[network.ip]
 	};
 
 	if (res) {
 		networkSnapshot.result = res;
 
-		// Validate that we have logToDatabase enabled otherwise in memory pings
-		// will create a record that's only valid for the runtime duration.
-		if (config.logToDatabase && res.players.online > highestPlayerCount[network.ip]) {
-			highestPlayerCount[network.ip] = res.players.online;
+		// Only emit updated favicons
+		// Favicons will otherwise be explicitly emitted during the handshake process
+		if (res.favicon) {
+			const lastFavicon = lastFavicons[network.name]
+			if (lastFavicon !== res.favicon) {
+				lastFavicons[network.name] = res.favicon
+				networkSnapshot.favicon = res.favicon // Send updated favicon directly on object
+			}
+			delete res.favicon // Never store favicons in memory outside lastFavicons
 		}
 	} else if (err) {
 		networkSnapshot.error = err;
@@ -121,18 +153,15 @@ function handlePing(network, res, err, attemptedVersion) {
 
 	// Remove our previous data that we don't need anymore.
 	for (var i = 0; i < _networkHistory.length; i++) {
+		delete _networkHistory[i].versions
         delete _networkHistory[i].info;
-
-        if (_networkHistory[i].result) {
-        	delete _networkHistory[i].result.favicon;
-        }
 	}
 
 	_networkHistory.push({
 		error: err,
 		result: res,
-		versions: _networkVersions,
-		timestamp: util.getCurrentTimeMs(),
+		versions: serverVersionHistory,
+		timestamp: timestamp,
         info: {
             ip: network.ip,
             port: network.port,
@@ -148,18 +177,16 @@ function handlePing(network, res, err, attemptedVersion) {
 
 	// Log it to the database if needed.
 	if (config.logToDatabase) {
-		db.log(network.ip, util.getCurrentTimeMs(), res ? res.players.online : 0);
+		db.log(network.ip, timestamp, res ? res.players.online : 0);
 	}
 
-	// Push it to our graphs.
-	var timeMs = util.getCurrentTimeMs();
 
 	// The same mechanic from trimUselessPings is seen here.
 	// If we dropped the ping, then to avoid destroying the graph, ignore it.
 	// However if it's been too long since the last successful ping, we'll send it anyways.
 	if (config.logToDatabase) {
-		if (!lastGraphPush[network.ip] || (timeMs - lastGraphPush[network.ip] >= 60 * 1000 && res) || timeMs - lastGraphPush[network.ip] >= 70 * 1000) {
-			lastGraphPush[network.ip] = timeMs;
+		if (!lastGraphPush[network.ip] || (timestamp - lastGraphPush[network.ip] >= 60 * 1000 && res) || timestamp - lastGraphPush[network.ip] >= 70 * 1000) {
+			lastGraphPush[network.ip] = timestamp;
 
 			// Don't have too much data!
 			util.trimOldPings(graphData);
@@ -168,14 +195,14 @@ function handlePing(network, res, err, attemptedVersion) {
 				graphData[network.name] = [];
 			}
 
-			graphData[network.name].push([timeMs, res ? res.players.online : 0]);
+			graphData[network.name].push([timestamp, res ? res.players.online : 0]);
 
 			// Send the update.
 			server.io.sockets.emit('updateHistoryGraph', {
 				ip: network.ip,
 				name: network.name,
 				players: (res ? res.players.online : 0),
-				timestamp: timeMs
+				timestamp: timestamp
 			});
 		}
 
@@ -234,10 +261,6 @@ function startServices() {
 
 		logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 
-		// We send the boot time (also sent in publicConfig.json) to the frontend to validate they have the same config.
-		// If so, they'll send back "requestListing" event, otherwise they will pull the new config and retry.
-		client.emit('bootTime', util.getBootTime());
-
 		// Attach our listeners.
 		client.on('disconnect', function() {
 			connectedClients -= 1;
@@ -257,41 +280,54 @@ function startServices() {
 			}
 		});
 
-		client.on('requestListing', function() {
-			// Send them our previous data, so they have somewhere to start.
-			client.emit('updateMojangServices', mojang.toMessage());
+		const minecraftVersionNames = {}
+		Object.keys(minecraftVersions).forEach(function (key) {
+			minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
+		})
 
-			// Remap our associative array into just an array.
-			var networkHistoryKeys = Object.keys(networkHistory);
-
-			networkHistoryKeys.sort();
-
-			// Send each individually, this should look cleaner than waiting for one big array to transfer.
-			for (var i = 0; i < servers.length; i++) {
-				var server = servers[i];
-
-				if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
-					// This server hasn't been ping'd yet. Send a hacky placeholder.
-					client.emit('add', [[{
-						error: {
-							description: 'Waiting'
-						},
-						result: null,
-						timestamp: util.getCurrentTimeMs(),
-						info: {
-							ip: server.ip,
-							port: server.port,
-							type: server.type,
-							name: server.name
-						}
-					}]]);
-				} else {
-					client.emit('add', [networkHistory[networkHistoryKeys[i]]]);
-				}
-			}
-
-			client.emit('syncComplete');
+		// Send configuration data for rendering the page
+		client.emit('setPublicConfig', {
+			graphDuration: config.graphDuration,
+			servers: servers,
+			minecraftVersions: minecraftVersionNames,
+			isGraphVisible: config.logToDatabase
 		});
+
+		// Send them our previous data, so they have somewhere to start.
+		client.emit('updateMojangServices', mojang.toMessage());
+
+		// Send each individually, this should look cleaner than waiting for one big array to transfer.
+		for (var i = 0; i < servers.length; i++) {
+			var server = servers[i];
+
+			if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
+				// This server hasn't been ping'd yet. Send a hacky placeholder.
+				client.emit('add', [[{
+					error: {
+						description: 'Waiting...',
+						placeholder: true
+					},
+					result: null,
+					timestamp: util.getCurrentTimeMs(),
+					info: {
+						ip: server.ip,
+						port: server.port,
+						type: server.type,
+						name: server.name
+					}
+				}]]);
+			} else {
+				// Append the lastFavicon to the last ping entry
+				const serverHistory = networkHistory[server.name];
+				const lastFavicon = lastFavicons[server.name];
+				if (lastFavicon) {
+					serverHistory[serverHistory.length - 1].favicon = lastFavicon
+				}
+				client.emit('add', [serverHistory])
+			}
+		}
+
+		client.emit('syncComplete');
 	});
 
 	startMainLoop();
@@ -332,10 +368,13 @@ if (config.logToDatabase) {
 			}
 
 			(function(server) {
-				db.getTotalRecord(server.ip, function(record) {
-					logger.log('info', 'Computed total record %s (%d)', server.ip, record);
+				db.getTotalRecord(server.ip, function(playerCount, timestamp) {
+					logger.log('info', 'Computed total record %s (%d) @ %d', server.ip, playerCount, timestamp);
 
-					highestPlayerCount[server.ip] = record;
+					highestPlayerCount[server.ip] = {
+						playerCount: playerCount,
+						timestamp: timestamp
+					};
 
 					completedQueries += 1;
 

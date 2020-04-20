@@ -1,3 +1,38 @@
+**5** *(Apr 8 2020)*
+- New logo!
+- Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
+- Adds a button for mobile devices to manually request the historical graph
+- Adds timestamp to each server's player count record
+- Adds the ability to favorite servers so they'll always be sorted first
+- Adds "Sort By" option for controlling the server listing sort order
+- Adds "Only Favorites" button to graph controls
+- Adds ESLint configuration
+- New missing favicon icon
+- The versions section, and minecraft.json file, have been merged into minecraft_versions.json
+- Removes "routes" from config.json. The HTTP server will now serve static assets from dist/
+- Added Parcel bundler which bundles the assets/ directory into dist/ 
+- Custom favicons are now served from "favicons/" directory and their configuration moved into servers.json. Paths in servers.json should be updated to reflect their filename without the path.
+- Added finalhandler and serve-static dependencies
+- Add ```npm run dev``` and ```npm run build``` scripts to package.json
+- Added a distinct loading/connection status screen to simplify state management
+- publicConfig.json is now sent over the socket connection so the frontend can be safely reloaded on rebooted instances
+- Tooltips have been optimized and updated to a more readable design
+- Initial page loading has been optimized
+- MISSING_FAVICON_BASE64 has been moved to a file, images/missing_favicon.svg to improve caching behavior (and its customizable now!)
+- Peak player count labels are formatted using the graphDuration hours and now displays the timestamp seconds
+- Fixed favicon payloads being repeatedly sent.
+- Fixed the page being broken when connecting to a freshly booted instance
+- Fixed graphs starting at 0 player count when a server is initially pinged
+- Fixed status text ocassionally not being shown
+- Fixed some elements/frontend state not being completely reset on disconnect
+- Fixed Minecraft Bedrock Edition servers showing the default port of 19132
+- Fixed tooltips overflowing the page width
+- Fixed backend bug causing servers to skip some Minecraft versions
+- Minor connection blips have a grace period before the UI is updated, this prevents page reshuffle spam when experiencing minor connection issues
+- Moved localStorage keys to "minetrack_hidden_servers" since the data structure has been changed
+- Removed #validateBootTime loop and logic
+- Removed mime dependency
+
 **4.0.5** *(Apr 1 2020)*
 - The frontend will now auto calculate the "24h Peak" label using your configured graphDuration in config.json
 
