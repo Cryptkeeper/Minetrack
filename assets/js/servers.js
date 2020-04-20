@@ -221,7 +221,7 @@ export class ServerRegistration {
       const recordData = ping.recordData
 
       // Safely handle legacy recordData that may not include the timestamp payload
-      if (recordData.timestamp !== -1) {
+      if (recordData.timestamp > 0) {
         recordValueElement.innerHTML = formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
         recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
       } else {
