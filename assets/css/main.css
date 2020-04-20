@@ -446,7 +446,7 @@ footer a:hover {
 }
 
 /* Header rows */
-@media only screen and (max-width: 1050px) {
+@media only screen and (max-width: 1300px) {
   header {
     padding: 0 !important;
   }
