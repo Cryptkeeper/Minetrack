@@ -460,4 +460,12 @@ footer a:hover {
   .header-possible-row-break:last-of-type {
     margin-bottom: 20px;
   }
+
+  header .header-button {
+    height: 83px;
+  }
+
+  header .header-button > span:first-of-type {
+    margin-top: 10px;
+  }
 }
