@@ -442,6 +442,22 @@ footer a:hover {
   }
 }
 
+/* minetrack.me sites */
+#minetrack-sites {
+  background: var(--background-color);
+  color: var(--text-color);
+  text-align: left;
+  padding: 10px 00px 10px 10px;
+}
+
+#minetrack-sites a {
+  color: var(--color-blue-inverted);
+}
+
+#minetrack-sites a:hover {
+  color: var(--text-color);
+}
+
 /* Header rows */
 @media only screen and (max-width: 1050px) {
   header {
@@ -456,5 +472,10 @@ footer a:hover {
 
   .header-possible-row-break:last-of-type {
     margin-bottom: 20px;
+  }
+
+  #minetrack-sites {
+    padding: 10px 0;
+    text-align: center;
   }
 }
