@@ -3,29 +3,34 @@
 		"name": "Mineplex",
 		"ip": "pe.mineplex.com",
 		"type": "PE",
-		"color": "#ec8008"
+		"color": "#ec8008",
+		"favicon": "mineplex.png"
 	},
 	{
 		"name": "Lifeboat",
 		"ip": "play.lbsg.net",
-		"type": "PE"
+		"type": "PE",
+		"favicon": "lifeboat.png"
 	},
 	{
 		"name": "InPvP",
 		"ip": "play.inpvp.net",
 		"type": "PE",
-		"color": "#A874AB"
+		"color": "#A874AB",
+		"favicon": "inpvp.png"
 	},
-	 {
-	   "name": "CubeCraft",
-	   "ip": "mco.cubecraft.net",
-	   "type": "PE",
-	   "color": "#176093"
-	 },
-	 {
+	{
+		"name": "CubeCraft",
+		"ip": "mco.cubecraft.net",
+		"type": "PE",
+		"color": "#176093",
+		"favicon": "cubecraft.png"
+	},
+	{
 		"name": "Hive Games",
 		"ip": "hivebedrock.network",
 		"type": "PE",
-		"color": "#ffcb03"
-	  }
+		"color": "#ffcb03",
+		"favicon": "hive.png"
+	}
 ]

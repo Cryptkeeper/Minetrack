@@ -2,99 +2,81 @@
 
 <html>
 
-	<head>
+<head>
 
-		<link rel="stylesheet" type="text/css" href="css/main.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="../css/main.css">
 
-		<link rel="icon" type="image/png" href="/images/compass.png">
+	<link rel="icon" type="image/svg+xml" href="../images/logo.svg">
 
-		<title>Minetrack Bedrock</title>
+	<meta charset="UTF-8">
 
-	</head>
+	<title>Minetrack Bedrock</title>
 
-	<body>
+</head>
 
-		<div id="tooltip"></div>
+<body>
 
-		<div id="push">
+	<div id="tooltip"></div>
 
-			<div id="header">
+	<div id="status-overlay">
+		<img class="logo-image" src="../images/logo.svg">
+		<h1 class="logo-text">Minetrack Bedrock</h1>
+		<div id="status-text">Connecting...</div>
+	</div>
 
-				<div id="header-wrapper">
+	<div id="push">
 
-					<div class="column" style="padding: 20px;">
+		<div id="perc-bar"></div>
 
-						<img src="/images/compass.png" width="28" height="28" style="display: inline-block; margin-right: 5px;">
-						<h1 style="display: inline-block;" class="text-uppercase">Minetrack Bedrock</h1>
-						<p class="subslogan text-uppercase">View Top <a target="_blank" href="https://minetrack.me">Minecraft Java Servers</a> / <a target="_blank" href="https://bedrock.minetrack.me">Minecraft Bedrock Servers</a> / <a target="_blank" href="https://roblox.minetrack.me">Roblox Games</a></p>
-						<p class="subslogan text-uppercase">Watching <span id="stat_totalPlayers">0</span> players on <span id="stat_networks">0</span> networks.</p>
-
-					</div>
-
-					<div id="mojang-status-list" class="column" style="float: right; display: none;">
-
-						<div class="mojang-status" title="Sessions" id="mojang-status_Sessions"><i class="fa fa-gamepad"></i><br /><strong>Sessions</strong><p class="mojang-status-text" id="mojang-status-text_Sessions">...</p></div><div class="mojang-status" title="Skins" id="mojang-status_Skins"><i class="fa fa-user"></i><br /><strong>Skins</strong><p class="mojang-status-text" id="mojang-status-text_Skins">...</p></div><div class="mojang-status" title="Auth" id="mojang-status_Auth"><i class="fa fa-key"></i><br /><strong>Auth</strong><p class="mojang-status-text" id="mojang-status-text_Auth">...</p></div><div class="mojang-status" title="API" id="mojang-status_API"><i class="fa fa-wrench"></i><br /><strong>API</strong><p class="mojang-status-text" id="mojang-status-text_API">...</p></div>
-
-					</div>
-
-				</div>
-
+		<header>
+			<div class="header-possible-row-break column-left">
+				<img class="logo-image" src="../images/logo.svg">
+				<h1 class="logo-text">Minetrack Bedrock</h1>
+				<p class="logo-status">Counting <span class="global-stat" id="stat_totalPlayers">0</span> players on <span class="global-stat" id="stat_networks">0</span> Minecraft servers.</p>
+				<p class="logo-status">View top <a target="_blank" href="https://minetrack.me">Minecraft Java Servers</a> / <a target="_blank" href="https://bedrock.minetrack.me">Minecraft Bedrock Servers</a> / <a target="_blank" href="https://roblox.minetrack.me">Roblox Games</a></p>
 			</div>
 
-			<div id="perc-bar"></div>
-
-			<div id="tagline-text">Connecting...</div>
-
-			<div id="big-graph"></div>
-
-			<div id="big-graph-controls" style="display: none;">
-
-				<span style="text-align: center; display: block;">
-
-					<a onclick="toggleControlsDrawer();">Click to toggle graph controls</a>
-
-				</span>
-
-				<div id="big-graph-controls-drawer" style="display: none;">
-
-					<div id="big-graph-checkboxes"></div>
-
-					<br />
-
-					<span style="text-align: center; display: block; margin-bottom: 15px;">
-
-						<span onclick="setAllGraphVisibility(true);" class="button">Show All</span>
-						<span onclick="setAllGraphVisibility(false);" class="button">Hide All</span>
-
-					</span>
-
-				</div>
-
+			<div class="header-possible-row-break column-right">
+				<div id="sort-by" class="header-button header-button-single"><span class="icon-sort-amount-desc"></span> Sort By<br><strong id="sort-by-text">...</strong></div>
+				
+				<div id="settings-toggle" class="header-button header-button-single"><span class="icon-gears"></span> Graph Controls</div>
 			</div>
+		</header>
 
-			<div id="server-container-list" class="server-container"></div>
-
-        </div>
-
-        <div id="footer">
-
-			<span style="padding-left: 20px;">Website powered by <a href="https://github.com/Cryptkeeper/Minetrack"><i class="fa fa-github"></i> Minetrack</a>.</span>
-
+		<div id="big-graph-mobile-load-request">
+			<strong>On a mobile device?</strong>
+			<p>Minetrack has skipped automatically loading the historical graph to help save data and power.</p>
+			<br>
+			<a id="big-graph-mobile-load-request-button" class="button">Load Historical Graph</a>
 		</div>
 
-        <!-- External JS assets -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+		<div id="big-graph"></div>
 
-        <!-- Internal JS assets -->
-        <script src="js/util.js"></script>
-        <script src="js/graph.js"></script>
-		<script src="js/site.js"></script>
+		<div id="big-graph-controls">
+			<div id="big-graph-controls-drawer">
+				<div id="big-graph-checkboxes"></div>
 
-		<script src="publicConfig.json"></script>
+				<span class="graph-controls-setall">
+					<a minetrack-show-type="all" class="button graph-controls-show"><span class="icon-eye"></span> Show All</a>
+					<a minetrack-show-type="none" class="button graph-controls-show"><span class="icon-eye-slash"></span> Hide All</a>
+					<a minetrack-show-type="favorites" class="button graph-controls-show"><span class="icon-star"></span> Only Favorites</a>
+				</span>
+			</div>
+		</div>
 
-	</body>
+		<div id="server-list"></div>
+
+	</div>
+
+	<footer id="footer">
+		<span class="icon-code"></span> Powered by open source software - <a href="https://github.com/Cryptkeeper/Minetrack">make it your own!</a>
+	</footer>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
+
+	<script src="../js/main.js" defer></script>
+
+</body>
 
 </html>
