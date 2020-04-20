@@ -360,6 +360,10 @@ footer a:hover {
   display: none;
 }
 
+.graph-controls-show {
+  color: var(--text-color);
+}
+
 #big-graph-controls .icon-star {
   color: var(--color-gold);
 }
