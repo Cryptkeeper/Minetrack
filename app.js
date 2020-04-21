@@ -21,11 +21,6 @@ const serverRegistrations = []
 var networkHistory = [];
 var connectedClients = 0;
 
-var graphData = [];
-var highestPlayerCount = {};
-var lastGraphPush = [];
-var graphPeaks = {};
-
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
@@ -79,18 +74,16 @@ function handlePing(network, res, err, attemptedVersion) {
 
 	const timestamp = util.getCurrentTimeMs()
 
-	if (res) {
-		const recordData = highestPlayerCount[network.ip]
-
-		// Validate that we have logToDatabase enabled otherwise in memory pings
-		// will create a record that's only valid for the runtime duration.
-		if (config.logToDatabase && (!recordData || res.players.online > recordData.playerCount)) {
-			highestPlayerCount[network.ip] = {
-				playerCount: res.players.online,
-				timestamp: timestamp
-			}
-		}
-	}
+  if (res) {
+    // Validate that we have logToDatabase enabled otherwise in memory pings
+    // will create a record that's only valid for the runtime duration.
+    if (config.logToDatabase && (!serverRegistration.recordData || res.players.online > serverRegistration.recordData.playerCount)) {
+      serverRegistration.recordData = {
+        playerCount: res.players.online,
+        timestamp: timestamp
+      }
+    }
+  }
 
 	// Update the clients
 	var networkSnapshot = {
@@ -100,7 +93,7 @@ function handlePing(network, res, err, attemptedVersion) {
 			type: network.type
 		},
 		versions: serverRegistration.versions,
-		recordData: highestPlayerCount[network.ip]
+		recordData: serverRegistration.recordData
 	};
 
 	if (res) {
@@ -145,69 +138,34 @@ function handlePing(network, res, err, attemptedVersion) {
 		_networkHistory.shift();
 	}
 
-	// Log it to the database if needed.
-	if (config.logToDatabase) {
-		db.log(network.ip, timestamp, res ? res.players.online : 0);
-	}
+  if (config.logToDatabase) {
+    const playerCount = res ? res.players.online : 0
 
+    // Log to database
+    db.log(serverRegistration.data.ip, timestamp, playerCount)
 
-	// The same mechanic from trimUselessPings is seen here.
-	// If we dropped the ping, then to avoid destroying the graph, ignore it.
-	// However if it's been too long since the last successful ping, we'll send it anyways.
-	if (config.logToDatabase) {
-		if (!lastGraphPush[network.ip] || (timestamp - lastGraphPush[network.ip] >= 60 * 1000 && res) || timestamp - lastGraphPush[network.ip] >= 70 * 1000) {
-			lastGraphPush[network.ip] = timestamp;
+    if (serverRegistration.addGraphPoint(res !== undefined, playerCount, timestamp)) {
+      // Broadcast update event to clients
+      server.io.sockets.emit('updateHistoryGraph', {
+        name: serverRegistration.data.name,
+        players: playerCount, // TODO: players -> playerCount
+        timestamp: timestamp
+      })
+    }
 
-			// Don't have too much data!
-			util.trimOldPings(graphData);
+    // Update calculated graph peak regardless if the graph is being updated
+    // This can cause a (harmless) desync between live and stored data, but it allows it to be more accurate for long surviving processes
+    if (serverRegistration.findNewGraphPeak()) {
+      const graphPeak = serverRegistration.getGraphPeak()
 
-			if (!graphData[network.name]) {
-				graphData[network.name] = [];
-			}
-
-			graphData[network.name].push([timestamp, res ? res.players.online : 0]);
-
-			// Send the update.
-			server.io.sockets.emit('updateHistoryGraph', {
-				ip: network.ip,
-				name: network.name,
-				players: (res ? res.players.online : 0),
-				timestamp: timestamp
-			});
-		}
-
-		// Update calculated graph peak regardless if the graph is being updated
-		// This can cause a (harmless) desync between live and stored data, but it allows it to be more accurate for long surviving processes
-		var networkData = graphData[network.name];
-
-		if (networkData) {
-			var graphPeakIndex = -1;
-			var graphPeakPlayerCount = 0;
-			for (var i = 0; i < networkData.length; i++) {
-				// [1] refers to the online player count
-				var point = networkData[i][1];
-				if (point > 0 && (graphPeakIndex === -1 || point > graphPeakPlayerCount)) {
-					graphPeakIndex = i;
-					graphPeakPlayerCount = point;
-				}
-			}
-			// Test if a highest index has been selected and has changed from any previous selections
-			var previousPeak = graphPeaks[network.name];
-			// [1] refers to the online player count
-			if (graphPeakIndex !== -1 && (!previousPeak || previousPeak[1] !== graphPeakPlayerCount)) {
-				var graphPeakData = networkData[graphPeakIndex];
-				graphPeaks[network.name] = graphPeakData;
-
-				// Broadcast update event to clients
-				server.io.sockets.emit('updatePeak', {
-					ip: network.ip,
-					name: network.name,
-					players: graphPeakData[1],
-					timestamp: graphPeakData[0]
-				});
-			}
-		}
-	}
+      // Broadcast update event to clients
+      server.io.sockets.emit('updatePeak', {
+        name: serverRegistration.data.name,
+        players: graphPeak.playerCount, // TODO: players -> playerCount
+        timestamp: graphPeak.timestamp
+      })
+    }
+  }
 }
 
 // Start our main loop that does everything.
@@ -238,17 +196,31 @@ function startServices() {
 			logger.log('info', '%s disconnected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 		});
 
-		client.on('requestHistoryGraph', function() {
-			if (config.logToDatabase) {
-				// Send them the big 24h graph.
-				client.emit('historyGraph', graphData);
+    client.on('requestHistoryGraph', () => {
+      if (config.logToDatabase) {
+        // Send historical graphData built from all serverRegistrations
+        const graphData = {}
+        const graphPeaks = {}
 
-				// Send current peaks, if any
-				if (Object.keys(graphPeaks).length > 0) {
-					client.emit('peaks', graphPeaks);
-				}
-			}
-		});
+        serverRegistrations.forEach((serverRegistration) => {
+          graphData[serverRegistration.data.name] = serverRegistration.graphData
+
+          // Send current peak, if any
+          const graphPeak = serverRegistration.getGraphPeak()
+          if (graphPeak) {
+            // TODO: convert structure into object
+            graphPeaks[serverRegistration.data.name] = [graphPeak.timestamp, graphPeak.playerCount]
+          }
+        })
+
+        client.emit('historyGraph', graphData)
+
+        // Send current peaks, if any
+        if (Object.keys(graphPeaks).length > 0) {
+          client.emit('peaks', graphPeaks)
+        }
+      }
+    })
 
 		const minecraftVersionNames = {}
 		Object.keys(minecraftVersions).forEach(function (key) {
@@ -319,36 +291,27 @@ if (config.logToDatabase) {
 	var timestamp = util.getCurrentTimeMs();
 
 	db.queryPings(config.graphDuration, function(data) {
-		graphData = util.convertServerHistory(data);
+    const graphData = util.convertServerHistory(data)
 		completedQueries = 0;
 
 		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
 
 		for (var i = 0; i < servers.length; i++) {
-			// Compute graph peak from historical data
-			var networkData = graphData[servers[i].name];
-			if (networkData) {
-				var graphPeakIndex = -1;
-				var graphPeakPlayerCount = 0;
-				for (var x = 0; x < networkData.length; x++) {
-					// [1] refers to the online player count
-					var point = networkData[x][1];
-					if (point > 0 && (graphPeakIndex === -1 || point > graphPeakPlayerCount)) {
-						graphPeakIndex = x;
-						graphPeakPlayerCount = point;
-					}
-				}
-				if (graphPeakIndex !== -1) {
-					graphPeaks[servers[i].name] = networkData[graphPeakIndex];
-					logger.log('info', 'Selected graph peak %d (%s)', networkData[graphPeakIndex][1], servers[i].name);
-				}
-			}
+      const serverRegistration = serverRegistrations[i]
+
+      serverRegistration.graphData = graphData[serverRegistration.data.name]
+
+      if (serverRegistration.findNewGraphPeak()) {
+        const graphPeak = serverRegistration.getGraphPeak()
+
+        logger.log('info', 'Selected graph peak %d (%s)', graphPeak.playerCount, serverRegistration.data.name)
+      }
 
 			(function(server) {
 				db.getTotalRecord(server.ip, function(playerCount, timestamp) {
-					logger.log('info', 'Computed total record %s (%d) @ %d', server.ip, playerCount, timestamp);
-
-					highestPlayerCount[server.ip] = {
+          logger.log('info', 'Computed total record %s (%d) @ %d', server.ip, playerCount, timestamp);
+          
+          serverRegistration.recordData = {
 						playerCount: playerCount,
 						timestamp: timestamp
 					};
