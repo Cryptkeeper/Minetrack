@@ -171,7 +171,7 @@ footer {
   color: var(--text-color);
   border-top-right-radius: var(--border-radius);
   border-top-left-radius: var(--border-radius);
-  padding: 5px 0;
+  padding: 10px 0;
   text-align: center;
   width: 90%;
   margin: 15px auto 0 auto;
