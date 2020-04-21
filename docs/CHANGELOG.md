@@ -1,3 +1,6 @@
+**5.1.1** *(Apr 21 2020)*
+- Fixes records being overwritten after boot. This bug did not corrupt saves and is only a visual error.
+
 **5.1.0** *(Apr 21 2020)*
 - Completely rebuilt the backend. This includes several optimizations, code cleanup and syncing fixes. Its code model now pairs nicely with the frontend's Javascript model.
 
