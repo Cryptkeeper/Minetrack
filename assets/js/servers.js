@@ -237,8 +237,7 @@ export class ServerRegistration {
       playerCountLabelElement.style.display = 'none'
       errorElement.style.display = 'block'
 
-      // Attempt to find an error cause from documented options
-      errorElement.innerText = ping.error.description || ping.error.errno || 'Unknown error'
+      errorElement.innerText = ping.error.message
     } else if (ping.result) {
       // Ensure the player-count element is visible and hide the error element
       playerCountLabelElement.style.display = 'block'
