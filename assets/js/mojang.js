@@ -1,5 +1,8 @@
 export class MojangUpdater {
-  updateServiceStatus (status) {
+  updateStatus (services) {
+  }
+
+  updateServiceStatus (name, title) {
   }
 
   reset () {

@@ -64,16 +64,14 @@ export function formatMinecraftVersions (versions, knownVersions) {
   const versionGroups = []
 
   for (let i = 0; i < versions.length; i++) {
-    const versionIndex = versions[i]
-
     // Look for value mismatch between the previous index
     // Require i > 0 since lastVersionIndex is undefined for i === 0
-    if (i > 0 && versions[i] - 1 !== versionIndex - 1) {
+    if (i > 0 && versions[i] - versions[i - 1] !== 1) {
       versionGroups.push(currentVersionGroup)
       currentVersionGroup = []
     }
 
-    currentVersionGroup.push(versionIndex)
+    currentVersionGroup.push(versions[i])
   }
 
   // Ensure the last versionGroup is always pushed

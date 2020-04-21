@@ -1,8 +1,8 @@
 {
   "name": "minetrack",
-  "version": "5.0.0",
+  "version": "5.1.0",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
-  "main": "app.js",
+  "main": "main.js",
   "dependencies": {
     "finalhandler": "^1.1.2",
     "mc-ping-updated": "0.1.1",
