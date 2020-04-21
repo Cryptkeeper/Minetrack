@@ -2,20 +2,20 @@ var server = require('./lib/server');
 var ping = require('./lib/ping');
 var logger = require('./lib/logger');
 var mojang = require('./lib/mojang_services');
-var util = require('./lib/util');
 var db = require('./lib/database');
-
-var servers = require('./servers.json');
-var minecraftVersions = require('./minecraft_versions.json');
-
-var connectedClients = 0;
 
 // CLEAN IMPORTS ONLY BELOW
 const config = require('./config.json')
+const servers = require('./servers.json')
+const minecraftVersions = require('./minecraft_versions.json')
 
 const { ServerRegistration } = require('./lib/registration')
 
+const util = require('./lib/util')
+
 const serverRegistrations = []
+
+let connectedClients = 0
 
 function pingAll () {
   for (const serverRegistration of Object.values(serverRegistrations)) {
@@ -83,22 +83,19 @@ function updateMojangServices () {
   server.io.sockets.emit('updateMojangServices', mojang.toMessage())
 }
 
-function startServices() {
-	server.start();
+function startServices () {
+  server.start()
 
-	// Track how many people are currently connected.
-	server.io.on('connect', function(client) {
-		// We're good to connect them!
-		connectedClients += 1;
+  server.io.on('connect', client => {
+    connectedClients++
 
-		logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
+    logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
 
-		// Attach our listeners.
-		client.on('disconnect', function() {
-			connectedClients -= 1;
+    client.on('disconnect', () => {
+      connectedClients--
 
-			logger.log('info', '%s disconnected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
-		});
+      logger.log('info', '%s disconnected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
+    })
 
     client.on('requestHistoryGraph', () => {
       if (config.logToDatabase) {
@@ -136,74 +133,112 @@ function startServices() {
 		client.emit('setPublicConfig', {
 			graphDuration: config.graphDuration,
 			servers: servers,
-			minecraftVersions: minecraftVersionNames,
+			minecraftVersions: minecraftVersions,
 			isGraphVisible: config.logToDatabase
 		});
 
-		// Send them our previous data, so they have somewhere to start.
-    client.emit('updateMojangServices', mojang.toMessage());
+    client.emit('updateMojangServices', mojang.toMessage())
 
-    const pingHistory = Object.values(serverRegistrations).map(serverRegistration => serverRegistration.getPingHistory())
+    // Send pingHistory of all ServerRegistrations
+    client.emit('add', Object.values(serverRegistrations).map(serverRegistration => serverRegistration.getPingHistory()))
 
-    client.emit('add', pingHistory)
+    // Always send last
+    // This tells the frontend to do final processing and render
+    client.emit('syncComplete',)
+  })
 
-		client.emit('syncComplete');
-	});
-
-	startAppLoop()
+  startAppLoop()
 }
 
-logger.log('info', 'Booting, please wait...');
+function readyDatabase (callback) {
+  if (!config.logToDatabase) {
+    logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.')
+    callback()
+    return
+  }
 
-servers.forEach((data, i) => {
-  data.serverId = i // TODO: remove me, legacy port hack
-  data.color = util.stringToColor(data.name) // TODO: remove me, legacy port hack
-  serverRegistrations[i] = new ServerRegistration(i, data)
-})
+  // Setup database instance
+  db.setup()
 
-if (config.logToDatabase) {
-	// Setup our database.
-	db.setup();
+  const startTime = new Date().getTime()
 
-	var timestamp = util.getCurrentTimeMs();
+  db.queryPings(config.graphDuration, pingData => {
+    const graphPointsByIp = []
 
-	db.queryPings(config.graphDuration, function(data) {
-    const graphData = util.convertServerHistory(data)
-		completedQueries = 0;
+    for (const row of pingData) {
+      // Avoid loading outdated records
+      // This shouldn't happen and is mostly a sanity measure
+      if (startTime - row.timestamp <= config.graphDuration) {
+        // Load into temporary array
+        // This will be culled prior to being pushed to the serverRegistration
+        let graphPoints = graphPointsByIp[row.ip]
+        if (!graphPoints) {
+          graphPoints = graphPointsByIp[row.ip] = []
+        }
+        graphPoints.push([row.timestamp, row.playerCount])
+      }
+    }
 
-		logger.log('info', 'Queried and parsed ping history in %sms', util.getCurrentTimeMs() - timestamp);
+    Object.keys(graphPointsByIp).forEach(ip => {
+      let serverId = -1
 
-		for (var i = 0; i < servers.length; i++) {
-      const serverRegistration = serverRegistrations[i]
+      // Match IPs to serverRegistration object
+      for (let i = 0; i < servers.length; i++) {
+        if (servers[i].ip === ip) {
+          serverId = i
+          break
+        }
+      }
 
-      serverRegistration.graphData = graphData[serverRegistration.data.name]
+      // Ensure the database query does not return outdated values
+      // Server is no longer tracked
+      if (serverId !== -1) {
+        const graphPoints = graphPointsByIp[ip]
+        const serverRegistration = serverRegistrations[serverId]
 
+        // Push the data into the instance and cull if needed
+        serverRegistration.loadGraphPoints(graphPoints)
+      }
+    })
+
+    logger.log('info', 'Queried and parsed ping history in %sms', new Date().getTime() - startTime)
+
+    let completedTasks = 0
+
+    Object.values(serverRegistrations).forEach(serverRegistration => {
+      // Find graphPeaks
+      // This pre-computes the values prior to clients connecting
       if (serverRegistration.findNewGraphPeak()) {
         const graphPeak = serverRegistration.getGraphPeak()
 
         logger.log('info', 'Selected graph peak %d (%s)', graphPeak.playerCount, serverRegistration.data.name)
       }
 
-			(function(server) {
-				db.getTotalRecord(server.ip, function(playerCount, timestamp) {
-          logger.log('info', 'Computed total record %s (%d) @ %d', server.ip, playerCount, timestamp);
-          
-          serverRegistration.recordData = {
-						playerCount: playerCount,
-						timestamp: timestamp
-					};
+      // Query recordData
+      // When complete increment completeTasks to know when complete
+      db.getTotalRecord(serverRegistration.data.ip, (playerCount, timestamp) => {
+        logger.log('info', 'Computed total record %s (%d) @ %d', serverRegistration.data.ip, playerCount, timestamp)
 
-					completedQueries += 1;
+        serverRegistration.recordData = {
+          playerCount: playerCount,
+          timestamp: timestamp
+        }
 
-					if (completedQueries === servers.length) {
-						startServices();
-					}
-				});
-			})(servers[i]);
-		}
-	});
-} else {
-	logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.');
-
-	startServices();
+        // Check if completedTasks hit the finish value
+        // Fire callback since #readyDatabase is complete
+        if (++completedTasks === Object.keys(serverRegistrations).length) {
+          callback()
+        }
+      })
+    })
+  })
 }
+
+logger.log('info', 'Booting, please wait...')
+
+servers.forEach((data, i) => {
+  data.color = util.stringToColor(data.name) // TODO: remove me, legacy port hack
+  serverRegistrations[i] = new ServerRegistration(i, data)
+})
+
+readyDatabase(startServices)
