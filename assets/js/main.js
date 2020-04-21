@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
 
     if (serverRegistration) {
-      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, data.players)
+      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, data.playerCount)
 
       // Only redraw the graph if not mutating hidden data
       if (serverRegistration.isVisible) {
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('updateMojangServices', function (data) {
-    Object.values(data).forEach(app.mojangUpdater.updateServiceStatus)
+    app.mojangUpdater.updateStatus(data)
   })
 
   socket.on('setPublicConfig', function (data) {
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
 
     if (serverRegistration) {
-      serverRegistration.updateServerPeak(data.timestamp, data.players)
+      serverRegistration.updateServerPeak(data.timestamp, data.playerCount)
     }
   })
 
@@ -134,10 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
       const serverRegistration = app.serverRegistry.getServerRegistration(serverName)
 
       if (serverRegistration) {
-        const graphData = data[serverName]
+        const graphPeak = data[serverName]
 
-        // [0] and [1] indexes correspond to flot.js' graphing data structure
-        serverRegistration.updateServerPeak(graphData[0], graphData[1])
+        serverRegistration.updateServerPeak(graphPeak.timestamp, graphPeak.playerCount)
       }
     })
   })

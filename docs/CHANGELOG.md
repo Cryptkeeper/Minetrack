@@ -1,4 +1,7 @@
-**5** *(Apr 8 2020)*
+**5.1.0** *(Apr 21 2020)*
+- Completely rebuilt the backend. This includes several optimizations, code cleanup and syncing fixes. Its code model now pairs nicely with the frontend's Javascript model.
+
+**5.0.0** *(Apr 8 2020)*
 - New logo!
 - Completely rebuilt the frontend's Javascript (heavy optimizations and cleanup!)
 - Adds a button for mobile devices to manually request the historical graph
