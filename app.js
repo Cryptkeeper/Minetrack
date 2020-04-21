@@ -1,8 +1,3 @@
-/**
- * THIS IS LEGACY, UNMAINTAINED CODE
- * IT MAY (AND LIKELY DOES) CONTAIN BUGS
- * USAGE IS NOT RECOMMENDED
- */
 var server = require('./lib/server');
 var ping = require('./lib/ping');
 var logger = require('./lib/logger');
@@ -10,43 +5,33 @@ var mojang = require('./lib/mojang_services');
 var util = require('./lib/util');
 var db = require('./lib/database');
 
-var config = require('./config.json');
 var servers = require('./servers.json');
 var minecraftVersions = require('./minecraft_versions.json');
+
+var connectedClients = 0;
+
+// CLEAN IMPORTS ONLY BELOW
+const config = require('./config.json')
 
 const { ServerRegistration } = require('./lib/registration')
 
 const serverRegistrations = []
 
-var connectedClients = 0;
+function pingAll () {
+  for (const serverRegistration of Object.values(serverRegistrations)) {
+    const version = serverRegistration.getNextProtocolVersion()
 
-function pingAll() {
-	for (var i = 0; i < servers.length; i++) {
-		// Make sure we lock our scope.
-		(function(network) {
-			const serverRegistration = serverRegistrations[i]
+    ping.ping(serverRegistration.data.ip, serverRegistration.data.port, serverRegistration.data.type, config.rates.connectTimeout, (err, resp) => {
+      if (err) {
+        logger.log('error', 'Failed to ping %s: %s', serverRegistration.data.ip, err.message)
+      }
 
-			// Asign auto generated color if not present
-			if (!network.color) {
-				network.color = util.stringToColor(network.name);
-			}
-
-			const attemptedVersion = serverRegistration.getNextProtocolVersion()
-			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
-				// Handle our ping results, if it succeeded.
-				if (err) {
-					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err.message);
-				}
-
-				handlePing(network.serverId, res, err, attemptedVersion);
-			}, attemptedVersion.protocolId);
-		})(servers[i]);
-	}
+      handlePing(serverRegistration, resp, err, version)
+    }, version.protocolId)
+  }
 }
 
-function handlePing (serverId, resp, err, version) {
-  const serverRegistration = serverRegistrations[serverId]
-
+function handlePing (serverRegistration, resp, err, version) {
   const timestamp = new Date().getTime()
 
   server.io.sockets.emit('update', serverRegistration.getUpdate(timestamp, resp, err, version))
@@ -83,15 +68,19 @@ function handlePing (serverId, resp, err, version) {
   }
 }
 
-// Start our main loop that does everything.
-function startMainLoop() {
-	util.setIntervalNoDelay(pingAll, config.rates.pingAll);
+function startAppLoop () {
+  setInterval(pingAll, config.rates.pingAll)
+  pingAll()
 
-	util.setIntervalNoDelay(function() {
-		mojang.update(config.rates.mojangStatusTimeout);
+  setInterval(updateMojangServices, config.rates.updateMojangStatus)
+  updateMojangServices()
+}
 
-		server.io.sockets.emit('updateMojangServices', mojang.toMessage());
-	}, config.rates.upateMojangStatus);
+function updateMojangServices () {
+  // TODO: diff updates
+  mojang.update(config.rates.mojangStatusTimeout)
+
+  server.io.sockets.emit('updateMojangServices', mojang.toMessage())
 }
 
 function startServices() {
@@ -161,14 +150,15 @@ function startServices() {
 		client.emit('syncComplete');
 	});
 
-	startMainLoop();
+	startAppLoop()
 }
 
 logger.log('info', 'Booting, please wait...');
 
 servers.forEach((data, i) => {
-	data.serverId = i // TODO: remove me, legacy port hack
-	serverRegistrations[i] = new ServerRegistration(i, data)
+  data.serverId = i // TODO: remove me, legacy port hack
+  data.color = util.stringToColor(data.name) // TODO: remove me, legacy port hack
+  serverRegistrations[i] = new ServerRegistration(i, data)
 })
 
 if (config.logToDatabase) {
