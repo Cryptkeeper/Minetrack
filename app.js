@@ -18,7 +18,6 @@ const { ServerRegistration } = require('./lib/registration')
 
 const serverRegistrations = []
 
-var networkHistory = [];
 var connectedClients = 0;
 
 function pingAll() {
@@ -39,112 +38,28 @@ function pingAll() {
 					logger.log('error', 'Failed to ping ' + network.ip + ': ' + err.message);
 				}
 
-				// If we have favicon override specified, use it.
-				if (network.favicon) {
-					res.favicon = network.favicon
-				}
-
-				handlePing(network, res, err, attemptedVersion);
+				handlePing(network.serverId, res, err, attemptedVersion);
 			}, attemptedVersion.protocolId);
 		})(servers[i]);
 	}
 }
 
-// This is where the result of a ping is feed.
-// This stores it and converts it to ship to the frontend.
-function handlePing(network, res, err, attemptedVersion) {
-	const serverRegistration = serverRegistrations[network.serverId]
+function handlePing (serverId, resp, err, version) {
+  const serverRegistration = serverRegistrations[serverId]
 
-	// Log our response.
-	if (!networkHistory[network.name]) {
-		networkHistory[network.name] = [];
-	}
+  const timestamp = new Date().getTime()
 
-  // If the result version matches the attempted version, the version is supported
-  if (res && res.version) {
-    const indexOf = serverRegistration.versions.indexOf(attemptedVersion.protocolIndex)
+  server.io.sockets.emit('update', serverRegistration.getUpdate(timestamp, resp, err, version))
 
-    // Test indexOf to avoid inserting previously recorded protocolIndex values
-    if (res.version === attemptedVersion.protocolId && indexOf === -1) {
-      serverRegistration.versions.push(attemptedVersion.protocolIndex)
-    } else if (res.version !== attemptedVersion.protocolId && indexOf >= 0) {
-      serverRegistration.versions.splice(indexOf, 1)
-    }
-  }
-
-	const timestamp = util.getCurrentTimeMs()
-
-  if (res) {
-    // Validate that we have logToDatabase enabled otherwise in memory pings
-    // will create a record that's only valid for the runtime duration.
-    if (config.logToDatabase && (!serverRegistration.recordData || res.players.online > serverRegistration.recordData.playerCount)) {
-      serverRegistration.recordData = {
-        playerCount: res.players.online,
-        timestamp: timestamp
-      }
-    }
-  }
-
-	// Update the clients
-	var networkSnapshot = {
-		info: {
-			name: network.name,
-			timestamp: timestamp,
-			type: network.type
-		},
-		versions: serverRegistration.versions,
-		recordData: serverRegistration.recordData
-	};
-
-	if (res) {
-		networkSnapshot.result = res;
-
-    // Only emit updated favicons
-    if (serverRegistration.updateFavicon(res.favicon)) {
-      networkSnapshot.favicon = res.favicon
-    }
-
-    // Never store favicons in memory outside lastFavicons
-    delete res.favicon
-	} else if (err) {
-		networkSnapshot.error = err;
-	}
-
-	server.io.sockets.emit('update', networkSnapshot);
-
-	var _networkHistory = networkHistory[network.name];
-
-	// Remove our previous data that we don't need anymore.
-	for (var i = 0; i < _networkHistory.length; i++) {
-		delete _networkHistory[i].versions
-        delete _networkHistory[i].info;
-	}
-
-	_networkHistory.push({
-		error: err,
-		result: res,
-		versions: serverRegistration.versions,
-		timestamp: timestamp,
-        info: {
-            ip: network.ip,
-            port: network.port,
-            type: network.type,
-            name: network.name
-        }
-	});
-
-	// Make sure we never log too much.
-	if (_networkHistory.length > 72) { // 60/2.5 = 24, so 24 is one minute
-		_networkHistory.shift();
-	}
+  serverRegistration.addPing(timestamp, resp)
 
   if (config.logToDatabase) {
-    const playerCount = res ? res.players.online : 0
+    const playerCount = resp ? resp.players.online : 0
 
     // Log to database
     db.log(serverRegistration.data.ip, timestamp, playerCount)
 
-    if (serverRegistration.addGraphPoint(res !== undefined, playerCount, timestamp)) {
+    if (serverRegistration.addGraphPoint(resp !== undefined, playerCount, timestamp)) {
       // Broadcast update event to clients
       server.io.sockets.emit('updateHistoryGraph', {
         name: serverRegistration.data.name,
@@ -222,6 +137,7 @@ function startServices() {
       }
     })
 
+    // TODO: use reduce
 		const minecraftVersionNames = {}
 		Object.keys(minecraftVersions).forEach(function (key) {
 			minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
@@ -236,40 +152,11 @@ function startServices() {
 		});
 
 		// Send them our previous data, so they have somewhere to start.
-		client.emit('updateMojangServices', mojang.toMessage());
+    client.emit('updateMojangServices', mojang.toMessage());
 
-		// Send each individually, this should look cleaner than waiting for one big array to transfer.
-		for (var i = 0; i < servers.length; i++) {
-			var server = servers[i];
+    const pingHistory = Object.values(serverRegistrations).map(serverRegistration => serverRegistration.getPingHistory())
 
-			const serverRegistration = serverRegistrations[i]
-
-			if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
-				// This server hasn't been ping'd yet. Send a hacky placeholder.
-				client.emit('add', [[{
-					error: {
-						description: 'Waiting...',
-						placeholder: true
-					},
-					result: null,
-					timestamp: util.getCurrentTimeMs(),
-					info: {
-						ip: server.ip,
-						port: server.port,
-						type: server.type,
-						name: server.name
-					}
-				}]]);
-			} else {
-				// Append the lastFavicon to the last ping entry
-				const serverHistory = networkHistory[server.name];
-				if (serverRegistration.lastFavicon) {
-					serverHistory[serverHistory.length - 1].favicon = serverRegistration.lastFavicon
-        }
-
-				client.emit('add', [serverHistory])
-			}
-		}
+    client.emit('add', pingHistory)
 
 		client.emit('syncComplete');
 	});
