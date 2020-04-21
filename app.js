@@ -15,20 +15,6 @@ const serverRegistrations = []
 
 let connectedClients = 0
 
-function pingAll () {
-  for (const serverRegistration of Object.values(serverRegistrations)) {
-    const version = serverRegistration.getNextProtocolVersion()
-
-    ping(serverRegistration.data.ip, serverRegistration.data.port, serverRegistration.data.type, config.rates.connectTimeout, (err, resp) => {
-      if (err) {
-        logger.log('error', 'Failed to ping %s: %s', serverRegistration.data.ip, err.message)
-      }
-
-      handlePing(serverRegistration, resp, err, version)
-    }, version.protocolId)
-  }
-}
-
 function handlePing (serverRegistration, resp, err, version) {
   const timestamp = new Date().getTime()
 
@@ -72,6 +58,20 @@ function startAppLoop () {
 
   setInterval(updateMojangServices, config.rates.updateMojangStatus)
   updateMojangServices()
+}
+
+function pingAll () {
+  for (const serverRegistration of Object.values(serverRegistrations)) {
+    const version = serverRegistration.getNextProtocolVersion()
+
+    ping(serverRegistration.data.ip, serverRegistration.data.port, serverRegistration.data.type, config.rates.connectTimeout, (err, resp) => {
+      if (err) {
+        logger.log('error', 'Failed to ping %s: %s', serverRegistration.data.ip, err.message)
+      }
+
+      handlePing(serverRegistration, resp, err, version)
+    }, version.protocolId)
+  }
 }
 
 function updateMojangServices () {
