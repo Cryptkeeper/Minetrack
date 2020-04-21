@@ -32,7 +32,7 @@ function handlePing (serverRegistration, resp, err, version) {
       // Broadcast update event to clients
       server.io.sockets.emit('updateHistoryGraph', {
         name: serverRegistration.data.name,
-        players: playerCount, // TODO: players -> playerCount
+        playerCount: playerCount,
         timestamp: timestamp
       })
     }
@@ -45,7 +45,7 @@ function handlePing (serverRegistration, resp, err, version) {
       // Broadcast update event to clients
       server.io.sockets.emit('updatePeak', {
         name: serverRegistration.data.name,
-        players: graphPeak.playerCount, // TODO: players -> playerCount
+        playerCount: graphPeak.playerCount,
         timestamp: graphPeak.timestamp
       })
     }
@@ -104,7 +104,7 @@ function startServices () {
           // Send current peak, if any
           const graphPeak = serverRegistration.getGraphPeak()
           if (graphPeak) {
-            graphPeaks[serverRegistration.data.name] = [graphPeak.timestamp, graphPeak.playerCount] // TODO: convert structure into object
+            graphPeaks[serverRegistration.data.name] = graphPeak
           }
         })
 
