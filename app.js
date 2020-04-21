@@ -1,17 +1,15 @@
-var server = require('./lib/server');
-var ping = require('./lib/ping');
-var logger = require('./lib/logger');
-var mojang = require('./lib/mojang_services');
-var db = require('./lib/database');
+const db = require('./lib/database')
+const logger = require('./lib/logger')
+const mojang = require('./lib/mojang_services')
+const server = require('./lib/server')
 
-// CLEAN IMPORTS ONLY BELOW
+const { ping } = require('./lib/ping')
+const { ServerRegistration } = require('./lib/registration')
+const { stringToColor, getRemoteAddr } = require('./lib/util')
+
 const config = require('./config.json')
 const servers = require('./servers.json')
 const minecraftVersions = require('./minecraft_versions.json')
-
-const { ServerRegistration } = require('./lib/registration')
-
-const util = require('./lib/util')
 
 const serverRegistrations = []
 
@@ -21,7 +19,7 @@ function pingAll () {
   for (const serverRegistration of Object.values(serverRegistrations)) {
     const version = serverRegistration.getNextProtocolVersion()
 
-    ping.ping(serverRegistration.data.ip, serverRegistration.data.port, serverRegistration.data.type, config.rates.connectTimeout, (err, resp) => {
+    ping(serverRegistration.data.ip, serverRegistration.data.port, serverRegistration.data.type, config.rates.connectTimeout, (err, resp) => {
       if (err) {
         logger.log('error', 'Failed to ping %s: %s', serverRegistration.data.ip, err.message)
       }
@@ -79,7 +77,6 @@ function startAppLoop () {
 function updateMojangServices () {
   // TODO: diff updates
   mojang.update(config.rates.mojangStatusTimeout)
-
   server.io.sockets.emit('updateMojangServices', mojang.toMessage())
 }
 
@@ -88,13 +85,11 @@ function startServices () {
 
   server.io.on('connect', client => {
     connectedClients++
-
-    logger.log('info', '%s connected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
+    logger.log('info', '%s connected, total clients: %d', getRemoteAddr(client.request), connectedClients)
 
     client.on('disconnect', () => {
       connectedClients--
-
-      logger.log('info', '%s disconnected, total clients: %d', util.getRemoteAddr(client.request), connectedClients);
+      logger.log('info', '%s disconnected, total clients: %d', getRemoteAddr(client.request), connectedClients)
     })
 
     client.on('requestHistoryGraph', () => {
@@ -109,8 +104,7 @@ function startServices () {
           // Send current peak, if any
           const graphPeak = serverRegistration.getGraphPeak()
           if (graphPeak) {
-            // TODO: convert structure into object
-            graphPeaks[serverRegistration.data.name] = [graphPeak.timestamp, graphPeak.playerCount]
+            graphPeaks[serverRegistration.data.name] = [graphPeak.timestamp, graphPeak.playerCount] // TODO: convert structure into object
           }
         })
 
@@ -123,19 +117,21 @@ function startServices () {
       }
     })
 
-    // TODO: use reduce
-		const minecraftVersionNames = {}
-		Object.keys(minecraftVersions).forEach(function (key) {
-			minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
-    })
+    client.emit('setPublicConfig', (function () {
+      // Remap minecraftVersion entries into name values
+      const minecraftVersionNames = {}
+      Object.keys(minecraftVersions).forEach(function (key) {
+        minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
+      })
 
-		// Send configuration data for rendering the page
-		client.emit('setPublicConfig', {
-			graphDuration: config.graphDuration,
-			servers: servers,
-			minecraftVersions: minecraftVersionNames,
-			isGraphVisible: config.logToDatabase
-		});
+      // Send configuration data for rendering the page
+      return {
+        graphDuration: config.graphDuration,
+        servers: servers,
+        minecraftVersions: minecraftVersionNames,
+        isGraphVisible: config.logToDatabase
+      }
+    })())
 
     client.emit('updateMojangServices', mojang.toMessage())
 
@@ -240,7 +236,7 @@ servers.forEach((data, i) => {
   // Assign a generated color for each servers.json entry if not manually defined
   // These will be passed to the frontend for use in rendering
   if (!data.color) {
-    data.color = util.stringToColor(data.name)
+    data.color = stringToColor(data.name)
   }
 
   // Init a ServerRegistration instance of each entry in servers.json
