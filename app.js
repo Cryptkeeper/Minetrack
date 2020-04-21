@@ -14,52 +14,30 @@ var config = require('./config.json');
 var servers = require('./servers.json');
 var minecraftVersions = require('./minecraft_versions.json');
 
+const { ServerRegistration } = require('./lib/registration')
+
+const serverRegistrations = []
+
 var networkHistory = [];
 var connectedClients = 0;
-
-var networkVersions = [];
-
-const lastFavicons = [];
 
 var graphData = [];
 var highestPlayerCount = {};
 var lastGraphPush = [];
 var graphPeaks = {};
 
-const serverProtocolVersionIndexes = []
-
-function getNextProtocolVersion (server) {
-	// Minecraft Bedrock Edition does not have protocol versions
-	if (server.type === 'PE') {
-		return {
-			protocolId: 0,
-			protocolIndex: 0
-		}
-	}
-	const protocolVersions = minecraftVersions[server.type]
-	let nextProtocolVersion = serverProtocolVersionIndexes[server.name]
-	if (typeof nextProtocolVersion === 'undefined' || nextProtocolVersion + 1 >= protocolVersions.length) {
-		nextProtocolVersion = 0
-	} else {
-		nextProtocolVersion++
-	}
-	serverProtocolVersionIndexes[server.name] = nextProtocolVersion
-	return {
-		protocolId: protocolVersions[nextProtocolVersion].protocolId,
-		protocolIndex: nextProtocolVersion
-	}
-}
-
 function pingAll() {
 	for (var i = 0; i < servers.length; i++) {
 		// Make sure we lock our scope.
 		(function(network) {
+			const serverRegistration = serverRegistrations[i]
+
 			// Asign auto generated color if not present
 			if (!network.color) {
 				network.color = util.stringToColor(network.name);
 			}
 
-			const attemptedVersion = getNextProtocolVersion(network)
+			const attemptedVersion = serverRegistration.getNextProtocolVersion()
 			ping.ping(network.ip, network.port, network.type, config.rates.connectTimeout, function(err, res) {
 				// Handle our ping results, if it succeeded.
 				if (err) {
@@ -80,29 +58,24 @@ function pingAll() {
 // This is where the result of a ping is feed.
 // This stores it and converts it to ship to the frontend.
 function handlePing(network, res, err, attemptedVersion) {
+	const serverRegistration = serverRegistrations[network.serverId]
+
 	// Log our response.
 	if (!networkHistory[network.name]) {
 		networkHistory[network.name] = [];
 	}
 
-	// Update the version list
-	if (!networkVersions[network.name]) {
-		networkVersions[network.name] = [];
-	}
+  // If the result version matches the attempted version, the version is supported
+  if (res && res.version) {
+    const indexOf = serverRegistration.versions.indexOf(attemptedVersion.protocolIndex)
 
-	const serverVersionHistory = networkVersions[network.name]
-
-	// If the result version matches the attempted version, the version is supported
-	if (res && res.version !== undefined) {
-		const indexOf = serverVersionHistory.indexOf(attemptedVersion.protocolIndex)
-
-		// Test indexOf to avoid inserting previously recorded protocolIndex values
-		if (res.version === attemptedVersion.protocolId && indexOf === -1) {
-			serverVersionHistory.push(attemptedVersion.protocolIndex)
-		} else if (res.version !== attemptedVersion.protocolId && indexOf >= 0) {
-			serverVersionHistory.splice(indexOf, 1)
-		}
-	}
+    // Test indexOf to avoid inserting previously recorded protocolIndex values
+    if (res.version === attemptedVersion.protocolId && indexOf === -1) {
+      serverRegistration.versions.push(attemptedVersion.protocolIndex)
+    } else if (res.version !== attemptedVersion.protocolId && indexOf >= 0) {
+      serverRegistration.versions.splice(indexOf, 1)
+    }
+  }
 
 	const timestamp = util.getCurrentTimeMs()
 
@@ -126,23 +99,20 @@ function handlePing(network, res, err, attemptedVersion) {
 			timestamp: timestamp,
 			type: network.type
 		},
-		versions: serverVersionHistory,
+		versions: serverRegistration.versions,
 		recordData: highestPlayerCount[network.ip]
 	};
 
 	if (res) {
 		networkSnapshot.result = res;
 
-		// Only emit updated favicons
-		// Favicons will otherwise be explicitly emitted during the handshake process
-		if (res.favicon) {
-			const lastFavicon = lastFavicons[network.name]
-			if (lastFavicon !== res.favicon) {
-				lastFavicons[network.name] = res.favicon
-				networkSnapshot.favicon = res.favicon // Send updated favicon directly on object
-			}
-			delete res.favicon // Never store favicons in memory outside lastFavicons
-		}
+    // Only emit updated favicons
+    if (serverRegistration.updateFavicon(res.favicon)) {
+      networkSnapshot.favicon = res.favicon
+    }
+
+    // Never store favicons in memory outside lastFavicons
+    delete res.favicon
 	} else if (err) {
 		networkSnapshot.error = err;
 	}
@@ -160,7 +130,7 @@ function handlePing(network, res, err, attemptedVersion) {
 	_networkHistory.push({
 		error: err,
 		result: res,
-		versions: serverVersionHistory,
+		versions: serverRegistration.versions,
 		timestamp: timestamp,
         info: {
             ip: network.ip,
@@ -300,6 +270,8 @@ function startServices() {
 		for (var i = 0; i < servers.length; i++) {
 			var server = servers[i];
 
+			const serverRegistration = serverRegistrations[i]
+
 			if (!(server.name in networkHistory) || networkHistory[server.name].length < 1) {
 				// This server hasn't been ping'd yet. Send a hacky placeholder.
 				client.emit('add', [[{
@@ -319,10 +291,10 @@ function startServices() {
 			} else {
 				// Append the lastFavicon to the last ping entry
 				const serverHistory = networkHistory[server.name];
-				const lastFavicon = lastFavicons[server.name];
-				if (lastFavicon) {
-					serverHistory[serverHistory.length - 1].favicon = lastFavicon
-				}
+				if (serverRegistration.lastFavicon) {
+					serverHistory[serverHistory.length - 1].favicon = serverRegistration.lastFavicon
+        }
+
 				client.emit('add', [serverHistory])
 			}
 		}
@@ -334,6 +306,11 @@ function startServices() {
 }
 
 logger.log('info', 'Booting, please wait...');
+
+servers.forEach((data, i) => {
+	data.serverId = i // TODO: remove me, legacy port hack
+	serverRegistrations[i] = new ServerRegistration(i, data)
+})
 
 if (config.logToDatabase) {
 	// Setup our database.
