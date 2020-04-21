@@ -204,7 +204,7 @@ export class ServerRegistration {
       const versionsElement = document.getElementById('version_' + this.serverId)
 
       versionsElement.style.display = 'block'
-      versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[ping.info.type]) || ''
+      versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || ''
     }
 
     // Compare against a cached value to avoid empty updates

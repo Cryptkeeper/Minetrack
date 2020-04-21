@@ -127,13 +127,13 @@ function startServices () {
 		const minecraftVersionNames = {}
 		Object.keys(minecraftVersions).forEach(function (key) {
 			minecraftVersionNames[key] = minecraftVersions[key].map(version => version.name)
-		})
+    })
 
 		// Send configuration data for rendering the page
 		client.emit('setPublicConfig', {
 			graphDuration: config.graphDuration,
 			servers: servers,
-			minecraftVersions: minecraftVersions,
+			minecraftVersions: minecraftVersionNames,
 			isGraphVisible: config.logToDatabase
 		});
 
@@ -144,7 +144,7 @@ function startServices () {
 
     // Always send last
     // This tells the frontend to do final processing and render
-    client.emit('syncComplete',)
+    client.emit('syncComplete')
   })
 
   startAppLoop()
@@ -237,7 +237,13 @@ function readyDatabase (callback) {
 logger.log('info', 'Booting, please wait...')
 
 servers.forEach((data, i) => {
-  data.color = util.stringToColor(data.name) // TODO: remove me, legacy port hack
+  // Assign a generated color for each servers.json entry if not manually defined
+  // These will be passed to the frontend for use in rendering
+  if (!data.color) {
+    data.color = util.stringToColor(data.name)
+  }
+
+  // Init a ServerRegistration instance of each entry in servers.json
   serverRegistrations[i] = new ServerRegistration(i, data)
 })
 
