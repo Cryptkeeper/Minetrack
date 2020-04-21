@@ -75,9 +75,9 @@ function pingAll () {
 }
 
 function updateMojangServices () {
-  // TODO: diff updates
-  mojang.update(config.rates.mojangStatusTimeout)
-  server.io.sockets.emit('updateMojangServices', mojang.toMessage())
+  mojang.updateAll(config.rates.mojangStatusTimeout, services => {
+    server.io.sockets.emit('updateMojangServices', services)
+  })
 }
 
 function startServices () {
@@ -133,7 +133,13 @@ function startServices () {
       }
     })())
 
-    client.emit('updateMojangServices', mojang.toMessage())
+    // Send last Mojang update, if any
+    // If not defined, the interval task will update it and push out to clients
+    const lastMojangUpdate = mojang.getLastUpdate()
+
+    if (lastMojangUpdate) {
+      client.emit('updateMojangServices', lastMojangUpdate)
+    }
 
     // Send pingHistory of all ServerRegistrations
     client.emit('add', Object.values(serverRegistrations).map(serverRegistration => serverRegistration.getPingHistory()))

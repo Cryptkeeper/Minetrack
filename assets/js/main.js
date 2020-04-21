@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
   })
 
   socket.on('updateMojangServices', function (data) {
-    Object.values(data).forEach(app.mojangUpdater.updateServiceStatus)
+    app.mojangUpdater.updateStatus(data)
   })
 
   socket.on('setPublicConfig', function (data) {
