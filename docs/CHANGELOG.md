@@ -1,3 +1,6 @@
+**5.1.2** *(Apr 22 2020)*
+- Fixes the historical graph overflowing the maximum graphDuration value.
+
 **5.1.1** *(Apr 21 2020)*
 - Fixes records being overwritten after boot. This bug did not corrupt saves and is only a visual error.
 
