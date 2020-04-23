@@ -21,11 +21,12 @@ You can see an up-to-date copy of the production branch running on https://minet
 "master" branch contains everything you need to start your own copy. "prod" and "prod-bedrock" branches are what is used in the production environment of the minetrack.me sites.
 
 #### Usage
-1. Make sure everything is correct in ```config.json```.
-2. Add/remove servers by editing the ```servers.json``` file
-3. Run ```npm install```
-4. Run ```npm run build``` (this bundles `assets/` into `dist/`)
-4. Run ```node app.js``` to boot the system (may need sudo!)
+1. Install Node 12.4.0+ (check your version with `node -v`)
+2. Make sure everything is correct in ```config.json```.
+3. Add/remove servers by editing the ```servers.json``` file
+4. Run ```npm install```
+5. Run ```npm run build``` (this bundles `assets/` into `dist/`)
+6. Run ```node app.js``` to boot the system (may need sudo!)
 
 (There's also ```install.sh``` and ```start.sh```, but they may not work for your OS.)
 
