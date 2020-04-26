@@ -39,6 +39,10 @@
 		{
 			"name": "1.15.1",
 			"protocolId": 575
+		},
+		{
+			"name": "1.15.2",
+			"protocolId": 578
 		}
 	]
 }
