@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual, isObjectEqual } from './util'
+import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
 
@@ -84,7 +84,6 @@ export class ServerRegistration {
   isFavorite = false
   rankIndex
   lastRecordData
-  lastVersions = []
   lastPeakData
 
   constructor (app, serverId, data) {
@@ -175,21 +174,14 @@ export class ServerRegistration {
     // Otherwise the ping value is pushed into the graphData when already present
     this.handlePing(ping, !isInitialUpdate)
 
-    // Compare against a cached value to avoid empty updates
-    // Allow undefined ping.versions inside the if statement for text reset handling
-    if (ping.versions && !isArrayEqual(ping.versions, this.lastVersions)) {
-      this.lastVersions = ping.versions
-
+    if (ping.versions) {
       const versionsElement = document.getElementById('version_' + this.serverId)
 
       versionsElement.style.display = 'block'
       versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || ''
     }
 
-    // Compare against a cached value to avoid empty updates
-    if (ping.recordData !== undefined && !isObjectEqual(ping.recordData, this.lastRecordData, ['playerCount', 'timestamp'])) {
-      this.lastRecordData = ping.recordData
-
+    if (ping.recordData) {
       // Always set label once any record data has been received
       const recordLabelElement = document.getElementById('record_' + this.serverId)
 
@@ -206,6 +198,8 @@ export class ServerRegistration {
       } else {
         recordValueElement.innerText = formatNumber(recordData.playerCount)
       }
+
+      this.lastRecordData = recordData
     }
 
     if (ping.graphPeakData) {
