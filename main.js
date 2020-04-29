@@ -8,7 +8,7 @@ const servers = require('./servers')
 
 const app = new App()
 
-servers.forEach(server => {
+servers.forEach((server, serverId) => {
   // Assign a generated color for each servers.json entry if not manually defined
   // These will be passed to the frontend for use in rendering
   if (!server.color) {
@@ -22,7 +22,7 @@ servers.forEach(server => {
   }
 
   // Init a ServerRegistration instance of each entry in servers.json
-  app.serverRegistrations.push(new ServerRegistration(server))
+  app.serverRegistrations.push(new ServerRegistration(serverId, server))
 })
 
 if (!config.logToDatabase) {
