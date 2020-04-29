@@ -64,23 +64,6 @@ export class ServerRegistry {
     }
   }
 
-  getServerRankBy (serverRegistration, x, sort) {
-    const records = Object.values(this._registeredServers)
-      .map(x)
-      .filter(val => val !== undefined)
-
-    // Invalidate any results that do not account for all serverRegistrations
-    if (records.length === this._registeredServers.length) {
-      records.sort(sort)
-
-      // Pull matching data from target serverRegistration
-      // Assume indexOf cannot be -1 or val undefined since they have been pre-tested in the map call above
-      const val = x(serverRegistration)
-      const indexOf = records.indexOf(val)
-      return indexOf + 1
-    }
-  }
-
   getServerRegistrations = () => Object.values(this._registeredServers)
 
   reset () {
