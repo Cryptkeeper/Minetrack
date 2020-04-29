@@ -1,3 +1,8 @@
+**5.2.0** *(Apr 29 2020)*
+- Updated protocol to use serverIds instead of string names. This will reduce wasted bandwidth when pushing updates.
+- Removed "updatePeak", "peaks" and "updateHistoryGraph" socket events. Their behavior has been optimized and merged into "update".
+- Removed various legacy code.
+
 **5.1.2** *(Apr 22 2020)*
 - Fixes the historical graph overflowing the maximum graphDuration value.
 

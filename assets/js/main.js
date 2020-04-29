@@ -34,19 +34,22 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastRowCounter = 0
     let controlsHTML = ''
 
-    Object.keys(data).sort().forEach(function (serverName) {
-      const serverRegistration = app.serverRegistry.getServerRegistration(serverName)
+    app.serverRegistry.getServerRegistrations()
+      .map(serverRegistration => serverRegistration.data.name)
+      .sort()
+      .forEach(serverName => {
+        const serverRegistration = app.serverRegistry.getServerRegistration(serverName)
 
-      controlsHTML += '<td>' +
-        '<input type="checkbox" class="graph-control" minetrack-server-id="' + serverRegistration.serverId + '" ' + (serverRegistration.isVisible ? 'checked' : '') + '>' +
-        ' ' + serverName +
-        '</input></td>'
+        controlsHTML += '<td>' +
+          '<input type="checkbox" class="graph-control" minetrack-server-id="' + serverRegistration.serverId + '" ' + (serverRegistration.isVisible ? 'checked' : '') + '>' +
+          ' ' + serverName +
+          '</input></td>'
 
-      // Occasionally break table rows using a magic number
-      if (++lastRowCounter % 6 === 0) {
-        controlsHTML += '</tr><tr>'
-      }
-    })
+        // Occasionally break table rows using a magic number
+        if (++lastRowCounter % 6 === 0) {
+          controlsHTML += '</tr><tr>'
+        }
+      })
 
     // Apply generated HTML and show controls
     document.getElementById('big-graph-checkboxes').innerHTML = '<table><tr>' +
@@ -59,25 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
     app.graphDisplayManager.initEventListeners()
   })
 
-  socket.on('updateHistoryGraph', function (data) {
-    // Skip any incoming updates if the graph is disabled
-    // The backend shouldn't send these anyways
-    if (!app.graphDisplayManager.isVisible) {
-      return
-    }
-
-    const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
-
-    if (serverRegistration) {
-      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, data.playerCount)
-
-      // Only redraw the graph if not mutating hidden data
-      if (serverRegistration.isVisible) {
-        app.graphDisplayManager.requestRedraw()
-      }
-    }
-  })
-
   socket.on('add', function (data) {
     data.forEach(app.addServer)
   })
@@ -86,10 +70,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // The backend may send "update" events prior to receiving all "add" events
     // A server has only been added once it's ServerRegistration is defined
     // Checking undefined protects from this race condition
-    const serverRegistration = app.serverRegistry.getServerRegistration(data.info.name)
+    const serverRegistration = app.serverRegistry.getServerRegistration(data.serverId)
 
     if (serverRegistration) {
       serverRegistration.updateServerStatus(data, false, app.publicConfig.minecraftVersions)
+    }
+
+    // Use update payloads to conditionally append data to graph
+    // Skip any incoming updates if the graph is disabled
+    if (data.updateHistoryGraph && app.graphDisplayManager.isVisible) {
+      // Update may not be successful, safely append 0 points
+      const playerCount = data.result ? data.result.players.online : 0
+
+      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, playerCount)
+
+      // Only redraw the graph if not mutating hidden data
+      if (serverRegistration.isVisible) {
+        app.graphDisplayManager.requestRedraw()
+      }
     }
   })
 
@@ -119,26 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
   // Fired once the backend has sent all requested data
   socket.on('syncComplete', function () {
     app.handleSyncComplete()
-  })
-
-  socket.on('updatePeak', function (data) {
-    const serverRegistration = app.serverRegistry.getServerRegistration(data.name)
-
-    if (serverRegistration) {
-      serverRegistration.updateServerPeak(data.timestamp, data.playerCount)
-    }
-  })
-
-  socket.on('peaks', function (data) {
-    Object.keys(data).forEach(function (serverName) {
-      const serverRegistration = app.serverRegistry.getServerRegistration(serverName)
-
-      if (serverRegistration) {
-        const graphPeak = data[serverName]
-
-        serverRegistration.updateServerPeak(graphPeak.timestamp, graphPeak.playerCount)
-      }
-    })
   })
 
   window.addEventListener('resize', function () {
