@@ -148,11 +148,7 @@ export class GraphDisplayManager {
       this.loadLocalStorage()
     }
 
-    // Remap the incoming data from being string (serverName) keyed into serverId keys
-    for (const serverName of Object.keys(graphData)) {
-      const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
-      this._graphData[serverRegistration.serverId] = graphData[serverName]
-    }
+    this._graphData = graphData
 
     // Explicitly define a height so flot.js can rescale the Y axis
     document.getElementById('big-graph').style.height = '400px'

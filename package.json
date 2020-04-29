@@ -1,6 +1,6 @@
 {
   "name": "minetrack",
-  "version": "5.1.1",
+  "version": "5.2.0",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "main.js",
   "dependencies": {
@@ -26,6 +26,9 @@
     "url": "https://github.com/Cryptkeeper/Minetrack/issues"
   },
   "homepage": "https://github.com/Cryptkeeper/Minetrack#README",
+  "engines": {
+    "node": ">=12.4.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/plugin-proposal-class-properties": "^7.8.3",

@@ -1,4 +1,4 @@
-import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions, isArrayEqual, isObjectEqual } from './util'
+import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
 
@@ -48,8 +48,7 @@ export class ServerRegistry {
     }
   }
 
-  createServerRegistration (serverName) {
-    const serverId = this._serverIdsByName[serverName]
+  createServerRegistration (serverId) {
     const serverData = this._serverDataById[serverId]
     const serverRegistration = new ServerRegistration(this._app, serverId, serverData)
     this._registeredServers[serverId] = serverRegistration
@@ -62,23 +61,6 @@ export class ServerRegistry {
       return this._registeredServers[serverId]
     } else if (typeof serverKey === 'number') {
       return this._registeredServers[serverKey]
-    }
-  }
-
-  getServerRankBy (serverRegistration, x, sort) {
-    const records = Object.values(this._registeredServers)
-      .map(x)
-      .filter(val => val !== undefined)
-
-    // Invalidate any results that do not account for all serverRegistrations
-    if (records.length === this._registeredServers.length) {
-      records.sort(sort)
-
-      // Pull matching data from target serverRegistration
-      // Assume indexOf cannot be -1 or val undefined since they have been pre-tested in the map call above
-      const val = x(serverRegistration)
-      const indexOf = records.indexOf(val)
-      return indexOf + 1
     }
   }
 
@@ -102,7 +84,6 @@ export class ServerRegistration {
   isFavorite = false
   rankIndex
   lastRecordData
-  lastVersions = []
   lastPeakData
 
   constructor (app, serverId, data) {
@@ -139,7 +120,7 @@ export class ServerRegistration {
       if (pushToGraph) {
         // Only update graph for successful pings
         // This intentionally pauses the server graph when pings begin to fail
-        this._graphData.push([payload.info.timestamp, this.playerCount])
+        this._graphData.push([payload.timestamp, this.playerCount])
 
         // Trim graphData to within the max length by shifting out the leading elements
         if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
@@ -174,7 +155,7 @@ export class ServerRegistration {
     document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
   }
 
-  updateServerPeak (time, playerCount) {
+  updateServerPeak (data) {
     const peakLabelElement = document.getElementById('peak_' + this.serverId)
 
     // Always set label once any peak data has been received
@@ -182,13 +163,10 @@ export class ServerRegistration {
 
     const peakValueElement = document.getElementById('peak-value_' + this.serverId)
 
-    peakValueElement.innerText = formatNumber(playerCount)
-    peakLabelElement.title = 'At ' + formatTimestamp(time)
+    peakValueElement.innerText = formatNumber(data.playerCount)
+    peakLabelElement.title = 'At ' + formatTimestamp(data.timestamp)
 
-    this.lastPeakData = {
-      timestamp: time,
-      playerCount: playerCount
-    }
+    this.lastPeakData = data
   }
 
   updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
@@ -196,21 +174,14 @@ export class ServerRegistration {
     // Otherwise the ping value is pushed into the graphData when already present
     this.handlePing(ping, !isInitialUpdate)
 
-    // Compare against a cached value to avoid empty updates
-    // Allow undefined ping.versions inside the if statement for text reset handling
-    if (ping.versions && !isArrayEqual(ping.versions, this.lastVersions)) {
-      this.lastVersions = ping.versions
-
+    if (ping.versions) {
       const versionsElement = document.getElementById('version_' + this.serverId)
 
       versionsElement.style.display = 'block'
       versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || ''
     }
 
-    // Compare against a cached value to avoid empty updates
-    if (ping.recordData !== undefined && !isObjectEqual(ping.recordData, this.lastRecordData, ['playerCount', 'timestamp'])) {
-      this.lastRecordData = ping.recordData
-
+    if (ping.recordData) {
       // Always set label once any record data has been received
       const recordLabelElement = document.getElementById('record_' + this.serverId)
 
@@ -227,6 +198,12 @@ export class ServerRegistration {
       } else {
         recordValueElement.innerText = formatNumber(recordData.playerCount)
       }
+
+      this.lastRecordData = recordData
+    }
+
+    if (ping.graphPeakData) {
+      this.updateServerPeak(ping.graphPeakData)
     }
 
     const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)

@@ -135,20 +135,6 @@ export function isArrayEqual (a, b) {
   return true
 }
 
-export function isObjectEqual (a, b, props) {
-  if (typeof a === 'undefined' || typeof a !== typeof b) {
-    return false
-  }
-  for (let i = 0; i < props.length; i++) {
-    const prop = props[i]
-
-    if (typeof a[prop] === 'undefined' || typeof a[prop] !== typeof b[prop] || a[prop] !== b[prop]) {
-      return false
-    }
-  }
-  return true
-}
-
 // From http://detectmobilebrowsers.com/
 export function isMobileBrowser () {
   var check = false;

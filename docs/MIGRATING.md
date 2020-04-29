@@ -4,15 +4,16 @@ Minetrack 5 is the first of several upcoming updates designed to address several
 ## Upgrading Minetrack 5
 1. Stop any running instance of Minetrack.
 2. If you've cloned the repository, use `git clone https://github.com/Cryptkeeper/Minetrack Minetrack5`. If you've manually downloaded a release or an archive of the repository, download a fresh copy and extract it into a directory named "Minetrack5".
-3. Open the directory and execute `npm install --build-from-source`. This will install updated (and new) dependencies needed by the program.
-4. If you have `logToDatabase: true` in your `config.json`, make sure to copy your `database.sql` file into the new directory, otherwise you will lose historical server activity and records.
-5. Copy your existing `config.json` and `servers.json` files into the new directory.
-4. Build your copy of `dist/`.
-5. If you have previously configured any `faviconOverride` values within `config.json`, you will need to move them to the updated structure. Create a new directory within your Minetrack folder named `favicons/`.
-6. If you have previously configured any `minecraft.json` values not included in the new `minecraft_versions.json` file, you will need to update their structure copy them to the new file.
-7. Move your custom favicon images into the directory. 
-8. Open `servers.json` in your favorite editor.
-9. For any server which you have a custom favicon, set the "favicon" field like so:
+3. Install Node 12.4.0+ (check your version with node -v)
+4. Open the directory and execute `npm install --build-from-source`. This will install updated (and new) dependencies needed by the program.
+5. If you have `logToDatabase: true` in your `config.json`, make sure to copy your `database.sql` file into the new directory, otherwise you will lose historical server activity and records.
+6. Copy your existing `config.json` and `servers.json` files into the new directory.
+7. Build your copy of `dist/`.
+8. If you have previously configured any `faviconOverride` values within `config.json`, you will need to move them to the updated structure. Create a new directory within your Minetrack folder named `favicons/`.
+9. If you have previously configured any `minecraft.json` values not included in the new `minecraft_versions.json` file, you will need to update their structure copy them to the new file.
+10. Move your custom favicon images into the directory. 
+11. Open `servers.json` in your favorite editor.
+12. For any server which you have a custom favicon, set the "favicon" field like so:
 
 ```
 {
