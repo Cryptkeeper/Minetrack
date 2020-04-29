@@ -99,7 +99,7 @@ export class App {
     // error = defined with "Waiting" description
     // info = safely defined with configured data
     const latestPing = pings[pings.length - 1]
-    const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.info.name)
+    const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.serverId)
 
     serverRegistration.initServerStatus(latestPing)
 

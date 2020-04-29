@@ -48,8 +48,7 @@ export class ServerRegistry {
     }
   }
 
-  createServerRegistration (serverName) {
-    const serverId = this._serverIdsByName[serverName]
+  createServerRegistration (serverId) {
     const serverData = this._serverDataById[serverId]
     const serverRegistration = new ServerRegistration(this._app, serverId, serverData)
     this._registeredServers[serverId] = serverRegistration
@@ -139,7 +138,7 @@ export class ServerRegistration {
       if (pushToGraph) {
         // Only update graph for successful pings
         // This intentionally pauses the server graph when pings begin to fail
-        this._graphData.push([payload.info.timestamp, this.playerCount])
+        this._graphData.push([payload.timestamp, this.playerCount])
 
         // Trim graphData to within the max length by shifting out the leading elements
         if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
@@ -174,7 +173,7 @@ export class ServerRegistration {
     document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
   }
 
-  updateServerPeak (time, playerCount) {
+  updateServerPeak (data) {
     const peakLabelElement = document.getElementById('peak_' + this.serverId)
 
     // Always set label once any peak data has been received
@@ -182,13 +181,10 @@ export class ServerRegistration {
 
     const peakValueElement = document.getElementById('peak-value_' + this.serverId)
 
-    peakValueElement.innerText = formatNumber(playerCount)
-    peakLabelElement.title = 'At ' + formatTimestamp(time)
+    peakValueElement.innerText = formatNumber(data.playerCount)
+    peakLabelElement.title = 'At ' + formatTimestamp(data.timestamp)
 
-    this.lastPeakData = {
-      timestamp: time,
-      playerCount: playerCount
-    }
+    this.lastPeakData = data
   }
 
   updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
@@ -227,6 +223,10 @@ export class ServerRegistration {
       } else {
         recordValueElement.innerText = formatNumber(recordData.playerCount)
       }
+    }
+
+    if (ping.graphPeakData) {
+      this.updateServerPeak(ping.graphPeakData)
     }
 
     const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
