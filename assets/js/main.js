@@ -62,25 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
     app.graphDisplayManager.initEventListeners()
   })
 
-  socket.on('updateHistoryGraph', function (data) {
-    // Skip any incoming updates if the graph is disabled
-    // The backend shouldn't send these anyways
-    if (!app.graphDisplayManager.isVisible) {
-      return
-    }
-
-    const serverRegistration = app.serverRegistry.getServerRegistration(data.serverId)
-
-    if (serverRegistration) {
-      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, data.playerCount)
-
-      // Only redraw the graph if not mutating hidden data
-      if (serverRegistration.isVisible) {
-        app.graphDisplayManager.requestRedraw()
-      }
-    }
-  })
-
   socket.on('add', function (data) {
     data.forEach(app.addServer)
   })
@@ -93,6 +74,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (serverRegistration) {
       serverRegistration.updateServerStatus(data, false, app.publicConfig.minecraftVersions)
+    }
+
+    // Use update payloads to conditionally append data to graph
+    // Skip any incoming updates if the graph is disabled
+    if (data.updateHistoryGraph && app.graphDisplayManager.isVisible) {
+      // Update may not be successful, safely append 0 points
+      const playerCount = data.result ? data.result.players.online : 0
+
+      app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, data.timestamp, playerCount)
+
+      // Only redraw the graph if not mutating hidden data
+      if (serverRegistration.isVisible) {
+        app.graphDisplayManager.requestRedraw()
+      }
     }
   })
 
