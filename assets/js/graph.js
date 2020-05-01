@@ -14,7 +14,8 @@ export const HISTORY_GRAPH_OPTIONS = {
   },
   yaxis: {
     show: true,
-    tickSize: 5000,
+    ticks: 20,
+    minTickSize: 10,
     tickLength: 10,
     tickFormatter: formatNumber,
     font: {
