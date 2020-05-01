@@ -2,6 +2,32 @@ import { formatNumber, formatTimestamp, isMobileBrowser } from './util'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
 
+// History graph player-count axis tick generator
+
+const historyTickCount = 21
+const divisionCount = 4 // e.g. 100 -> 25, 50, 75, 100
+// Maximum order of magnitude of divisions
+const maxOrder = 5
+
+function roundToDivision (count) {
+  const magnitude = Math.pow(10, Math.ceil(Math.min(Math.log10(count), maxOrder)))
+  const division = magnitude / divisionCount
+
+  // Round count to nearest division
+  return Math.ceil(count / division) * division
+}
+
+function historyGraphTickGenerator (axis) {
+  const result = []
+  const countPerTick = roundToDivision(axis.max) / (historyTickCount - 1)
+
+  for (let i = 0; i < historyTickCount; i++) {
+    result.push(countPerTick * i)
+  }
+
+  return result
+}
+
 export const HISTORY_GRAPH_OPTIONS = {
   series: {
     shadowSize: 0
@@ -14,7 +40,7 @@ export const HISTORY_GRAPH_OPTIONS = {
   },
   yaxis: {
     show: true,
-    tickSize: 5000,
+    ticks: historyGraphTickGenerator,
     tickLength: 10,
     tickFormatter: formatNumber,
     font: {
