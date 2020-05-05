@@ -54,6 +54,10 @@ export class App {
     // Run a single bulk server sort instead of per-add event since there may be multiple
     this.sortController.show()
     this.percentageBar.redraw()
+
+    // The data may not be there to correctly compute values, but run an attempt
+    // Otherwise they will be updated by #initTasks
+    this.updateGlobalStats()
   }
 
   initTasks () {
