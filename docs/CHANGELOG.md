@@ -2,6 +2,7 @@
 - Replaces socket.io library (and dependency) with vanilla WebSockets.
 - Frontend reconnect behavior has been improved to use exponential backoff behavior (up to 30 seconds) with unlimited retries.
 - The "Lost connection!" message will now show the reconnection attempt timer.
+- "Counting N players on N Minecraft servers" is now instantly updated when initially loading the page.
 
 **5.2.1** *(May 1 2020)*
 - The historical graph will now auto scale its yaxis steps.
