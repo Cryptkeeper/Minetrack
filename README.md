@@ -5,9 +5,8 @@ Built to be lightweight and durable, you can easily adapt it to monitor BungeeCo
 #### Migrating to Minetrack 5
 See our Minetrack 5 [migration guide](docs/MIGRATING.md).
 
-#### This project is not actively maintained!
-This project and the offical website are not actively maintained anymore, but you are welcome to run your own instances of Minetrack.
-I will however review and accept pull-requests, so please share any improvements you are making so everybody can benefit from them.
+#### This project is not actively supported!
+This project and the offical website are not actively supported. Pull requests will be reviewed and merged (if accepted), but issues _may_ not be addressed outside of fixes provided by community member. Please share any improvements or fixes you've made so everyone can benefit from them!
 
 You can find a list of community hosted instances below:  
 * https://minetrack.me
