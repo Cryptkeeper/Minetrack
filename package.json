@@ -9,9 +9,9 @@
     "mcpe-ping-fixed": "0.0.3",
     "request": "2.88.2",
     "serve-static": "^1.14.1",
-    "socket.io": "2.3.0",
     "sqlite3": "4.1.1",
-    "winston": "^2.0.0"
+    "winston": "^2.0.0",
+    "ws": "^7.2.5"
   },
   "repository": {
     "type": "git",
@@ -44,5 +44,9 @@
   "scripts": {
     "build": "eslint assets/js/*.js && parcel build assets/html/index.html",
     "dev": "parcel build assets/html/index.html --no-minify"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.1",
+    "utf-8-validate": "^5.0.2"
   }
 }

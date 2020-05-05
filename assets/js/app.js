@@ -81,9 +81,6 @@ export class App {
     document.getElementById('stat_totalPlayers').innerText = 0
     document.getElementById('stat_networks').innerText = 0
 
-    // Modify page state to display loading overlay
-    this.caption.set('Lost connection!')
-
     this.setPageReady(false)
   }
 
