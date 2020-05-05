@@ -10,7 +10,12 @@ export class SocketManager {
   }
 
   createWebSocket () {
-    this._webSocket = new WebSocket('wss://' + location.host)
+    let webSocketProtocol = 'ws:'
+    if (location.protocol === 'https:') {
+      webSocketProtocol = 'wss:'
+    }
+
+    this._webSocket = new WebSocket(webSocketProtocol + '//' + location.host)
 
     // The backend will automatically push data once connected
     this._webSocket.onopen = () => {
