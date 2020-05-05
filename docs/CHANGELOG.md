@@ -3,6 +3,8 @@
 - Frontend reconnect behavior has been improved to use exponential backoff behavior (up to 30 seconds) with unlimited retries.
 - The "Lost connection!" message will now show the reconnection attempt timer.
 
+If your deployment is using **https**, you will need to modify line 13 in `assets/js/socket.js` to use `wss://` instead of `ws://`. Otherwise browsers may prevent the WebSocket connection as it would be insecure on a secured connection.
+
 **5.2.1** *(May 1 2020)*
 - The historical graph will now auto scale its yaxis steps.
 
