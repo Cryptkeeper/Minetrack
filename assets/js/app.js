@@ -1,4 +1,5 @@
 import { ServerRegistry } from './servers'
+import { SocketManager } from './socket'
 import { SortController } from './sort'
 import { GraphDisplayManager } from './graph'
 import { MojangUpdater } from './mojang'
@@ -13,6 +14,7 @@ export class App {
     this.tooltip = new Tooltip()
     this.caption = new Caption()
     this.serverRegistry = new ServerRegistry(this)
+    this.socketManager = new SocketManager(this)
     this.sortController = new SortController(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.mojangUpdater = new MojangUpdater()
@@ -20,6 +22,11 @@ export class App {
     this.favoritesManager = new FavoritesManager(this)
 
     this._taskIds = []
+  }
+
+  // Called once the DOM is ready and the app can begin setup
+  init () {
+    this.socketManager.createWebSocket()
   }
 
   setPageReady (isReady) {
@@ -60,6 +67,7 @@ export class App {
 
     // Reset individual tracker elements to flush any held data
     this.serverRegistry.reset()
+    this.socketManager.reset()
     this.sortController.reset()
     this.graphDisplayManager.reset()
     this.mojangUpdater.reset()
@@ -80,9 +88,6 @@ export class App {
     // Reset modified DOM structures
     document.getElementById('stat_totalPlayers').innerText = 0
     document.getElementById('stat_networks').innerText = 0
-
-    // Modify page state to display loading overlay
-    this.caption.set('Lost connection!')
 
     this.setPageReady(false)
   }
