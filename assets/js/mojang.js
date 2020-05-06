@@ -1,9 +1,13 @@
 const MOJANG_STATUS_BASE_CLASS = 'header-button header-button-group'
 
+const MOJANG_SERVICE_NAMES = ['Auth', 'Sessions', 'API', 'Skins']
+
 export class MojangUpdater {
   updateStatus (services) {
-    for (const name of Object.keys(services)) {
-      this.updateServiceStatus(name, services[name])
+    for (const name of MOJANG_SERVICE_NAMES) {
+      if (services[name]) {
+        this.updateServiceStatus(name, services[name])
+      }
     }
   }
 

@@ -1,3 +1,6 @@
+**5.3.1** *(May 5 2020)*
+- Fixes Mojang service status indicators not updating after initial page load.
+
 **5.3.0** *(May 5 2020)*
 - Replaces socket.io library (and dependency) with vanilla WebSockets.
 - Frontend reconnect behavior has been improved to use exponential backoff behavior (up to 30 seconds) with unlimited retries.
