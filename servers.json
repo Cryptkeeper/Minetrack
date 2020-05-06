@@ -62,5 +62,10 @@
 		"ip": "x19hypixel.nie.netease.com",
 		"type": "PC",
 		"color": "#E68196"
+	},
+	{
+		"name": "Minehut",
+		"ip": "minehut.com",
+		"type": "PC"
 	}
 ]
