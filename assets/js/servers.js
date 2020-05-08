@@ -210,7 +210,13 @@ export class ServerRegistration {
 
     // An updated favicon has been sent, update the src
     if (ping.favicon) {
-      document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
+      const faviconElement = document.getElementById('favicon_' + this.serverId)
+
+      // Since favicons may be URLs, only update the attribute when it has changed
+      // Otherwise the browser may send multiple requests to the same URL
+      if (faviconElement.getAttribute('src') !== ping.favicon) {
+        faviconElement.setAttribute('src', ping.favicon)
+      }
     }
   }
 
