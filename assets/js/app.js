@@ -102,13 +102,13 @@ export class App {
       .reduce((sum, current) => sum + current, 0)
   }
 
-  addServer = (pings, timestampPoints) => {
+  addServer = (serverId, pings, timestampPoints) => {
     // Even if the backend has never pinged the server, the frontend is promised a placeholder object.
     // result = undefined
     // error = defined with "Waiting" description
     // info = safely defined with configured data
     const latestPing = pings[pings.length - 1]
-    const serverRegistration = this.serverRegistry.createServerRegistration(latestPing.serverId)
+    const serverRegistration = this.serverRegistry.createServerRegistration(serverId)
 
     serverRegistration.initServerStatus(latestPing)
 

@@ -67,8 +67,8 @@ export class SocketManager {
             }
           }
 
-          payload.servers.forEach(server => {
-            this._app.addServer(server, payload.timestampPoints)
+          payload.servers.forEach((pings, serverId) => {
+            this._app.addServer(serverId, pings, payload.timestampPoints)
           })
 
           if (payload.mojangServices) {

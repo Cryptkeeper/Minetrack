@@ -10,8 +10,8 @@
 		"connectTimeout": 2500
 	},
 	"performance": {
-		"skipUnfurlSrv": false
+		"skipUnfurlSrv": true
 	},
-	"logToDatabase": false,
+	"logToDatabase": true,
 	"graphDuration": 86400000
 }
