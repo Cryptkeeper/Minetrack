@@ -67,8 +67,8 @@ export class SocketManager {
             }
           }
 
-          payload.servers.forEach((pings, serverId) => {
-            this._app.addServer(serverId, pings, payload.timestampPoints)
+          payload.servers.forEach((serverPayload, serverId) => {
+            this._app.addServer(serverId, serverPayload, payload.timestampPoints)
           })
 
           if (payload.mojangServices) {
@@ -92,7 +92,7 @@ export class SocketManager {
             if (serverRegistration) {
               serverRegistration.handlePing(serverUpdate, payload.timestamp)
 
-              serverRegistration.updateServerStatus(serverUpdate, payload.timestamp, false, this._app.publicConfig.minecraftVersions)
+              serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
             }
 
             // Use update payloads to conditionally append data to graph

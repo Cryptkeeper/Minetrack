@@ -93,11 +93,6 @@ export class ServerRegistration {
   }
 
   addGraphPoints (points, timestampPoints) {
-    // Test if the first point contains error.placeholder === true
-    // This is sent by the backend when the server hasn't been pinged yet
-    // These points will be disregarded to prevent the graph starting at 0 player count
-    points = points.filter(point => !point.error || !point.error.placeholder)
-
     for (let i = 0; i < points.length; i++) {
       const point = points[i]
       const timestamp = timestampPoints[i]
@@ -164,7 +159,7 @@ export class ServerRegistration {
     this.lastPeakData = data
   }
 
-  updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
+  updateServerStatus (ping, minecraftVersions) {
     if (ping.versions) {
       const versionsElement = document.getElementById('version_' + this.serverId)
 
@@ -214,8 +209,7 @@ export class ServerRegistration {
       document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.result.players.online)
 
       // An updated favicon has been sent, update the src
-      // Ignore calls from 'add' events since they will have explicitly manually handled the favicon update
-      if (!isInitialUpdate && ping.favicon) {
+      if (ping.favicon) {
         document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
       }
     }
