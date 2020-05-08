@@ -3,6 +3,7 @@
 - Adds "serverGraphDuration" to `config.json` which allows you to specify the max time duration for the individual server player count graphs.
 - Adds "performance.skipUnfurlSrv" to `config.json` which allows you to skip SRV unfurling when pinging. For those who aren't pinging servers that use SRV records, this should help speed up ping times.
 - Ping timestamps are now shared between all server pings. This means less data transfer when loading or updating the page, less memory usage by the backend and frontend, and less hectic updates on the frontend.
+- Fixes a bug where favicons may not be updated if the page is loaded prior to their initialization.
 
 **5.3.1** *(May 5 2020)*
 - Fixes Mojang service status indicators not updating after initial page load.
