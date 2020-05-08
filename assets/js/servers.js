@@ -207,11 +207,11 @@ export class ServerRegistration {
       errorElement.style.display = 'none'
 
       document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.result.players.online)
+    }
 
-      // An updated favicon has been sent, update the src
-      if (ping.favicon) {
-        document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
-      }
+    // An updated favicon has been sent, update the src
+    if (ping.favicon) {
+      document.getElementById('favicon_' + this.serverId).setAttribute('src', ping.favicon)
     }
   }
 
