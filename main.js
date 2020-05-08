@@ -22,8 +22,13 @@ servers.forEach((server, serverId) => {
   }
 
   // Init a ServerRegistration instance of each entry in servers.json
-  app.serverRegistrations.push(new ServerRegistration(serverId, server))
+  app.serverRegistrations.push(new ServerRegistration(app, serverId, server))
 })
+
+if (!config.serverGraphDuration) {
+  logger.log('warn', '"serverGraphDuration" is not defined in config.json - defaulting to 3 minutes!')
+  config.serverGraphDuration = 3 * 60 * 10000
+}
 
 if (config.performance && config.performance.skipUnfurlSrv) {
   logger.log('warn', '"performance.skipUnfurlSrv" is enabled. Any configured hosts using SRV records may not properly resolve.')

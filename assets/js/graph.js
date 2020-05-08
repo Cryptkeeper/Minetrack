@@ -57,14 +57,15 @@ export class GraphDisplayManager {
       return
     }
 
-    // Trim any outdated entries by filtering the array into a new array
-    const startTimestamp = new Date().getTime()
-    const newGraphData = this._graphData[serverId].filter(point => startTimestamp - point[0] <= this._app.publicConfig.graphDuration)
+    const graphData = this._graphData[serverId]
 
     // Push the new data from the method call request
-    newGraphData.push([timestamp, playerCount])
+    graphData.push([timestamp, playerCount])
 
-    this._graphData[serverId] = newGraphData
+    // Trim any outdated entries by filtering the array into a new array
+    if (graphData.length > this._app.publicConfig.graphMaxLength) {
+      graphData.shift()
+    }
   }
 
   loadLocalStorage () {

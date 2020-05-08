@@ -13,5 +13,6 @@
 		"skipUnfurlSrv": true
 	},
 	"logToDatabase": true,
-	"graphDuration": 86400000
+	"graphDuration": 86400000,
+	"serverGraphDuration": 180000
 }
