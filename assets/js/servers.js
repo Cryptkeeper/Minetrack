@@ -96,8 +96,7 @@ export class ServerRegistration {
     for (let i = 0; i < points.length; i++) {
       const point = points[i]
       const timestamp = timestampPoints[i]
-
-      this._graphData.push([timestamp, point.result ? point.result.players.online : 0])
+      this._graphData.push([timestamp, point])
     }
   }
 

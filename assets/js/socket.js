@@ -67,6 +67,8 @@ export class SocketManager {
             }
           }
 
+          console.log(payload.servers)
+
           payload.servers.forEach((serverPayload, serverId) => {
             this._app.addServer(serverId, serverPayload, payload.timestampPoints)
           })
