@@ -113,14 +113,14 @@ export class ServerRegistration {
     this._plotInstance = $.plot('#chart_' + this.serverId, [this._graphData], SERVER_GRAPH_OPTIONS)
   }
 
-  handlePing (payload, pushToGraph) {
+  handlePing (payload, timestamp, pushToGraph) {
     if (payload.result) {
       this.playerCount = payload.result.players.online
 
       if (pushToGraph) {
         // Only update graph for successful pings
         // This intentionally pauses the server graph when pings begin to fail
-        this._graphData.push([payload.timestamp, this.playerCount])
+        this._graphData.push([timestamp, this.playerCount])
 
         // Trim graphData to within the max length by shifting out the leading elements
         if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
@@ -169,10 +169,10 @@ export class ServerRegistration {
     this.lastPeakData = data
   }
 
-  updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
+  updateServerStatus (ping, timestamp, isInitialUpdate, minecraftVersions) {
     // Only pushToGraph when initialUpdate === false
     // Otherwise the ping value is pushed into the graphData when already present
-    this.handlePing(ping, !isInitialUpdate)
+    this.handlePing(ping, timestamp, !isInitialUpdate)
 
     if (ping.versions) {
       const versionsElement = document.getElementById('version_' + this.serverId)
