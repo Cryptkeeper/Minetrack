@@ -1,4 +1,5 @@
 **5.4.0** *(May 8 2020)*
+- Favicons are now served over the http server (using a unique hash). This allows the favicons to be safely cached for long durations and still support dynamic updates.
 - Adds "graphDurationLabel" to `config.json` which allows you to manually modify the "24h Peak" label to a custom time duration.
 - Adds "serverGraphDuration" to `config.json` which allows you to specify the max time duration for the individual server player count graphs.
 - Adds "performance.skipUnfurlSrv" to `config.json` which allows you to skip SRV unfurling when pinging. For those who aren't pinging servers that use SRV records, this should help speed up ping times.
