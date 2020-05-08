@@ -25,6 +25,10 @@ servers.forEach((server, serverId) => {
   app.serverRegistrations.push(new ServerRegistration(serverId, server))
 })
 
+if (config.performance && config.performance.skipUnfurlSrv) {
+  logger.log('warn', '"performance.skipUnfurlSrv" is enabled. Any configured hosts using SRV records may not properly resolve.')
+}
+
 if (!config.logToDatabase) {
   logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.')
 
