@@ -105,8 +105,8 @@ export class ServerRegistration {
   }
 
   handlePing (payload, timestamp) {
-    if (payload.result) {
-      this.playerCount = payload.result.players.online
+    if (typeof payload.playerCount !== 'undefined') {
+      this.playerCount = payload.playerCount
 
       // Only update graph for successful pings
       // This intentionally pauses the server graph when pings begin to fail
@@ -200,12 +200,12 @@ export class ServerRegistration {
       errorElement.style.display = 'block'
 
       errorElement.innerText = ping.error.message
-    } else if (ping.result) {
+    } else if (typeof ping.playerCount !== 'undefined') {
       // Ensure the player-count element is visible and hide the error element
       playerCountLabelElement.style.display = 'block'
       errorElement.style.display = 'none'
 
-      document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.result.players.online)
+      document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.playerCount)
     }
 
     // An updated favicon has been sent, update the src

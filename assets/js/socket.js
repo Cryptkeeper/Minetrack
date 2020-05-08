@@ -101,7 +101,7 @@ export class SocketManager {
             // Skip any incoming updates if the graph is disabled
             if (serverUpdate.updateHistoryGraph && this._app.graphDisplayManager.isVisible) {
               // Update may not be successful, safely append 0 points
-              const playerCount = serverUpdate.result ? serverUpdate.result.players.online : 0
+              const playerCount = serverUpdate.playerCount || 0
 
               this._app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, payload.timestamp, playerCount)
 
