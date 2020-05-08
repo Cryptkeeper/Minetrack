@@ -22,7 +22,7 @@ servers.forEach((server, serverId) => {
   }
 
   // Init a ServerRegistration instance of each entry in servers.json
-  app.serverRegistrations.push(new ServerRegistration(app, serverId, server))
+  app.serverRegistrations.push(new ServerRegistration(serverId, server))
 })
 
 if (!config.serverGraphDuration) {
