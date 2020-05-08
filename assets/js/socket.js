@@ -67,7 +67,9 @@ export class SocketManager {
             }
           }
 
-          payload.servers.forEach(this._app.addServer)
+          payload.servers.forEach(server => {
+            this._app.addServer(server, payload.timestampPoints)
+          })
 
           if (payload.mojangServices) {
             this._app.mojangUpdater.updateStatus(payload.mojangServices)
@@ -88,6 +90,8 @@ export class SocketManager {
             const serverUpdate = payload.updates[serverId]
 
             if (serverRegistration) {
+              serverRegistration.handlePing(serverUpdate, payload.timestamp)
+
               serverRegistration.updateServerStatus(serverUpdate, payload.timestamp, false, this._app.publicConfig.minecraftVersions)
             }
 

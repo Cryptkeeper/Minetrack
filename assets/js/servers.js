@@ -94,7 +94,7 @@ export class ServerRegistration {
     this._failedSequentialPings = 0
   }
 
-  addGraphPoints (points) {
+  addGraphPoints (points, timestampPoints) {
     // Test if the first point contains error.placeholder === true
     // This is sent by the backend when the server hasn't been pinged yet
     // These points will be disregarded to prevent the graph starting at 0 player count
@@ -106,29 +106,32 @@ export class ServerRegistration {
       points.slice(points.length - SERVER_GRAPH_DATA_MAX_LENGTH, points.length)
     }
 
-    this._graphData = points.map(point => point.result ? [point.timestamp, point.result.players.online] : [point.timestamp, 0])
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i]
+      const timestamp = timestampPoints[i]
+
+      this._graphData.push([timestamp, point.result ? point.result.players.online : 0])
+    }
   }
 
   buildPlotInstance () {
     this._plotInstance = $.plot('#chart_' + this.serverId, [this._graphData], SERVER_GRAPH_OPTIONS)
   }
 
-  handlePing (payload, timestamp, pushToGraph) {
+  handlePing (payload, timestamp) {
     if (payload.result) {
       this.playerCount = payload.result.players.online
 
-      if (pushToGraph) {
-        // Only update graph for successful pings
-        // This intentionally pauses the server graph when pings begin to fail
-        this._graphData.push([timestamp, this.playerCount])
+      // Only update graph for successful pings
+      // This intentionally pauses the server graph when pings begin to fail
+      this._graphData.push([timestamp, this.playerCount])
 
-        // Trim graphData to within the max length by shifting out the leading elements
-        if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
-          this._graphData.shift()
-        }
-
-        this.redraw()
+      // Trim graphData to within the max length by shifting out the leading elements
+      if (this._graphData.length > SERVER_GRAPH_DATA_MAX_LENGTH) {
+        this._graphData.shift()
       }
+
+      this.redraw()
 
       // Reset failed ping counter to ensure the next connection error
       // doesn't instantly retrigger a layout change
@@ -169,11 +172,7 @@ export class ServerRegistration {
     this.lastPeakData = data
   }
 
-  updateServerStatus (ping, timestamp, isInitialUpdate, minecraftVersions) {
-    // Only pushToGraph when initialUpdate === false
-    // Otherwise the ping value is pushed into the graphData when already present
-    this.handlePing(ping, timestamp, !isInitialUpdate)
-
+  updateServerStatus (ping, isInitialUpdate, minecraftVersions) {
     if (ping.versions) {
       const versionsElement = document.getElementById('version_' + this.serverId)
 
