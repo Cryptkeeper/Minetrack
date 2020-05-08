@@ -82,6 +82,8 @@ export class SocketManager {
           break
 
         case 'updateServers': {
+          let requestGraphRedraw = false
+
           for (let serverId = 0; serverId < payload.updates.length; serverId++) {
             // The backend may send "update" events prior to receiving all "add" events
             // A server has only been added once it's ServerRegistration is defined
@@ -105,10 +107,19 @@ export class SocketManager {
 
               // Only redraw the graph if not mutating hidden data
               if (serverRegistration.isVisible) {
-                this._app.graphDisplayManager.requestRedraw()
+                requestGraphRedraw = true
               }
             }
           }
+
+          // Run redraw tasks after handling bulk updates
+          if (requestGraphRedraw) {
+            this._app.graphDisplayManager.redraw()
+          }
+
+          this._app.percentageBar.redraw()
+          this._app.updateGlobalStats()
+
           break
         }
 

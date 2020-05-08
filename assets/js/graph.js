@@ -161,18 +161,6 @@ export class GraphDisplayManager {
     document.getElementById('settings-toggle').style.display = 'inline-block'
   }
 
-  // requestRedraw allows usages to request a redraw that may be performed, or cancelled, sometime later
-  // This allows multiple rapid, but individual updates, to clump into a single redraw instead
-  requestRedraw () {
-    if (this._redrawRequestTimeout) {
-      clearTimeout(this._redrawRequestTimeout)
-    }
-
-    // Schedule new delayed redraw call
-    // This can be cancelled by #requestRedraw, #redraw and #reset
-    this._redrawRequestTimeout = setTimeout(this.redraw, 1000)
-  }
-
   redraw = () => {
     // Use drawing as a hint to update settings
     // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
@@ -183,14 +171,6 @@ export class GraphDisplayManager {
     this._plotInstance.setData(this.getVisibleGraphData())
     this._plotInstance.setupGrid()
     this._plotInstance.draw()
-
-    // undefine value so #clearTimeout is not called
-    // This is safe even if #redraw is manually called since it removes the pending work
-    if (this._redrawRequestTimeout) {
-      clearTimeout(this._redrawRequestTimeout)
-    }
-
-    this._redrawRequestTimeout = undefined
   }
 
   requestResize () {
@@ -346,12 +326,6 @@ export class GraphDisplayManager {
       clearTimeout(this._resizeRequestTimeout)
 
       this._resizeRequestTimeout = undefined
-    }
-
-    if (this._redrawRequestTimeout) {
-      clearTimeout(this._redrawRequestTimeout)
-
-      this._redrawRequestTimeout = undefined
     }
 
     // Reset modified DOM structures

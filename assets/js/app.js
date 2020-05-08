@@ -62,8 +62,6 @@ export class App {
 
   initTasks () {
     this._taskIds.push(setInterval(this.sortController.sortServers, 5000))
-    this._taskIds.push(setInterval(this.updateGlobalStats, 1000))
-    this._taskIds.push(setInterval(this.percentageBar.redraw, 1000))
   }
 
   handleDisconnect () {
