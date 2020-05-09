@@ -8,7 +8,7 @@ const SORT_OPTIONS = [
   },
   {
     getName: (app) => {
-      return Math.floor(app.publicConfig.graphDuration / (60 * 60 * 1000)) + 'h Peak'
+      return app.publicConfig.graphDurationLabel + ' Peak'
     },
     sortFunc: (a, b) => {
       if (!a.lastPeakData && !b.lastPeakData) {

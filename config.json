@@ -9,6 +9,11 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-	"logToDatabase": false,
-	"graphDuration": 86400000
+	"performance": {
+		"skipUnfurlSrv": false,
+		"unfurlSrvCacheTtl": 120000
+	},
+	"logToDatabase": true,
+	"graphDuration": 86400000,
+	"serverGraphDuration": 180000
 }
