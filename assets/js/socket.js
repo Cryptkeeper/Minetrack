@@ -67,7 +67,9 @@ export class SocketManager {
             }
           }
 
-          payload.servers.forEach(this._app.addServer)
+          payload.servers.forEach((serverPayload, serverId) => {
+            this._app.addServer(serverId, serverPayload, payload.timestampPoints)
+          })
 
           if (payload.mojangServices) {
             this._app.mojangUpdater.updateStatus(payload.mojangServices)
@@ -79,29 +81,45 @@ export class SocketManager {
 
           break
 
-        case 'updateServer': {
-          // The backend may send "update" events prior to receiving all "add" events
-          // A server has only been added once it's ServerRegistration is defined
-          // Checking undefined protects from this race condition
-          const serverRegistration = this._app.serverRegistry.getServerRegistration(payload.serverId)
+        case 'updateServers': {
+          let requestGraphRedraw = false
 
-          if (serverRegistration) {
-            serverRegistration.updateServerStatus(payload, false, this._app.publicConfig.minecraftVersions)
-          }
+          for (let serverId = 0; serverId < payload.updates.length; serverId++) {
+            // The backend may send "update" events prior to receiving all "add" events
+            // A server has only been added once it's ServerRegistration is defined
+            // Checking undefined protects from this race condition
+            const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
+            const serverUpdate = payload.updates[serverId]
 
-          // Use update payloads to conditionally append data to graph
-          // Skip any incoming updates if the graph is disabled
-          if (payload.updateHistoryGraph && this._app.graphDisplayManager.isVisible) {
-            // Update may not be successful, safely append 0 points
-            const playerCount = payload.result ? payload.result.players.online : 0
+            if (serverRegistration) {
+              serverRegistration.handlePing(serverUpdate, payload.timestamp)
 
-            this._app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, payload.timestamp, playerCount)
+              serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
+            }
 
-            // Only redraw the graph if not mutating hidden data
-            if (serverRegistration.isVisible) {
-              this._app.graphDisplayManager.requestRedraw()
+            // Use update payloads to conditionally append data to graph
+            // Skip any incoming updates if the graph is disabled
+            if (serverUpdate.updateHistoryGraph && this._app.graphDisplayManager.isVisible) {
+              // Update may not be successful, safely append 0 points
+              const playerCount = serverUpdate.playerCount || 0
+
+              this._app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, payload.timestamp, playerCount)
+
+              // Only redraw the graph if not mutating hidden data
+              if (serverRegistration.isVisible) {
+                requestGraphRedraw = true
+              }
             }
           }
+
+          // Run redraw tasks after handling bulk updates
+          if (requestGraphRedraw) {
+            this._app.graphDisplayManager.redraw()
+          }
+
+          this._app.percentageBar.redraw()
+          this._app.updateGlobalStats()
+
           break
         }
 
