@@ -34,7 +34,7 @@
 	},
 	{
 		"name": "Cosmic PVP",
-		"ip": "cosmicpvp.me",
+		"ip": "mc.cosmicpvp.me",
 		"type": "PC"
 	},
 	{
@@ -59,7 +59,7 @@
 	},
 	{
 		"name": "Minehut",
-		"ip": "minehut.com",
+		"ip": "mc.minehut.com",
 		"type": "PC"
 	}
 ]
