@@ -120,21 +120,6 @@ export function formatNumber (x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-export function isArrayEqual (a, b) {
-  if (typeof a === 'undefined' || typeof a !== typeof b) {
-    return false
-  }
-  if (a.length !== b.length) {
-    return false
-  }
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return false
-    }
-  }
-  return true
-}
-
 // From http://detectmobilebrowsers.com/
 export function isMobileBrowser () {
   var check = false;

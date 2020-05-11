@@ -1,5 +1,3 @@
-import { isArrayEqual } from './util'
-
 const SORT_OPTIONS = [
   {
     getName: () => 'Players',
@@ -164,8 +162,21 @@ export class SortController {
     // This avoids DOM updates and graphs being redrawn
     const sortedServerIds = sortedServers.map(server => server.serverId)
 
-    if (isArrayEqual(sortedServerIds, this._lastSortedServers)) {
-      return
+    if (this._lastSortedServers) {
+      let allMatch = true
+
+      // Test if the arrays have actually changed
+      // No need to length check, they are the same source data each time
+      for (let i = 0; i < sortedServerIds.length; i++) {
+        if (sortedServerIds[i] !== this._lastSortedServers[i]) {
+          allMatch = false
+          break
+        }
+      }
+
+      if (allMatch) {
+        return
+      }
     }
 
     this._lastSortedServers = sortedServerIds
@@ -176,7 +187,10 @@ export class SortController {
 
     // Update the DOM structure
     sortedServers.forEach(function (serverRegistration) {
-      $('#container_' + serverRegistration.serverId).appendTo('#server-list')
+      const parentElement = document.getElementById('server-list')
+      const serverElement = document.getElementById('container_' + serverRegistration.serverId)
+
+      parentElement.appendChild(serverElement)
 
       // Set the ServerRegistration's rankIndex to its indexOf the normal sort
       serverRegistration.updateServerRankIndex(rankIndexSort.indexOf(serverRegistration))
