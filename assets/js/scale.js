@@ -38,7 +38,7 @@ export class RelativeScale {
       }
     }
 
-    if (max === Number.MAX_VALUE) {
+    if (max === Number.MIN_VALUE) {
       max = 0
     }
 

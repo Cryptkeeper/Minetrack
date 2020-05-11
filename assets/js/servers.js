@@ -244,22 +244,20 @@ export class ServerRegistration {
     const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
     const errorElement = document.getElementById('error_' + this.serverId)
 
-    if (ping.error || typeof ping.playerCount !== 'number') {
+    if (ping.error) {
       // Hide any visible player-count and show the error element
       playerCountLabelElement.style.display = 'none'
       errorElement.style.display = 'block'
 
-      let errorMessage
+      errorElement.innerText = ping.error.message
+    } else if (typeof ping.playerCount !== 'number') {
+      // Hide any visible player-count and show the error element
+      playerCountLabelElement.style.display = 'none'
+      errorElement.style.display = 'block'
 
-      if (ping.error) {
-        errorMessage = ping.error.message
-      } else if (typeof ping.playerCount !== 'number') {
-        // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
-        // In this case playerCount will safely be null, so provide a generic error message instead
-        errorMessage = 'Failed to ping'
-      }
-
-      errorElement.innerText = errorMessage
+      // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
+      // In this case playerCount will safely be null, so provide a generic error message instead
+      errorElement.innerText = 'Failed to ping'
     } else if (typeof ping.playerCount === 'number') {
       // Ensure the player-count element is visible and hide the error element
       playerCountLabelElement.style.display = 'block'
