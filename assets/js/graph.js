@@ -141,7 +141,7 @@ export class GraphDisplayManager {
         uPlotTooltipPlugin((pos, id, plot) => {
           if (pos) {
             // FIXME
-            let text = '<strong>' + formatTimestamp(this._graphTimestamps[id]) + '</strong><br><br>'
+            let text = '<strong>' + formatTimestamp(this._graphTimestamps[id] * 1000) + '</strong><br><br>'
 
             for (let i = 1; i < plot.series.length; i++) {
               const serverRegistration = this._app.serverRegistry.getServerRegistration(i - 1)

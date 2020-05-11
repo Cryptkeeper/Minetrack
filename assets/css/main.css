@@ -343,6 +343,10 @@ footer a:hover {
   color: var(--text-color);
 }
 
+#big-graph {
+  padding-right: 60px;
+}
+
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
 }
