@@ -10,7 +10,7 @@
 		"connectTimeout": 2500
 	},
 	"performance": {
-		"skipUnfurlSrv": false,
+		"skipUnfurlSrv": true,
 		"unfurlSrvCacheTtl": 120000
 	},
 	"logToDatabase": true,

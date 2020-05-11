@@ -80,9 +80,9 @@ export class ServerRegistration {
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
-        uPlotTooltipPlugin((pos, point) => {
+        uPlotTooltipPlugin((pos, id, plot) => {
           if (pos) {
-            const text = formatNumber(point.y) + ' Players<br>' + formatTimestamp(point.x * 1000)
+            const text = formatNumber(plot.data[1][id]) + ' Players<br>' + formatTimestamp(plot.data[0][id] * 1000)
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
