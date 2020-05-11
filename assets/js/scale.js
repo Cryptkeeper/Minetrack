@@ -21,6 +21,26 @@ export class RelativeScale {
     }
   }
 
+  static scaleMatrix (data, tickCount) {
+    let max = Number.MIN_VALUE
+
+    for (const row of data) {
+      let testMax = Number.MIN_VALUE
+
+      for (const point of row) {
+        if (point > testMax) {
+          testMax = point
+        }
+      }
+
+      if (testMax > max) {
+        max = testMax
+      }
+    }
+
+    return RelativeScale.scale([0, max], tickCount)
+  }
+
   static generateTicks (min, max, step) {
     const ticks = []
     for (let i = min; i <= max; i += step) {

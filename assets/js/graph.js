@@ -1,37 +1,11 @@
+import uPlot from '../lib/uPlot.esm'
+
+import { RelativeScale } from './scale'
+
 import { formatNumber, formatTimestamp, isMobileBrowser } from './util'
+import { uPlotTooltipPlugin } from './tooltip'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
-
-export const HISTORY_GRAPH_OPTIONS = {
-  series: {
-    shadowSize: 0
-  },
-  xaxis: {
-    font: {
-      color: '#E3E3E3'
-    },
-    show: false
-  },
-  yaxis: {
-    show: true,
-    ticks: 20,
-    minTickSize: 10,
-    tickLength: 10,
-    tickFormatter: formatNumber,
-    font: {
-      color: '#E3E3E3'
-    },
-    labelWidth: -5,
-    min: 0
-  },
-  grid: {
-    hoverable: true,
-    color: '#696969'
-  },
-  legend: {
-    show: false
-  }
-}
 
 const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers'
 const SHOW_FAVORITES_STORAGE_KEY = 'minetrack_show_favorites'
@@ -43,6 +17,7 @@ export class GraphDisplayManager {
   constructor (app) {
     this._app = app
     this._graphData = []
+    this._graphTimestamps = []
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
     this._showOnlyFavorites = false
@@ -57,15 +32,7 @@ export class GraphDisplayManager {
       return
     }
 
-    const graphData = this._graphData[serverId]
-
-    // Push the new data from the method call request
-    graphData.push([timestamp, playerCount])
-
-    // Trim any outdated entries by filtering the array into a new array
-    if (graphData.length > this._app.publicConfig.graphMaxLength) {
-      graphData.shift()
-    }
+    // FIXME
   }
 
   loadLocalStorage () {
@@ -126,20 +93,17 @@ export class GraphDisplayManager {
     }
   }
 
-  // Converts the backend data into the schema used by flot.js
   getVisibleGraphData () {
-    return Object.keys(this._graphData)
-      .map(Number)
-      .map(serverId => this._app.serverRegistry.getServerRegistration(serverId))
-      .filter(serverRegistration => serverRegistration !== undefined && serverRegistration.isVisible)
-      .map(serverRegistration => {
-        return {
-          data: this._graphData[serverRegistration.serverId],
-          yaxis: 1,
-          label: serverRegistration.data.name,
-          color: serverRegistration.data.color
-        }
-      })
+    return this._app.serverRegistry.getServerRegistrations()
+      .filter(serverRegistration => serverRegistration.isVisible)
+      .map(serverRegistration => this._graphData[serverRegistration.serverId])
+  }
+
+  getPlotSize () {
+    return {
+      width: Math.max(window.innerWidth, 800) * 0.9,
+      height: 400
+    }
   }
 
   buildPlotInstance (graphData) {
@@ -150,12 +114,107 @@ export class GraphDisplayManager {
       this.loadLocalStorage()
     }
 
-    this._graphData = graphData
+    // FIXME: timestamps are not shared!
+    this._graphTimestamps = graphData[0].map(val => Math.floor(val[0] / 1000))
+    this._graphData = Object.values(graphData).map(val => {
+      return val.map(element => {
+        // Safely handle null data points, they represent gaps in the graph
+        return element === null ? null : element[1]
+      })
+    })
 
-    // Explicitly define a height so flot.js can rescale the Y axis
-    document.getElementById('big-graph').style.height = '400px'
+    const series = this._app.serverRegistry.getServerRegistrations().map(serverRegistration => {
+      return {
+        scale: 'Players',
+        stroke: serverRegistration.data.color,
+        width: 2,
+        value: (_, raw) => formatNumber(raw) + ' Players',
+        show: serverRegistration.isVisible
+      }
+    })
 
-    this._plotInstance = $.plot('#big-graph', this.getVisibleGraphData(), HISTORY_GRAPH_OPTIONS)
+    const tickCount = 10
+
+    // eslint-disable-next-line new-cap
+    this._plotInstance = new uPlot({
+      plugins: [
+        uPlotTooltipPlugin((pos, id, plot) => {
+          if (pos) {
+            // FIXME
+            let text = '<strong>' + formatTimestamp(this._graphTimestamps[id]) + '</strong><br><br>'
+
+            for (let i = 1; i < plot.series.length; i++) {
+              const serverRegistration = this._app.serverRegistry.getServerRegistration(i - 1)
+              const serverGraphData = this._graphData[serverRegistration.serverId]
+
+              let playerCount
+
+              if (id >= serverGraphData.length) {
+                playerCount = '-'
+              } else {
+                playerCount = formatNumber(serverGraphData[id])
+              }
+
+              text += serverRegistration.data.name + ': ' + playerCount + '<br>'
+            }
+
+            this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
+          } else {
+            this._app.tooltip.hide()
+          }
+        })
+      ],
+      ...this.getPlotSize(),
+      cursor: {
+        y: false
+      },
+      series: [
+        {
+        },
+        ...series
+      ],
+      axes: [
+        {
+          font: '14px "Open Sans", sans-serif',
+          stroke: '#FFF',
+          grid: {
+            show: false
+          },
+          space: 60
+        },
+        {
+          font: '14px "Open Sans", sans-serif',
+          stroke: '#FFF',
+          size: 60,
+          grid: {
+            stroke: '#333',
+            width: 1
+          },
+          split: () => {
+            const visibleGraphData = this.getVisibleGraphData()
+            const [, max, scale] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
+            const ticks = RelativeScale.generateTicks(0, max, scale)
+            return ticks
+          }
+        }
+      ],
+      scales: {
+        Players: {
+          auto: false,
+          range: () => {
+            const visibleGraphData = this.getVisibleGraphData()
+            const [, scaledMax] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
+            return [0, scaledMax]
+          }
+        }
+      },
+      legend: {
+        show: false
+      }
+    }, [
+      this._graphTimestamps,
+      ...this._graphData
+    ], document.getElementById('big-graph'))
 
     // Show the settings-toggle element
     document.getElementById('settings-toggle').style.display = 'inline-block'
@@ -166,11 +225,12 @@ export class GraphDisplayManager {
     // This may cause unnessecary localStorage updates, but its a rare and harmless outcome
     this.updateLocalStorage()
 
-    // Fire calls to the provided graph instance
-    // This allows flot.js to manage redrawing and creates a helper method to reduce code duplication
-    this._plotInstance.setData(this.getVisibleGraphData())
-    this._plotInstance.setupGrid()
-    this._plotInstance.draw()
+    // Copy application state into the series data used by uPlot
+    for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
+      this._plotInstance.series[serverRegistration.serverId + 1].show = serverRegistration.isVisible
+    }
+
+    this._plotInstance.redraw()
   }
 
   requestResize () {
@@ -189,11 +249,7 @@ export class GraphDisplayManager {
   }
 
   resize = () => {
-    if (this._plotInstance) {
-      this._plotInstance.resize()
-      this._plotInstance.setupGrid()
-      this._plotInstance.draw()
-    }
+    this._plotInstance.setSize(this.getPlotSize())
 
     // undefine value so #clearTimeout is not called
     // This is safe even if #resize is manually called since it removes the pending work
@@ -202,21 +258,6 @@ export class GraphDisplayManager {
     }
 
     this._resizeRequestTimeout = undefined
-  }
-
-  // Called by flot.js when they hover over a data point.
-  handlePlotHover = (event, pos, item) => {
-    if (!item) {
-      this._app.tooltip.hide()
-    } else {
-      let text = formatNumber(item.datapoint[1]) + ' Players<br>' + formatTimestamp(item.datapoint[0])
-      // Prefix text with the series label when possible
-      if (item.series && item.series.label) {
-        text = '<strong>' + item.series.label + '</strong><br>' + text
-      }
-
-      this._app.tooltip.set(item.pageX, item.pageY, 10, 10, text)
-    }
   }
 
   initEventListeners () {
@@ -230,8 +271,6 @@ export class GraphDisplayManager {
         element.addEventListener('click', this.handleShowButtonClick, false)
       })
     }
-
-    $('#big-graph').bind('plothover', this.handlePlotHover)
 
     // These listeners should be bound each #initEventListeners call since they are for newly created elements
     document.querySelectorAll('.graph-control').forEach((element) => {
@@ -317,6 +356,7 @@ export class GraphDisplayManager {
   }
 
   reset () {
+    this._graphTimestamps = []
     this._graphData = []
     this._plotInstance = undefined
     this._hasLoadedSettings = false

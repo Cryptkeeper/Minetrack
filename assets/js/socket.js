@@ -54,7 +54,6 @@ export class SocketManager {
 
           // Display the main page component
           // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
-          // Otherwise flot.js will cause visual alignment bugs
           this._app.setPageReady(true)
 
           // Allow the graphDisplayManager to control whether or not the historical graph is loaded
