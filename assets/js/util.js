@@ -99,15 +99,15 @@ export function formatMinecraftVersions (versions, knownVersions) {
   }).join(', ')
 }
 
-export function formatTimestamp (millis) {
+export function formatTimestampSeconds (secs) {
   const date = new Date(0)
-  date.setUTCSeconds(millis / 1000)
+  date.setUTCSeconds(secs)
   return date.toLocaleTimeString()
 }
 
-export function formatDate (millis) {
+export function formatDate (secs) {
   const date = new Date(0)
-  date.setUTCSeconds(millis / 1000)
+  date.setUTCSeconds(secs)
   return date.toLocaleDateString()
 }
 

@@ -2,7 +2,7 @@ import uPlot from '../lib/uPlot.esm'
 
 import { RelativeScale } from './scale'
 
-import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
+import { formatNumber, formatTimestampSeconds, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
 import { uPlotTooltipPlugin } from './tooltip'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
@@ -69,7 +69,7 @@ export class ServerRegistration {
 
   addGraphPoints (points, timestampPoints) {
     this._graphData = [
-      timestampPoints.map(val => Math.floor(val / 1000)),
+      timestampPoints.slice(),
       points
     ]
   }
@@ -90,8 +90,7 @@ export class ServerRegistration {
               return
             }
 
-            // FIXME: update timestamp schema
-            const text = formatNumber(playerCount) + ' Players<br>' + formatTimestamp(plot.data[0][id] * 1000)
+            const text = formatNumber(playerCount) + ' Players<br>' + formatTimestampSeconds(plot.data[0][id])
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
@@ -171,7 +170,7 @@ export class ServerRegistration {
     }
 
     // Use payload.playerCount so nulls WILL be pushed into the graphing data
-    this._graphData[0].push(Math.floor(timestamp / 1000))
+    this._graphData[0].push(timestamp)
     this._graphData[1].push(payload.playerCount)
 
     // Trim graphData to within the max length by shifting out the leading elements
@@ -182,21 +181,6 @@ export class ServerRegistration {
     }
 
     this.redraw()
-
-    if (typeof payload.playerCount !== 'undefined') {
-      this.playerCount = payload.playerCount || 0
-
-      // Use payload.playerCount so nulls WILL be pushed into the graphing data
-      this._graphData[0].push(Math.floor(timestamp / 1000))
-      this._graphData[1].push(payload.playerCount)
-
-      // Trim graphData to within the max length by shifting out the leading elements
-      for (const series of this._graphData) {
-        if (series.length > this._app.publicConfig.serverGraphMaxLength) {
-          series.shift()
-        }
-      }
-    }
   }
 
   redraw () {
@@ -219,7 +203,7 @@ export class ServerRegistration {
     const peakValueElement = document.getElementById('peak-value_' + this.serverId)
 
     peakValueElement.innerText = formatNumber(data.playerCount)
-    peakLabelElement.title = 'At ' + formatTimestamp(data.timestamp)
+    peakLabelElement.title = 'At ' + formatTimestampSeconds(data.timestamp)
 
     this.lastPeakData = data
   }
@@ -245,7 +229,7 @@ export class ServerRegistration {
       // Safely handle legacy recordData that may not include the timestamp payload
       if (recordData.timestamp > 0) {
         recordValueElement.innerHTML = formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
-        recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
+        recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestampSeconds(recordData.timestamp)
       } else {
         recordValueElement.innerText = formatNumber(recordData.playerCount)
       }

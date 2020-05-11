@@ -2,7 +2,7 @@ import uPlot from '../lib/uPlot.esm'
 
 import { RelativeScale } from './scale'
 
-import { formatNumber, formatTimestamp, isMobileBrowser } from './util'
+import { formatNumber, formatTimestampSeconds, isMobileBrowser } from './util'
 import { uPlotTooltipPlugin } from './tooltip'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
@@ -23,7 +23,7 @@ export class GraphDisplayManager {
     this._showOnlyFavorites = false
   }
 
-  addGraphPoint (serverId, timestamp, playerCount) {
+  addGraphPoint (timestamp, playerCounts) {
     if (!this._hasLoadedSettings) {
       // _hasLoadedSettings is controlled by #setGraphData
       // It will only be true once the context has been loaded and initial payload received
@@ -32,7 +32,11 @@ export class GraphDisplayManager {
       return
     }
 
-    // FIXME
+    this._graphTimestamps.push(timestamp)
+
+    for (let i = 0; i < playerCounts.length; i++) {
+      this._graphData[i].push(playerCounts[i])
+    }
   }
 
   loadLocalStorage () {
@@ -106,7 +110,7 @@ export class GraphDisplayManager {
     }
   }
 
-  buildPlotInstance (graphData) {
+  buildPlotInstance (timestamps, data) {
     // Lazy load settings from localStorage, if any and if enabled
     if (!this._hasLoadedSettings) {
       this._hasLoadedSettings = true
@@ -114,14 +118,8 @@ export class GraphDisplayManager {
       this.loadLocalStorage()
     }
 
-    // FIXME: timestamps are not shared!
-    this._graphTimestamps = graphData[0].map(val => Math.floor(val[0] / 1000))
-    this._graphData = Object.values(graphData).map(val => {
-      return val.map(element => {
-        // Safely handle null data points, they represent gaps in the graph
-        return element === null ? null : element[1]
-      })
-    })
+    this._graphTimestamps = timestamps
+    this._graphData = data
 
     const series = this._app.serverRegistry.getServerRegistrations().map(serverRegistration => {
       return {
@@ -141,7 +139,7 @@ export class GraphDisplayManager {
         uPlotTooltipPlugin((pos, id, plot) => {
           if (pos) {
             // FIXME
-            let text = '<strong>' + formatTimestamp(this._graphTimestamps[id] * 1000) + '</strong><br><br>'
+            let text = '<strong>' + formatTimestampSeconds(this._graphTimestamps[id]) + '</strong><br><br>'
 
             for (let i = 1; i < plot.series.length; i++) {
               const serverRegistration = this._app.serverRegistry.getServerRegistration(i - 1)
