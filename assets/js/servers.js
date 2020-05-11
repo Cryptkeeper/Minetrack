@@ -1,36 +1,10 @@
+import uPlot from '../lib/uPlot.esm'
+
+import RelativeScale from './scale'
+
 import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
-
-export const SERVER_GRAPH_OPTIONS = {
-  series: {
-    shadowSize: 0
-  },
-  xaxis: {
-    font: {
-      color: '#E3E3E3'
-    },
-    show: false
-  },
-  yaxis: {
-    minTickSize: 100,
-    tickDecimals: 0,
-    show: true,
-    tickLength: 10,
-    tickFormatter: formatNumber,
-    font: {
-      color: '#E3E3E3'
-    },
-    labelWidth: -10
-  },
-  grid: {
-    hoverable: true,
-    color: '#696969'
-  },
-  colors: [
-    '#E9E581'
-  ]
-}
 
 export class ServerRegistry {
   constructor (app) {
@@ -93,15 +67,71 @@ export class ServerRegistration {
   }
 
   addGraphPoints (points, timestampPoints) {
-    for (let i = 0; i < points.length; i++) {
-      const point = points[i]
-      const timestamp = timestampPoints[i]
-      this._graphData.push([timestamp, point])
-    }
+    this._graphData = [
+      timestampPoints.map(val => Math.floor(val / 1000)),
+      points
+    ]
   }
 
   buildPlotInstance () {
-    this._plotInstance = $.plot('#chart_' + this.serverId, [this._graphData], SERVER_GRAPH_OPTIONS)
+    const tickCount = 5
+
+    // eslint-disable-next-line new-cap
+    this._plotInstance = new uPlot({
+      height: 100,
+      width: 400,
+      cursor: {
+        y: false,
+        drag: {
+          setScale: false,
+          x: false,
+          y: false
+        }
+      },
+      series: [
+        {},
+        {
+          scale: 'Players',
+          stroke: '#E9E581',
+          width: 2,
+          value: (_, raw) => formatNumber(raw) + ' Players'
+        }
+      ],
+      axes: [
+        {
+          show: false
+        },
+        {
+          ticks: {
+            show: false
+          },
+          font: '14px "Open Sans", sans-serif',
+          stroke: '#A3A3A3',
+          size: 55,
+          grid: {
+            stroke: '#333',
+            width: 1
+          },
+          split: (self) => {
+            const [min, max, scale] = RelativeScale.scale(self.data[1], tickCount)
+            const ticks = RelativeScale.generateTicks(min, max, scale)
+            return ticks
+          }
+        }
+      ],
+      scales: {
+        Players: {
+          auto: false,
+          range: (self) => {
+            const [scaledMin, scaledMax] = RelativeScale.scale(self.data[1], tickCount)
+            return [scaledMin, scaledMax]
+          }
+        }
+      },
+      legend: {
+        show: false
+      }
+    }, this._graphData, document.getElementById('chart_' + this.serverId))
   }
 
   handlePing (payload, timestamp) {
@@ -110,11 +140,14 @@ export class ServerRegistration {
 
       // Only update graph for successful pings
       // This intentionally pauses the server graph when pings begin to fail
-      this._graphData.push([timestamp, this.playerCount])
+      this._graphData[0].push(Math.floor(timestamp / 1000))
+      this._graphData[1].push(this.playerCount)
 
       // Trim graphData to within the max length by shifting out the leading elements
-      if (this._graphData.length > this._app.publicConfig.serverGraphMaxLength) {
-        this._graphData.shift()
+      for (const series of this._graphData) {
+        if (series.length > this._app.publicConfig.serverGraphMaxLength) {
+          series.shift()
+        }
       }
 
       this.redraw()
@@ -133,9 +166,7 @@ export class ServerRegistration {
 
   redraw () {
     // Redraw the plot instance
-    this._plotInstance.setData([this._graphData])
-    this._plotInstance.setupGrid()
-    this._plotInstance.draw()
+    this._plotInstance.setData(this._graphData)
   }
 
   updateServerRankIndex (rankIndex) {

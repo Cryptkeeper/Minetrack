@@ -298,11 +298,8 @@ footer a:hover {
 }
 
 .server .column-graph {
-  float: right;
   height: 100px;
   width: 400px;
-  margin-right: -3px;
-  margin-bottom: 5px;
 }
 
 /* Highlighted values */
