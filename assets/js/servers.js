@@ -1,8 +1,9 @@
 import uPlot from '../lib/uPlot.esm'
 
-import RelativeScale from './scale'
+import { RelativeScale } from './scale'
 
 import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
+import { uPlotTooltipPlugin } from './tooltip'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
 
@@ -78,6 +79,17 @@ export class ServerRegistration {
 
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
+      plugins: [
+        uPlotTooltipPlugin((pos, point) => {
+          if (pos) {
+            const text = formatNumber(point.y) + ' Players<br>' + formatTimestamp(point.x * 1000)
+
+            this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
+          } else {
+            this._app.tooltip.hide()
+          }
+        })
+      ],
       height: 100,
       width: 400,
       cursor: {
@@ -290,8 +302,6 @@ export class ServerRegistration {
   }
 
   initEventListeners () {
-    $('#chart_' + this.serverId).bind('plothover', this._app.graphDisplayManager.handlePlotHover)
-
     document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', () => {
       this._app.favoritesManager.handleFavoriteButtonClick(this)
     }, false)

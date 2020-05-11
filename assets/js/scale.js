@@ -1,4 +1,4 @@
-class RelativeScale {
+export class RelativeScale {
   static scale (data, tickCount) {
     const [min, max] = RelativeScale.calculateBounds(data)
 
@@ -49,5 +49,3 @@ class RelativeScale {
     }
   }
 }
-
-module.exports = RelativeScale
