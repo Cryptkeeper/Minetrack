@@ -75,7 +75,7 @@ export class ServerRegistration {
   }
 
   buildPlotInstance () {
-    const tickCount = 5
+    const tickCount = 4
 
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({

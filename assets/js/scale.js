@@ -12,7 +12,7 @@ export class RelativeScale {
 
       const ticks = (scaledMax - scaledMin) / scale
 
-      if (ticks + 1 <= tickCount) {
+      if (ticks < tickCount + 1) {
         return [scaledMin, scaledMax, scale]
       } else {
         // Too many steps between min/max, increase factor and try again

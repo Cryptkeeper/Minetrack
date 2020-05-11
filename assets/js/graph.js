@@ -37,6 +37,11 @@ export class GraphDisplayManager {
     for (let i = 0; i < playerCounts.length; i++) {
       this._graphData[i].push(playerCounts[i])
     }
+
+    this._plotInstance.setData([
+      this._graphTimestamps,
+      ...this._graphData
+    ])
   }
 
   loadLocalStorage () {
@@ -183,7 +188,7 @@ export class GraphDisplayManager {
         {
           font: '14px "Open Sans", sans-serif',
           stroke: '#FFF',
-          size: 60,
+          size: 65,
           grid: {
             stroke: '#333',
             width: 1
