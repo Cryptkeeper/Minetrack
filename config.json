@@ -13,7 +13,7 @@
 		"skipUnfurlSrv": false,
 		"unfurlSrvCacheTtl": 120000
 	},
-	"logToDatabase": true,
+	"logToDatabase": false,
 	"graphDuration": 86400000,
 	"serverGraphDuration": 180000
 }
