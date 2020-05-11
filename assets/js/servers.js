@@ -112,8 +112,8 @@ export class ServerRegistration {
             stroke: '#333',
             width: 1
           },
-          split: (self) => {
-            const [min, max, scale] = RelativeScale.scale(self.data[1], tickCount)
+          split: () => {
+            const [min, max, scale] = RelativeScale.scale(this._graphData[1], tickCount)
             const ticks = RelativeScale.generateTicks(min, max, scale)
             return ticks
           }
@@ -122,8 +122,8 @@ export class ServerRegistration {
       scales: {
         Players: {
           auto: false,
-          range: (self) => {
-            const [scaledMin, scaledMax] = RelativeScale.scale(self.data[1], tickCount)
+          range: () => {
+            const [scaledMin, scaledMax] = RelativeScale.scale(this._graphData[1], tickCount)
             return [scaledMin, scaledMax]
           }
         }
