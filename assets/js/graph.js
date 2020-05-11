@@ -149,7 +149,7 @@ export class GraphDisplayManager {
 
               let playerCount
 
-              if (id >= serverGraphData.length) {
+              if (id >= serverGraphData.length || typeof serverGraphData[id] !== 'number') {
                 playerCount = '-'
               } else {
                 playerCount = formatNumber(serverGraphData[id])

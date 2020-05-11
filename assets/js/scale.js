@@ -38,6 +38,10 @@ export class RelativeScale {
       }
     }
 
+    if (max === Number.MAX_VALUE) {
+      max = 0
+    }
+
     return RelativeScale.scale([0, max], tickCount)
   }
 
@@ -57,12 +61,21 @@ export class RelativeScale {
       let max = Number.MIN_VALUE
 
       for (const point of data) {
-        if (point > max) {
-          max = point
+        if (typeof point === 'number') {
+          if (point > max) {
+            max = point
+          }
+          if (point < min) {
+            min = point
+          }
         }
-        if (point < min) {
-          min = point
-        }
+      }
+
+      if (min === Number.MAX_VALUE) {
+        min = 0
+      }
+      if (max === Number.MIN_VALUE) {
+        max = 0
       }
 
       return [min, max]

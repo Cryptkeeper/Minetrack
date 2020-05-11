@@ -63,7 +63,7 @@ export class ServerRegistration {
     this._app = app
     this.serverId = serverId
     this.data = data
-    this._graphData = []
+    this._graphData = [[], []]
     this._failedSequentialPings = 0
   }
 
@@ -82,7 +82,16 @@ export class ServerRegistration {
       plugins: [
         uPlotTooltipPlugin((pos, id, plot) => {
           if (pos) {
-            const text = formatNumber(plot.data[1][id]) + ' Players<br>' + formatTimestamp(plot.data[0][id] * 1000)
+            const playerCount = plot.data[1][id]
+
+            if (typeof playerCount !== 'number') {
+              this._app.tooltip.hide()
+
+              return
+            }
+
+            // FIXME: update timestamp schema
+            const text = formatNumber(playerCount) + ' Players<br>' + formatTimestamp(plot.data[0][id] * 1000)
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
@@ -147,22 +156,8 @@ export class ServerRegistration {
   }
 
   handlePing (payload, timestamp) {
-    if (typeof payload.playerCount !== 'undefined') {
+    if (typeof payload.playerCount === 'number') {
       this.playerCount = payload.playerCount
-
-      // Only update graph for successful pings
-      // This intentionally pauses the server graph when pings begin to fail
-      this._graphData[0].push(Math.floor(timestamp / 1000))
-      this._graphData[1].push(this.playerCount)
-
-      // Trim graphData to within the max length by shifting out the leading elements
-      for (const series of this._graphData) {
-        if (series.length > this._app.publicConfig.serverGraphMaxLength) {
-          series.shift()
-        }
-      }
-
-      this.redraw()
 
       // Reset failed ping counter to ensure the next connection error
       // doesn't instantly retrigger a layout change
@@ -172,6 +167,34 @@ export class ServerRegistration {
       // This prevents minor connection issues from constantly reshuffling the layout
       if (++this._failedSequentialPings > 5) {
         this.playerCount = 0
+      }
+    }
+
+    // Use payload.playerCount so nulls WILL be pushed into the graphing data
+    this._graphData[0].push(Math.floor(timestamp / 1000))
+    this._graphData[1].push(payload.playerCount)
+
+    // Trim graphData to within the max length by shifting out the leading elements
+    for (const series of this._graphData) {
+      if (series.length > this._app.publicConfig.serverGraphMaxLength) {
+        series.shift()
+      }
+    }
+
+    this.redraw()
+
+    if (typeof payload.playerCount !== 'undefined') {
+      this.playerCount = payload.playerCount || 0
+
+      // Use payload.playerCount so nulls WILL be pushed into the graphing data
+      this._graphData[0].push(Math.floor(timestamp / 1000))
+      this._graphData[1].push(payload.playerCount)
+
+      // Trim graphData to within the max length by shifting out the leading elements
+      for (const series of this._graphData) {
+        if (series.length > this._app.publicConfig.serverGraphMaxLength) {
+          series.shift()
+        }
       }
     }
   }
@@ -237,13 +260,23 @@ export class ServerRegistration {
     const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
     const errorElement = document.getElementById('error_' + this.serverId)
 
-    if (ping.error) {
+    if (ping.error || typeof ping.playerCount !== 'number') {
       // Hide any visible player-count and show the error element
       playerCountLabelElement.style.display = 'none'
       errorElement.style.display = 'block'
 
-      errorElement.innerText = ping.error.message
-    } else if (typeof ping.playerCount !== 'undefined') {
+      let errorMessage
+
+      if (ping.error) {
+        errorMessage = ping.error.message
+      } else if (typeof ping.playerCount !== 'number') {
+        // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
+        // In this case playerCount will safely be null, so provide a generic error message instead
+        errorMessage = 'Failed to ping'
+      }
+
+      errorElement.innerText = errorMessage
+    } else if (typeof ping.playerCount === 'number') {
       // Ensure the player-count element is visible and hide the error element
       playerCountLabelElement.style.display = 'block'
       errorElement.style.display = 'none'
