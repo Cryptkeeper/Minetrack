@@ -1,3 +1,8 @@
+**5.4.1** *(May 10 2020)*
+- Adds warnings when the system is pinging more frequently than it is getting replies.
+- Replaces the legacy mc-ping-updated dependency with a new library, mcping-js. This fixes some bugs that could cause "zombie" connections and cause stuttering in the ping loops.
+- Fixes potential crash issue when hashing favicons.
+
 **5.4.0** *(May 9 2020)*
 - Favicons are now served over the http server (using a unique hash). This allows the favicons to be safely cached for long durations and still support dynamic updates.
 - Adds "graphDurationLabel" to `config.json` which allows you to manually modify the "24h Peak" label to a custom time duration.
