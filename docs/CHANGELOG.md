@@ -1,3 +1,18 @@
+**5.5.0** *(May 11 2020)*
+**IMPORTANT**
+This update moves ping timestamps to a shared timestamp per round. Meaning that when pinging servers, each will share the same timestamp for that series of pings. The legacy backend used a timestamp per ping per series of pings. This means after updating Minetrack, the historical graph may render slightly inaccurate for the first 24 hours (or whatever your config.json->graphDuration is), and will automatically correct itself as it receives new updates. Don't worry.
+
+- Replaces flot.js charts with uPlot charts. This new chart library renders much quicker and supports a reduced data format. This results in ~1/12th the bandwidth use when sending the historical graph. 
+- Removed jQuery (flot.js required this dependency). Between removing flot.js and jQuery, the page size has been reduced by 100KB (33%)!
+- New historical graph tooltip design to better compare multiple servers.
+- Historical graph now supports click dragging to zoom in to a custom time frame. Double click to reset.
+- Historical graph now displays time markers along the bottom.
+- All graphs now have horizontal ticks to improve readability.
+- Graphs will now display gaps (null) when the ping fails. This removes legacy graph smoothing code and prevents 0 player count pings messing up graph scales.
+- Graphs will now render the same on initial page load as they will after being open for a while. This fixes a long standing bug where the frontend ignored 0 player count pings in updates but not on initial load.
+
+Faster, smaller, more features.
+
 **5.4.1** *(May 10 2020)*
 - Adds warnings when the system is pinging more frequently than it is getting replies.
 - Replaces the legacy mc-ping-updated dependency with a new library, mcping-js. This fixes some bugs that could cause "zombie" connections and cause stuttering in the ping loops.
