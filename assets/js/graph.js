@@ -115,6 +115,13 @@ export class GraphDisplayManager {
     }
   }
 
+  getGraphDataPoint (serverId, index) {
+    const graphData = this._graphData[serverId]
+    if (graphData && index < graphData.length && typeof graphData[index] === 'number') {
+      return graphData[index]
+    }
+  }
+
   buildPlotInstance (timestamps, data) {
     // Lazy load settings from localStorage, if any and if enabled
     if (!this._hasLoadedSettings) {
@@ -141,25 +148,44 @@ export class GraphDisplayManager {
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
-        uPlotTooltipPlugin((pos, id, plot) => {
+        uPlotTooltipPlugin((pos, id) => {
           if (pos) {
-            // FIXME
-            let text = '<strong>' + formatTimestampSeconds(this._graphTimestamps[id]) + '</strong><br><br>'
+            let text = this._app.serverRegistry.getServerRegistrations()
+              .filter(serverRegistration => serverRegistration.isVisible)
+              .sort((a, b) => {
+                if (a.isFavorite !== b.isFavorite) {
+                  return a.isFavorite ? -1 : 1
+                }
 
-            for (let i = 1; i < plot.series.length; i++) {
-              const serverRegistration = this._app.serverRegistry.getServerRegistration(i - 1)
-              const serverGraphData = this._graphData[serverRegistration.serverId]
+                const aPoint = this.getGraphDataPoint(a.serverId, id)
+                const bPoint = this.getGraphDataPoint(b.serverId, id)
 
-              let playerCount
+                if (typeof aPoint === typeof bPoint) {
+                  if (typeof aPoint === 'undefined') {
+                    return 0
+                  }
+                } else {
+                  return typeof aPoint === 'number' ? -1 : 1
+                }
 
-              if (id >= serverGraphData.length || typeof serverGraphData[id] !== 'number') {
-                playerCount = '-'
-              } else {
-                playerCount = formatNumber(serverGraphData[id])
-              }
+                return bPoint - aPoint
+              })
+              .map(serverRegistration => {
+                const point = this.getGraphDataPoint(serverRegistration.serverId, id)
 
-              text += serverRegistration.data.name + ': ' + playerCount + '<br>'
-            }
+                let serverName = serverRegistration.data.name
+                if (serverRegistration.isFavorite) {
+                  serverName = '<span class="' + this._app.favoritesManager.getIconClass(true) + '"></span> ' + serverName
+                }
+
+                if (typeof point === 'number') {
+                  return serverName + ': ' + formatNumber(point)
+                } else {
+                  return serverName + ': -'
+                }
+              }).join('<br>')
+
+            text += '<br><br><strong>' + formatTimestampSeconds(this._graphTimestamps[id]) + '</strong>'
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {

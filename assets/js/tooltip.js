@@ -20,7 +20,7 @@ export function uPlotTooltipPlugin (onHover) {
           onHover({
             left: bounds.left + left + window.pageXOffset,
             top: bounds.top + top + window.pageYOffset
-          }, idx, u)
+          }, idx)
         }
       }
     }

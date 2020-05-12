@@ -80,19 +80,17 @@ export class ServerRegistration {
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
-        uPlotTooltipPlugin((pos, id, plot) => {
+        uPlotTooltipPlugin((pos, id) => {
           if (pos) {
-            const playerCount = plot.data[1][id]
+            const playerCount = this._graphData[1][id]
 
             if (typeof playerCount !== 'number') {
               this._app.tooltip.hide()
+            } else {
+              const text = formatNumber(playerCount) + ' Players<br>' + formatTimestampSeconds(this._graphData[0][id])
 
-              return
+              this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
             }
-
-            const text = formatNumber(playerCount) + ' Players<br>' + formatTimestampSeconds(plot.data[0][id])
-
-            this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
             this._app.tooltip.hide()
           }
