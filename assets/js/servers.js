@@ -180,10 +180,6 @@ export class ServerRegistration {
       }
     }
 
-    this.redraw()
-  }
-
-  redraw () {
     // Redraw the plot instance
     this._plotInstance.setData(this._graphData)
   }
