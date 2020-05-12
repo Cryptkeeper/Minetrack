@@ -38,9 +38,6 @@ export class SocketManager {
         this._app.caption.set('Disconnected due to error.')
       }
 
-      // Reset modified DOM structures
-      document.getElementById('big-graph-mobile-load-request').style.display = 'none'
-
       // Schedule socket reconnection attempt
       this.scheduleReconnect()
     }
@@ -59,11 +56,7 @@ export class SocketManager {
           // Allow the graphDisplayManager to control whether or not the historical graph is loaded
           // Defer to isGraphVisible from the publicConfig to understand if the frontend will ever receive a graph payload
           if (this._app.publicConfig.isGraphVisible) {
-            if (this._app.graphDisplayManager.isVisible) {
-              this.sendHistoryGraphRequest()
-            } else {
-              document.getElementById('big-graph-mobile-load-request').style.display = 'block'
-            }
+            this.sendHistoryGraphRequest()
           }
 
           payload.servers.forEach((serverPayload, serverId) => {
@@ -99,9 +92,7 @@ export class SocketManager {
             this._app.graphDisplayManager.addGraphPoint(payload.timestamp, Object.values(payload.updates).map(update => update.playerCount))
 
             // Run redraw tasks after handling bulk updates
-            if (this._app.graphDisplayManager.isVisible) {
-              this._app.graphDisplayManager.redraw()
-            }
+            this._app.graphDisplayManager.redraw()
           }
 
           this._app.percentageBar.redraw()
@@ -116,10 +107,6 @@ export class SocketManager {
         }
 
         case 'historyGraph': {
-          // Consider the graph visible since a payload has been received
-          // This is used for the manual graph load request behavior
-          this._app.graphDisplayManager.isVisible = true
-
           this._app.graphDisplayManager.buildPlotInstance(payload.timestamps, payload.graphData)
 
           // Build checkbox elements for graph controls

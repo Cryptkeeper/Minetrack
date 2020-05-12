@@ -2,7 +2,7 @@ import uPlot from '../lib/uPlot.esm'
 
 import { RelativeScale } from './scale'
 
-import { formatNumber, formatTimestampSeconds, isMobileBrowser } from './util'
+import { formatNumber, formatTimestampSeconds } from './util'
 import { uPlotTooltipPlugin } from './tooltip'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
@@ -11,9 +11,6 @@ const HIDDEN_SERVERS_STORAGE_KEY = 'minetrack_hidden_servers'
 const SHOW_FAVORITES_STORAGE_KEY = 'minetrack_show_favorites'
 
 export class GraphDisplayManager {
-  // Only emit graph data request if not on mobile due to graph data size
-  isVisible = !isMobileBrowser()
-
   constructor (app) {
     this._app = app
     this._graphData = []

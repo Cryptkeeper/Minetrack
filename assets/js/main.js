@@ -11,12 +11,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Delegate to GraphDisplayManager which can check if the resize is necessary
     app.graphDisplayManager.requestResize()
   }, false)
-
-  document.getElementById('big-graph-mobile-load-request-button').addEventListener('click', function () {
-    // Send a graph data request to the backend
-    app.socketManager.sendHistoryGraphRequest()
-
-    // Hide the activation link to avoid multiple requests
-    document.getElementById('big-graph-mobile-load-request').style.display = 'none'
-  }, false)
 }, false)

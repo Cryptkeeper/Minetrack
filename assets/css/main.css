@@ -329,21 +329,6 @@ footer a:hover {
 }
 
 /* Historical graph */
-#big-graph-mobile-load-request {
-  background: var(--background-color);
-  color: var(--text-color);
-  padding: 10px 0;
-  text-align: center;
-  display: none;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-#big-graph-mobile-load-request a {
-  display: inline-block;
-  color: var(--text-color);
-}
-
 #big-graph {
   padding-right: 65px;
 }

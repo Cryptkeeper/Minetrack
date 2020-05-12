@@ -11,6 +11,7 @@ This update moves ping timestamps to a shared timestamp per round. Meaning that 
 - All graphs now have horizontal ticks to improve readability.
 - Graphs will now display gaps (null) when the ping fails. This removes legacy graph smoothing code and prevents 0 player count pings messing up graph scales.
 - Graphs will now render the same on initial page load as they will after being open for a while. This fixes a long standing bug where the frontend ignored 0 player count pings in updates but not on initial load.
+- Removes the mobile browser detection/manual historical graph load request. It is now automatically loaded given its smaller size.
 
 Faster, smaller, more features.
 
