@@ -1,4 +1,5 @@
 **5.5.0** *(May 11 2020)*
+
 **IMPORTANT**
 This update moves ping timestamps to a shared timestamp per round. Meaning that when pinging servers, each will share the same timestamp for that series of pings. The legacy backend used a timestamp per ping per series of pings. This means after updating Minetrack, the historical graph may render slightly inaccurate for the first 24 hours (or whatever your config.json->graphDuration is), and will automatically correct itself as it receives new updates. Don't worry.
 
