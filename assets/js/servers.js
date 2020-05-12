@@ -194,76 +194,68 @@ export class ServerRegistration {
     document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
   }
 
-  updateServerPeak (data) {
-    const peakLabelElement = document.getElementById('peak_' + this.serverId)
+  _renderValue (prefix, handler) {
+    const labelElement = document.getElementById(prefix + '_' + this.serverId)
 
-    // Always set label once any peak data has been received
-    peakLabelElement.style.display = 'block'
+    labelElement.style.display = 'block'
 
-    const peakValueElement = document.getElementById('peak-value_' + this.serverId)
+    const valueElement = document.getElementById(prefix + '-value_' + this.serverId)
+    const targetElement = valueElement || labelElement
 
-    peakValueElement.innerText = formatNumber(data.playerCount)
-    peakLabelElement.title = 'At ' + formatTimestampSeconds(data.timestamp)
+    if (targetElement) {
+      if (typeof handler === 'function') {
+        handler(targetElement)
+      } else {
+        targetElement.innerText = handler
+      }
+    }
+  }
 
-    this.lastPeakData = data
+  _hideValue (prefix) {
+    const element = document.getElementById(prefix + '_' + this.serverId)
+
+    element.style.display = 'none'
   }
 
   updateServerStatus (ping, minecraftVersions) {
     if (ping.versions) {
-      const versionsElement = document.getElementById('version_' + this.serverId)
-
-      versionsElement.style.display = 'block'
-      versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || ''
+      this._renderValue('version', formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || '')
     }
 
     if (ping.recordData) {
-      // Always set label once any record data has been received
-      const recordLabelElement = document.getElementById('record_' + this.serverId)
+      this._renderValue('record', (element) => {
+        if (ping.recordData.timestamp > 0) {
+          element.innerText = formatNumber(ping.recordData.playerCount) + ' (' + formatDate(ping.recordData.timestamp) + ')'
+          element.title = 'At ' + formatDate(ping.recordData.timestamp) + ' ' + formatTimestampSeconds(ping.recordData.timestamp)
+        } else {
+          element.innerText = formatNumber(ping.recordData.playerCount)
+        }
+      })
 
-      recordLabelElement.style.display = 'block'
-
-      const recordValueElement = document.getElementById('record-value_' + this.serverId)
-
-      const recordData = ping.recordData
-
-      // Safely handle legacy recordData that may not include the timestamp payload
-      if (recordData.timestamp > 0) {
-        recordValueElement.innerHTML = formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
-        recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestampSeconds(recordData.timestamp)
-      } else {
-        recordValueElement.innerText = formatNumber(recordData.playerCount)
-      }
-
-      this.lastRecordData = recordData
+      this.lastRecordData = ping.recordData
     }
 
     if (ping.graphPeakData) {
-      this.updateServerPeak(ping.graphPeakData)
+      this._renderValue('peak', (element) => {
+        element.innerText = formatNumber(ping.graphPeakData.playerCount)
+        element.title = 'At ' + formatTimestampSeconds(ping.graphPeakData.timestamp)
+      })
+
+      this.lastPeakData = ping.graphPeakData
     }
 
-    const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
-    const errorElement = document.getElementById('error_' + this.serverId)
-
     if (ping.error) {
-      // Hide any visible player-count and show the error element
-      playerCountLabelElement.style.display = 'none'
-      errorElement.style.display = 'block'
-
-      errorElement.innerText = ping.error.message
+      this._hideValue('player-count')
+      this._renderValue('error', ping.error.message)
     } else if (typeof ping.playerCount !== 'number') {
-      // Hide any visible player-count and show the error element
-      playerCountLabelElement.style.display = 'none'
-      errorElement.style.display = 'block'
+      this._hideValue('player-count')
 
       // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
       // In this case playerCount will safely be null, so provide a generic error message instead
-      errorElement.innerText = 'Failed to ping'
+      this._renderValue('error', 'Failed to ping')
     } else if (typeof ping.playerCount === 'number') {
-      // Ensure the player-count element is visible and hide the error element
-      playerCountLabelElement.style.display = 'block'
-      errorElement.style.display = 'none'
-
-      document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.playerCount)
+      this._hideValue('error')
+      this._renderValue('player-count', formatNumber(ping.playerCount))
     }
 
     // An updated favicon has been sent, update the src
