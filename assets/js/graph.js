@@ -35,6 +35,21 @@ export class GraphDisplayManager {
       this._graphData[i].push(playerCounts[i])
     }
 
+    // Trim all data arrays to only the relevant portion
+    // This keeps it in sync with backend data structures
+    const graphMaxLength = this._app.publicConfig.graphMaxLength
+
+    if (this._graphTimestamps.length > graphMaxLength) {
+      this._graphTimestamps.splice(0, this._graphTimestamps.length - graphMaxLength)
+    }
+
+    for (const series of this._graphData) {
+      if (series.length > graphMaxLength) {
+        series.splice(0, series.length - graphMaxLength)
+      }
+    }
+
+    // Paint updated data structure
     this._plotInstance.setData([
       this._graphTimestamps,
       ...this._graphData
