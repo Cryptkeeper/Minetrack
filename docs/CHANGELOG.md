@@ -1,3 +1,6 @@
+**5.4.2** *(May 13 2020)*
+- Fixes a typo causing `_minecraft._tcp.*` SRV records to not resolve.
+
 **5.4.1** *(May 10 2020)*
 - Adds warnings when the system is pinging more frequently than it is getting replies.
 - Replaces the legacy mc-ping-updated dependency with a new library, mcping-js. This fixes some bugs that could cause "zombie" connections and cause stuttering in the ping loops.
