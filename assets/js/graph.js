@@ -1,4 +1,4 @@
-import uPlot from '../lib/uPlot.esm'
+import uPlot from 'uplot'
 
 import { RelativeScale } from './scale'
 
