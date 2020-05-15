@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 **5.5.0** *(May 11 2020)*
 
 **IMPORTANT**
@@ -14,6 +15,14 @@ This update moves ping timestamps to a shared timestamp per round. Meaning that 
 - Removes the mobile browser detection/manual historical graph load request. It is now automatically loaded given its smaller size.
 
 Faster, smaller, more features.
+=======
+**5.4.3** *(May 14 2020)*
+- Added support for the optional field `config->skipSrvTimeout` in `config.json`. If a configured server does not return a valid response when unfurling potential SRV records, it will avoid re-unfurling SRV records for this duration in milliseconds. Use a value of `0` to disable this feature altogether.
+- Removes support for the `config->performance->skipUnfurlSrv` and `config->performance->unfurlSrvCacheTtl` fields in `config.json
+
+**5.4.2** *(May 13 2020)*
+- Fixes a typo causing `_minecraft._tcp.*` SRV records to not resolve.
+>>>>>>> 0e5859a82953b9d67ea759a3235080eaf7dbe74c
 
 **5.4.1** *(May 10 2020)*
 - Adds warnings when the system is pinging more frequently than it is getting replies.
