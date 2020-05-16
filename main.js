@@ -30,15 +30,6 @@ if (!config.serverGraphDuration) {
   config.serverGraphDuration = 3 * 60 * 10000
 }
 
-if (config.performance && config.performance.skipUnfurlSrv) {
-  logger.log('warn', '"performance.skipUnfurlSrv" is enabled. Any configured hosts using SRV records may not properly resolve.')
-}
-
-if (!config.performance || typeof config.performance.unfurlSrvCacheTtl === 'undefined') {
-  logger.log('warn', '"performance.unfurlSrvCacheTtl" is not defined in config.json - defaulting to 120 seconds!')
-  config.performance.unfurlSrvCacheTtl = 2 * 60 * 1000
-}
-
 if (!config.logToDatabase) {
   logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.')
 
