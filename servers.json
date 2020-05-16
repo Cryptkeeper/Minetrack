@@ -28,7 +28,7 @@
 	},
 	{
 		"name": "Hive Games",
-		"ip": "hivebedrock.network",
+		"ip": "geo.hivebedrock.network",
 		"type": "PE",
 		"color": "#ffcb03",
 		"favicon": "hive.png"
