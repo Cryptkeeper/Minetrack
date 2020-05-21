@@ -9,7 +9,8 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
-	"logToDatabase": false,
-	"graphDuration": 86400000,
+	"logToDatabase": true,
+	"graphDuration": 259200000,
+	"defaultDisplayedGraphDuration": 86400000,
 	"serverGraphDuration": 180000
 }

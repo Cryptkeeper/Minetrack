@@ -334,18 +334,24 @@ footer a:hover {
 /* Historical graph */
 #big-graph {
   padding-right: 65px;
+  margin: 0 auto;
 }
 
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
     width: 90%;
 }
 
-#big-graph-checkboxes > table {
-    width: 100%;
+#big-graph-range {
+  margin: 10px 0;
+  width: 100%;
 }
 
-#big-graph {
+#big-graph-range > div {
   margin: 0 auto;
+}
+
+#big-graph-checkboxes > table {
+    width: 100%;
 }
 
 #big-graph-controls {

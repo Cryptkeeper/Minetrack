@@ -3,7 +3,7 @@ import uPlot from 'uplot'
 import { RelativeScale } from './scale'
 
 import { formatNumber, formatTimestampSeconds } from './util'
-import { uPlotTooltipPlugin } from './tooltip'
+import { uPlotTooltipPlugin, uPlotZoomedPlugin, uPlotRangePlugin } from './plugins'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
 
@@ -18,6 +18,7 @@ export class GraphDisplayManager {
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
     this._showOnlyFavorites = false
+    this._ignorePlotSetSelect = false
   }
 
   addGraphPoint (timestamp, playerCounts) {
@@ -50,10 +51,7 @@ export class GraphDisplayManager {
     }
 
     // Paint updated data structure
-    this._plotInstance.setData([
-      this._graphTimestamps,
-      ...this._graphData
-    ])
+    this._plotInstance.setData(this.getGraphData())
   }
 
   loadLocalStorage () {
@@ -120,10 +118,11 @@ export class GraphDisplayManager {
       .map(serverRegistration => this._graphData[serverRegistration.serverId])
   }
 
-  getPlotSize () {
+  getPlotSize (isZoomPlot) {
+    const scale = isZoomPlot ? 0.8 : 0.9
     return {
-      width: Math.max(window.innerWidth, 800) * 0.9,
-      height: 400
+      width: Math.max(window.innerWidth, 800) * scale,
+      height: isZoomPlot ? 100 : 400
     }
   }
 
@@ -132,6 +131,13 @@ export class GraphDisplayManager {
     if (graphData && index < graphData.length && typeof graphData[index] === 'number') {
       return graphData[index]
     }
+  }
+
+  getGraphData () {
+    return [
+      this._graphTimestamps,
+      ...this._graphData
+    ]
   }
 
   buildPlotInstance (timestamps, data) {
@@ -207,11 +213,16 @@ export class GraphDisplayManager {
           } else {
             this._app.tooltip.hide()
           }
-        })
+        }),
+        uPlotZoomedPlugin('minetrack-historical-graph', () => this._plotRangeInstance)
       ],
-      ...this.getPlotSize(),
+      ...this.getPlotSize(false),
       cursor: {
-        y: false
+        drag: {
+          setScale: false,
+          x: false,
+          y: false
+        }
       },
       series: [
         {
@@ -244,6 +255,10 @@ export class GraphDisplayManager {
         }
       ],
       scales: {
+        x: {
+          min: this._graphTimestamps[Math.max(this._graphTimestamps.length - this._app.publicConfig.displayedGraphMaxLength, 0)],
+          max: this._graphTimestamps[this._graphTimestamps.length - 1]
+        },
         Players: {
           auto: false,
           range: () => {
@@ -256,10 +271,55 @@ export class GraphDisplayManager {
       legend: {
         show: false
       }
-    }, [
-      this._graphTimestamps,
-      ...this._graphData
-    ], document.getElementById('big-graph'))
+    }, this.getGraphData(), document.getElementById('big-graph'))
+
+    // eslint-disable-next-line new-cap
+    this._plotRangeInstance = new uPlot({
+      plugins: [
+        uPlotRangePlugin('minetrack-historical-graph', () => this._plotInstance)
+      ],
+      ...this.getPlotSize(true),
+      cursor: {
+        points: {
+          show: false
+        },
+        drag: {
+          setScale: false,
+          x: true,
+          y: false
+        },
+        y: false
+      },
+      series: [
+        {
+        },
+        ...series
+      ],
+      axes: [
+        {
+          show: false
+        },
+        {
+          show: false
+        }
+      ],
+      scales: {
+        x: {
+          time: false
+        },
+        Players: {
+          auto: false,
+          range: () => {
+            const visibleGraphData = this.getVisibleGraphData()
+            const [, scaledMax] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
+            return [0, scaledMax]
+          }
+        }
+      },
+      legend: {
+        show: false
+      }
+    }, this.getGraphData(), document.getElementById('big-graph-range'))
 
     // Show the settings-toggle element
     document.getElementById('settings-toggle').style.display = 'inline-block'
@@ -273,9 +333,11 @@ export class GraphDisplayManager {
     // Copy application state into the series data used by uPlot
     for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
       this._plotInstance.series[serverRegistration.serverId + 1].show = serverRegistration.isVisible
+      this._plotRangeInstance.series[serverRegistration.serverId + 1].show = serverRegistration.isVisible
     }
 
     this._plotInstance.redraw()
+    this._plotRangeInstance.redraw()
   }
 
   requestResize () {
@@ -294,7 +356,8 @@ export class GraphDisplayManager {
   }
 
   resize = () => {
-    this._plotInstance.setSize(this.getPlotSize())
+    this._plotInstance.setSize(this.getPlotSize(false))
+    this._plotRangeInstance.setSize(this.getPlotSize(true))
 
     // undefine value so #clearTimeout is not called
     // This is safe even if #resize is manually called since it removes the pending work
@@ -408,6 +471,11 @@ export class GraphDisplayManager {
       this._plotInstance = undefined
     }
 
+    if (this._plotRangeInstance) {
+      this._plotRangeInstance.destroy()
+      this._plotRangeInstance = undefined
+    }
+
     this._graphTimestamps = []
     this._graphData = []
     this._hasLoadedSettings = false
@@ -422,7 +490,6 @@ export class GraphDisplayManager {
     // Reset modified DOM structures
     document.getElementById('big-graph-checkboxes').innerHTML = ''
     document.getElementById('big-graph-controls').style.display = 'none'
-
     document.getElementById('settings-toggle').style.display = 'none'
   }
 }
