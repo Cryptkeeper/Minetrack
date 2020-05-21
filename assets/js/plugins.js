@@ -104,10 +104,10 @@ export function uPlotRangePlugin (sourceKey, zoomedPlotGetter) {
       ready: [
         rangePlot => {
           // Pull the default display range from the zoomedPlot
-          const defaultRange = zoomedPlotGetter().scales.x.range()
+          const defaultScale = zoomedPlotGetter().scales.x
 
-          const left = Math.round(rangePlot.valToPos(defaultRange[0], 'x'))
-          const width = Math.round(rangePlot.valToPos(defaultRange[1], 'x')) - left
+          const left = Math.round(rangePlot.valToPos(defaultScale.min, 'x'))
+          const width = Math.round(rangePlot.valToPos(defaultScale.max, 'x')) - left
           const height = rangePlot.root.querySelector('.over').getBoundingClientRect().height
 
           // Map to the local plot data and set selection
