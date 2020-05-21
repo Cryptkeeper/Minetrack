@@ -1,36 +1,11 @@
-import { formatNumber, formatTimestamp, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
+import uPlot from 'uplot'
+
+import { RelativeScale } from './scale'
+
+import { formatNumber, formatTimestampSeconds, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
+import { uPlotTooltipPlugin } from './tooltip'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
-
-export const SERVER_GRAPH_OPTIONS = {
-  series: {
-    shadowSize: 0
-  },
-  xaxis: {
-    font: {
-      color: '#E3E3E3'
-    },
-    show: false
-  },
-  yaxis: {
-    minTickSize: 100,
-    tickDecimals: 0,
-    show: true,
-    tickLength: 10,
-    tickFormatter: formatNumber,
-    font: {
-      color: '#E3E3E3'
-    },
-    labelWidth: -10
-  },
-  grid: {
-    hoverable: true,
-    color: '#696969'
-  },
-  colors: [
-    '#E9E581'
-  ]
-}
 
 export class ServerRegistry {
   constructor (app) {
@@ -88,36 +63,106 @@ export class ServerRegistration {
     this._app = app
     this.serverId = serverId
     this.data = data
-    this._graphData = []
+    this._graphData = [[], []]
     this._failedSequentialPings = 0
   }
 
   addGraphPoints (points, timestampPoints) {
-    for (let i = 0; i < points.length; i++) {
-      const point = points[i]
-      const timestamp = timestampPoints[i]
-      this._graphData.push([timestamp, point])
-    }
+    this._graphData = [
+      timestampPoints.slice(),
+      points
+    ]
   }
 
   buildPlotInstance () {
-    this._plotInstance = $.plot('#chart_' + this.serverId, [this._graphData], SERVER_GRAPH_OPTIONS)
+    const tickCount = 4
+
+    // eslint-disable-next-line new-cap
+    this._plotInstance = new uPlot({
+      plugins: [
+        uPlotTooltipPlugin((pos, id) => {
+          if (pos) {
+            const playerCount = this._graphData[1][id]
+
+            if (typeof playerCount !== 'number') {
+              this._app.tooltip.hide()
+            } else {
+              const text = formatNumber(playerCount) + ' Players<br>' + formatTimestampSeconds(this._graphData[0][id])
+
+              this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
+            }
+          } else {
+            this._app.tooltip.hide()
+          }
+        })
+      ],
+      height: 100,
+      width: 400,
+      cursor: {
+        y: false,
+        drag: {
+          setScale: false,
+          x: false,
+          y: false
+        },
+        sync: {
+          key: 'minetrack-server',
+          setSeries: true
+        }
+      },
+      series: [
+        {},
+        {
+          scale: 'Players',
+          stroke: '#E9E581',
+          width: 2,
+          value: (_, raw) => formatNumber(raw) + ' Players',
+          spanGaps: true,
+          points: {
+            show: false
+          }
+        }
+      ],
+      axes: [
+        {
+          show: false
+        },
+        {
+          ticks: {
+            show: false
+          },
+          font: '14px "Open Sans", sans-serif',
+          stroke: '#A3A3A3',
+          size: 55,
+          grid: {
+            stroke: '#333',
+            width: 1
+          },
+          split: () => {
+            const [min, max, scale] = RelativeScale.scale(this._graphData[1], tickCount)
+            const ticks = RelativeScale.generateTicks(min, max, scale)
+            return ticks
+          }
+        }
+      ],
+      scales: {
+        Players: {
+          auto: false,
+          range: () => {
+            const [scaledMin, scaledMax] = RelativeScale.scale(this._graphData[1], tickCount)
+            return [scaledMin, scaledMax]
+          }
+        }
+      },
+      legend: {
+        show: false
+      }
+    }, this._graphData, document.getElementById('chart_' + this.serverId))
   }
 
   handlePing (payload, timestamp) {
-    if (typeof payload.playerCount !== 'undefined') {
+    if (typeof payload.playerCount === 'number') {
       this.playerCount = payload.playerCount
-
-      // Only update graph for successful pings
-      // This intentionally pauses the server graph when pings begin to fail
-      this._graphData.push([timestamp, this.playerCount])
-
-      // Trim graphData to within the max length by shifting out the leading elements
-      if (this._graphData.length > this._app.publicConfig.serverGraphMaxLength) {
-        this._graphData.shift()
-      }
-
-      this.redraw()
 
       // Reset failed ping counter to ensure the next connection error
       // doesn't instantly retrigger a layout change
@@ -129,13 +174,20 @@ export class ServerRegistration {
         this.playerCount = 0
       }
     }
-  }
 
-  redraw () {
+    // Use payload.playerCount so nulls WILL be pushed into the graphing data
+    this._graphData[0].push(timestamp)
+    this._graphData[1].push(payload.playerCount)
+
+    // Trim graphData to within the max length by shifting out the leading elements
+    for (const series of this._graphData) {
+      if (series.length > this._app.publicConfig.serverGraphMaxLength) {
+        series.shift()
+      }
+    }
+
     // Redraw the plot instance
-    this._plotInstance.setData([this._graphData])
-    this._plotInstance.setupGrid()
-    this._plotInstance.draw()
+    this._plotInstance.setData(this._graphData)
   }
 
   updateServerRankIndex (rankIndex) {
@@ -144,68 +196,68 @@ export class ServerRegistration {
     document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
   }
 
-  updateServerPeak (data) {
-    const peakLabelElement = document.getElementById('peak_' + this.serverId)
+  _renderValue (prefix, handler) {
+    const labelElement = document.getElementById(prefix + '_' + this.serverId)
 
-    // Always set label once any peak data has been received
-    peakLabelElement.style.display = 'block'
+    labelElement.style.display = 'block'
 
-    const peakValueElement = document.getElementById('peak-value_' + this.serverId)
+    const valueElement = document.getElementById(prefix + '-value_' + this.serverId)
+    const targetElement = valueElement || labelElement
 
-    peakValueElement.innerText = formatNumber(data.playerCount)
-    peakLabelElement.title = 'At ' + formatTimestamp(data.timestamp)
+    if (targetElement) {
+      if (typeof handler === 'function') {
+        handler(targetElement)
+      } else {
+        targetElement.innerText = handler
+      }
+    }
+  }
 
-    this.lastPeakData = data
+  _hideValue (prefix) {
+    const element = document.getElementById(prefix + '_' + this.serverId)
+
+    element.style.display = 'none'
   }
 
   updateServerStatus (ping, minecraftVersions) {
     if (ping.versions) {
-      const versionsElement = document.getElementById('version_' + this.serverId)
-
-      versionsElement.style.display = 'block'
-      versionsElement.innerText = formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || ''
+      this._renderValue('version', formatMinecraftVersions(ping.versions, minecraftVersions[this.data.type]) || '')
     }
 
     if (ping.recordData) {
-      // Always set label once any record data has been received
-      const recordLabelElement = document.getElementById('record_' + this.serverId)
+      this._renderValue('record', (element) => {
+        if (ping.recordData.timestamp > 0) {
+          element.innerText = formatNumber(ping.recordData.playerCount) + ' (' + formatDate(ping.recordData.timestamp) + ')'
+          element.title = 'At ' + formatDate(ping.recordData.timestamp) + ' ' + formatTimestampSeconds(ping.recordData.timestamp)
+        } else {
+          element.innerText = formatNumber(ping.recordData.playerCount)
+        }
+      })
 
-      recordLabelElement.style.display = 'block'
-
-      const recordValueElement = document.getElementById('record-value_' + this.serverId)
-
-      const recordData = ping.recordData
-
-      // Safely handle legacy recordData that may not include the timestamp payload
-      if (recordData.timestamp > 0) {
-        recordValueElement.innerHTML = formatNumber(recordData.playerCount) + ' (' + formatDate(recordData.timestamp) + ')'
-        recordLabelElement.title = 'At ' + formatDate(recordData.timestamp) + ' ' + formatTimestamp(recordData.timestamp)
-      } else {
-        recordValueElement.innerText = formatNumber(recordData.playerCount)
-      }
-
-      this.lastRecordData = recordData
+      this.lastRecordData = ping.recordData
     }
 
     if (ping.graphPeakData) {
-      this.updateServerPeak(ping.graphPeakData)
+      this._renderValue('peak', (element) => {
+        element.innerText = formatNumber(ping.graphPeakData.playerCount)
+        element.title = 'At ' + formatTimestampSeconds(ping.graphPeakData.timestamp)
+      })
+
+      this.lastPeakData = ping.graphPeakData
     }
 
-    const playerCountLabelElement = document.getElementById('player-count_' + this.serverId)
-    const errorElement = document.getElementById('error_' + this.serverId)
-
     if (ping.error) {
-      // Hide any visible player-count and show the error element
-      playerCountLabelElement.style.display = 'none'
-      errorElement.style.display = 'block'
+      this._hideValue('player-count')
+      this._renderValue('error', ping.error.message)
+    } else if (typeof ping.playerCount !== 'number') {
+      this._hideValue('player-count')
 
-      errorElement.innerText = ping.error.message
-    } else if (typeof ping.playerCount !== 'undefined') {
-      // Ensure the player-count element is visible and hide the error element
-      playerCountLabelElement.style.display = 'block'
-      errorElement.style.display = 'none'
-
-      document.getElementById('player-count-value_' + this.serverId).innerText = formatNumber(ping.playerCount)
+      // If the frontend has freshly connection, and the server's last ping was in error, it may not contain an error object
+      // In this case playerCount will safely be null, so provide a generic error message instead
+      this._renderValue('error', 'Failed to ping')
+    } else if (typeof ping.playerCount === 'number') {
+      this._hideValue('error')
+      this._renderValue('player-count', formatNumber(ping.playerCount))
     }
 
     // An updated favicon has been sent, update the src
@@ -259,8 +311,6 @@ export class ServerRegistration {
   }
 
   initEventListeners () {
-    $('#chart_' + this.serverId).bind('plothover', this._app.graphDisplayManager.handlePlotHover)
-
     document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', () => {
       this._app.favoritesManager.handleFavoriteButtonClick(this)
     }, false)
