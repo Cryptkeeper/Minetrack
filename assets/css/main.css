@@ -1,4 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:700,300);
+
+@import url(uplot/dist/uPlot.min.css);
+
 @import url(../css/icons.css);
 
 * {
@@ -262,24 +265,6 @@ footer a:hover {
   display: inline-block;
 }
 
-.server .column-status .server-is-favorite {
-  cursor: pointer;
-  color: var(--color-gold);
-}
-
-.server .column-status .server-is-favorite:hover::before {
-  content: "\f006";
-}
-
-.server .column-status .server-is-not-favorite {
-  cursor: pointer;
-  color: var(--background-color);
-}
-
-.server .column-status .server-is-not-favorite:hover {
-  color: var(--color-gold);
-}
-
 .server .column-status .server-error {
   display: none;
   color: #e74c3c;
@@ -297,11 +282,27 @@ footer a:hover {
 }
 
 .server .column-graph {
-  float: right;
   height: 100px;
   width: 400px;
-  margin-right: -3px;
-  margin-bottom: 5px;
+}
+
+/* Favorite icons */
+.server-is-favorite {
+  cursor: pointer;
+  color: var(--color-gold);
+}
+
+.server-is-favorite:hover::before {
+  content: "\f006";
+}
+
+.server-is-not-favorite {
+  cursor: pointer;
+  color: var(--background-color);
+}
+
+.server-is-not-favorite:hover {
+  color: var(--color-gold);
 }
 
 /* Highlighted values */
@@ -331,19 +332,8 @@ footer a:hover {
 }
 
 /* Historical graph */
-#big-graph-mobile-load-request {
-  background: var(--background-color);
-  color: var(--text-color);
-  padding: 10px 0;
-  text-align: center;
-  display: none;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-#big-graph-mobile-load-request a {
-  display: inline-block;
-  color: var(--text-color);
+#big-graph {
+  padding-right: 65px;
 }
 
 #big-graph, #big-graph-controls, #big-graph-checkboxes {
@@ -468,4 +458,10 @@ footer a:hover {
   header .header-button > span:first-of-type {
     margin-top: 10px;
   }
+}
+
+/* uPlot.css overrides */
+.uplot .select {
+  background: var(--color-blue);
+  opacity: 0.3;
 }

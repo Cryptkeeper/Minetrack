@@ -38,9 +38,6 @@ export class SocketManager {
         this._app.caption.set('Disconnected due to error.')
       }
 
-      // Reset modified DOM structures
-      document.getElementById('big-graph-mobile-load-request').style.display = 'none'
-
       // Schedule socket reconnection attempt
       this.scheduleReconnect()
     }
@@ -54,17 +51,12 @@ export class SocketManager {
 
           // Display the main page component
           // Called here instead of syncComplete so the DOM can be drawn prior to the graphs being drawn
-          // Otherwise flot.js will cause visual alignment bugs
           this._app.setPageReady(true)
 
           // Allow the graphDisplayManager to control whether or not the historical graph is loaded
           // Defer to isGraphVisible from the publicConfig to understand if the frontend will ever receive a graph payload
           if (this._app.publicConfig.isGraphVisible) {
-            if (this._app.graphDisplayManager.isVisible) {
-              this.sendHistoryGraphRequest()
-            } else {
-              document.getElementById('big-graph-mobile-load-request').style.display = 'block'
-            }
+            this.sendHistoryGraphRequest()
           }
 
           payload.servers.forEach((serverPayload, serverId) => {
@@ -82,8 +74,6 @@ export class SocketManager {
           break
 
         case 'updateServers': {
-          let requestGraphRedraw = false
-
           for (let serverId = 0; serverId < payload.updates.length; serverId++) {
             // The backend may send "update" events prior to receiving all "add" events
             // A server has only been added once it's ServerRegistration is defined
@@ -93,27 +83,15 @@ export class SocketManager {
 
             if (serverRegistration) {
               serverRegistration.handlePing(serverUpdate, payload.timestamp)
-
               serverRegistration.updateServerStatus(serverUpdate, this._app.publicConfig.minecraftVersions)
-            }
-
-            // Use update payloads to conditionally append data to graph
-            // Skip any incoming updates if the graph is disabled
-            if (serverUpdate.updateHistoryGraph && this._app.graphDisplayManager.isVisible) {
-              // Update may not be successful, safely append 0 points
-              const playerCount = serverUpdate.playerCount || 0
-
-              this._app.graphDisplayManager.addGraphPoint(serverRegistration.serverId, payload.timestamp, playerCount)
-
-              // Only redraw the graph if not mutating hidden data
-              if (serverRegistration.isVisible) {
-                requestGraphRedraw = true
-              }
             }
           }
 
-          // Run redraw tasks after handling bulk updates
-          if (requestGraphRedraw) {
+          // Bulk add playerCounts into graph during #updateHistoryGraph
+          if (payload.updateHistoryGraph) {
+            this._app.graphDisplayManager.addGraphPoint(payload.timestamp, Object.values(payload.updates).map(update => update.playerCount))
+
+            // Run redraw tasks after handling bulk updates
             this._app.graphDisplayManager.redraw()
           }
 
@@ -129,11 +107,7 @@ export class SocketManager {
         }
 
         case 'historyGraph': {
-          // Consider the graph visible since a payload has been received
-          // This is used for the manual graph load request behavior
-          this._app.graphDisplayManager.isVisible = true
-
-          this._app.graphDisplayManager.buildPlotInstance(payload.graphData)
+          this._app.graphDisplayManager.buildPlotInstance(payload.timestamps, payload.graphData)
 
           // Build checkbox elements for graph controls
           let lastRowCounter = 0
