@@ -451,3 +451,9 @@ footer a:hover {
     margin-bottom: 20px;
   }
 }
+
+/* uPlot.css overrides */
+.uplot .select {
+  background: var(--color-blue);
+  opacity: 0.3;
+}

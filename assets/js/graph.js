@@ -151,7 +151,11 @@ export class GraphDisplayManager {
         stroke: serverRegistration.data.color,
         width: 2,
         value: (_, raw) => formatNumber(raw) + ' Players',
-        show: serverRegistration.isVisible
+        show: serverRegistration.isVisible,
+        spanGaps: true,
+        points: {
+          show: false
+        }
       }
     })
 
@@ -397,9 +401,15 @@ export class GraphDisplayManager {
   }
 
   reset () {
+    // Destroy graphs and unload references
+    // uPlot#destroy handles listener de-registration, DOM reset, etc
+    if (this._plotInstance) {
+      this._plotInstance.destroy()
+      this._plotInstance = undefined
+    }
+
     this._graphTimestamps = []
     this._graphData = []
-    this._plotInstance = undefined
     this._hasLoadedSettings = false
 
     // Fire #clearTimeout if the timeout is currently defined
@@ -410,7 +420,6 @@ export class GraphDisplayManager {
     }
 
     // Reset modified DOM structures
-    document.getElementById('big-graph').innerHTML = ''
     document.getElementById('big-graph-checkboxes').innerHTML = ''
     document.getElementById('big-graph-controls').style.display = 'none'
 

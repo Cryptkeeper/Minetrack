@@ -116,7 +116,10 @@ export class ServerRegistration {
           scale: 'Players',
           stroke: '#E9E581',
           width: 2,
-          value: (_, raw) => formatNumber(raw) + ' Players'
+          value: (_, raw) => formatNumber(raw) + ' Players',
+          points: {
+            show: false
+          }
         }
       ],
       axes: [
