@@ -117,6 +117,7 @@ export class ServerRegistration {
           stroke: '#E9E581',
           width: 2,
           value: (_, raw) => formatNumber(raw) + ' Players',
+          spanGaps: true,
           points: {
             show: false
           }
