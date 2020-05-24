@@ -67,6 +67,10 @@ export class ServerRegistration {
     this._failedSequentialPings = 0
   }
 
+  getPlotIndex () {
+    return this.serverId + 1
+  }
+
   addGraphPoints (points, timestampPoints) {
     this._graphData = [
       timestampPoints.slice(),

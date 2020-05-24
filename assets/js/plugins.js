@@ -10,17 +10,15 @@ export function uPlotTooltipPlugin (onHover) {
         element.onmouseleave = () => onHover()
       },
       setCursor: u => {
-        const { left, top, idx } = u.cursor
-
-        if (idx === null) {
+        if (u.cursor.idx === null) {
           onHover()
         } else {
           const bounds = element.getBoundingClientRect()
 
           onHover({
-            left: bounds.left + left + window.pageXOffset,
-            top: bounds.top + top + window.pageYOffset
-          }, idx)
+            left: bounds.left + u.cursor.left + window.pageXOffset,
+            top: bounds.top + u.cursor.top + window.pageYOffset
+          }, u.cursor.idx)
         }
       }
     }
