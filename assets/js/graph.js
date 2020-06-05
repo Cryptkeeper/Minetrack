@@ -160,6 +160,7 @@ export class GraphDisplayManager {
     })
 
     const tickCount = 10
+    const maxFactor = 4
 
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
@@ -237,7 +238,7 @@ export class GraphDisplayManager {
           },
           split: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const [, max, scale] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
+            const [, max, scale] = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
             const ticks = RelativeScale.generateTicks(0, max, scale)
             return ticks
           }
@@ -248,7 +249,7 @@ export class GraphDisplayManager {
           auto: false,
           range: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const [, scaledMax] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
+            const [, scaledMax] = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
             return [0, scaledMax]
           }
         }
