@@ -1,5 +1,5 @@
 export class RelativeScale {
-  static scale (data, tickCount) {
+  static scale (data, tickCount, maxFactor) {
     const [min, max] = RelativeScale.calculateBounds(data)
 
     let factor = 1
@@ -12,7 +12,7 @@ export class RelativeScale {
 
       const ticks = (scaledMax - scaledMin) / scale
 
-      if (ticks < tickCount + 1) {
+      if (ticks < tickCount + 1 || (typeof maxFactor === 'number' && factor === maxFactor)) {
         return [scaledMin, scaledMax, scale]
       } else {
         // Too many steps between min/max, increase factor and try again
@@ -21,7 +21,7 @@ export class RelativeScale {
     }
   }
 
-  static scaleMatrix (data, tickCount) {
+  static scaleMatrix (data, tickCount, maxFactor) {
     let max = Number.MIN_VALUE
 
     for (const row of data) {
@@ -42,7 +42,7 @@ export class RelativeScale {
       max = 0
     }
 
-    return RelativeScale.scale([0, max], tickCount)
+    return RelativeScale.scale([0, max], tickCount, maxFactor)
   }
 
   static generateTicks (min, max, step) {
