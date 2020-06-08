@@ -67,6 +67,10 @@ export class ServerRegistration {
     this._failedSequentialPings = 0
   }
 
+  getGraphDataIndex () {
+    return this.serverId + 1
+  }
+
   addGraphPoints (points, timestampPoints) {
     this._graphData = [
       timestampPoints.slice(),
@@ -87,9 +91,7 @@ export class ServerRegistration {
             if (typeof playerCount !== 'number') {
               this._app.tooltip.hide()
             } else {
-              const text = formatNumber(playerCount) + ' Players<br>' + formatTimestampSeconds(this._graphData[0][id])
-
-              this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
+              this._app.tooltip.set(pos.left, pos.top, 10, 10, `${formatNumber(playerCount)} Players<br>${formatTimestampSeconds(this._graphData[0][id])}`)
             }
           } else {
             this._app.tooltip.hide()
@@ -116,7 +118,7 @@ export class ServerRegistration {
           scale: 'Players',
           stroke: '#E9E581',
           width: 2,
-          value: (_, raw) => formatNumber(raw) + ' Players',
+          value: (_, raw) => `${formatNumber(raw)} Players`,
           spanGaps: true,
           points: {
             show: false
@@ -139,8 +141,8 @@ export class ServerRegistration {
             width: 1
           },
           split: () => {
-            const [min, max, scale] = RelativeScale.scale(this._graphData[1], tickCount)
-            const ticks = RelativeScale.generateTicks(min, max, scale)
+            const { scaledMin, scaledMax, scale } = RelativeScale.scale(this._graphData[1], tickCount)
+            const ticks = RelativeScale.generateTicks(scaledMin, scaledMax, scale)
             return ticks
           }
         }
@@ -149,7 +151,7 @@ export class ServerRegistration {
         Players: {
           auto: false,
           range: () => {
-            const [scaledMin, scaledMax] = RelativeScale.scale(this._graphData[1], tickCount)
+            const { scaledMin, scaledMax } = RelativeScale.scale(this._graphData[1], tickCount)
             return [scaledMin, scaledMax]
           }
         }
@@ -157,7 +159,7 @@ export class ServerRegistration {
       legend: {
         show: false
       }
-    }, this._graphData, document.getElementById('chart_' + this.serverId))
+    }, this._graphData, document.getElementById(`chart_${this.serverId}`))
   }
 
   handlePing (payload, timestamp) {
@@ -193,15 +195,15 @@ export class ServerRegistration {
   updateServerRankIndex (rankIndex) {
     this.rankIndex = rankIndex
 
-    document.getElementById('ranking_' + this.serverId).innerText = '#' + (rankIndex + 1)
+    document.getElementById(`ranking_${this.serverId}`).innerText = `#${rankIndex + 1}`
   }
 
   _renderValue (prefix, handler) {
-    const labelElement = document.getElementById(prefix + '_' + this.serverId)
+    const labelElement = document.getElementById(`${prefix}_${this.serverId}`)
 
     labelElement.style.display = 'block'
 
-    const valueElement = document.getElementById(prefix + '-value_' + this.serverId)
+    const valueElement = document.getElementById(`${prefix}-value_${this.serverId}`)
     const targetElement = valueElement || labelElement
 
     if (targetElement) {
@@ -214,7 +216,7 @@ export class ServerRegistration {
   }
 
   _hideValue (prefix) {
-    const element = document.getElementById(prefix + '_' + this.serverId)
+    const element = document.getElementById(`${prefix}_${this.serverId}`)
 
     element.style.display = 'none'
   }
@@ -227,8 +229,8 @@ export class ServerRegistration {
     if (ping.recordData) {
       this._renderValue('record', (element) => {
         if (ping.recordData.timestamp > 0) {
-          element.innerText = formatNumber(ping.recordData.playerCount) + ' (' + formatDate(ping.recordData.timestamp) + ')'
-          element.title = 'At ' + formatDate(ping.recordData.timestamp) + ' ' + formatTimestampSeconds(ping.recordData.timestamp)
+          element.innerText = `${formatNumber(ping.recordData.playerCount)} (${formatDate(ping.recordData.timestamp)})`
+          element.title = `At ${formatDate(ping.recordData.timestamp)} ${formatTimestampSeconds(ping.recordData.timestamp)}`
         } else {
           element.innerText = formatNumber(ping.recordData.playerCount)
         }
@@ -240,7 +242,7 @@ export class ServerRegistration {
     if (ping.graphPeakData) {
       this._renderValue('peak', (element) => {
         element.innerText = formatNumber(ping.graphPeakData.playerCount)
-        element.title = 'At ' + formatTimestampSeconds(ping.graphPeakData.timestamp)
+        element.title = `At ${formatTimestampSeconds(ping.graphPeakData.timestamp)}`
       })
 
       this.lastPeakData = ping.graphPeakData
@@ -262,7 +264,7 @@ export class ServerRegistration {
 
     // An updated favicon has been sent, update the src
     if (ping.favicon) {
-      const faviconElement = document.getElementById('favicon_' + this.serverId)
+      const faviconElement = document.getElementById(`favicon_${this.serverId}`)
 
       // Since favicons may be URLs, only update the attribute when it has changed
       // Otherwise the browser may send multiple requests to the same URL
@@ -275,20 +277,20 @@ export class ServerRegistration {
   initServerStatus (latestPing) {
     const serverElement = document.createElement('div')
 
-    serverElement.id = 'container_' + this.serverId
-    serverElement.innerHTML = '<div class="column column-favicon">' +
-        '<img class="server-favicon" src="' + (latestPing.favicon || MISSING_FAVICON) + '" id="favicon_' + this.serverId + '" title="' + this.data.name + '\n' + formatMinecraftServerAddress(this.data.ip, this.data.port) + '">' +
-        '<span class="server-rank" id="ranking_' + this.serverId + '"></span>' +
-      '</div>' +
-      '<div class="column column-status">' +
-        '<h3 class="server-name"><span class="' + this._app.favoritesManager.getIconClass(this.isFavorite) + '" id="favorite-toggle_' + this.serverId + '"></span> ' + this.data.name + '</h3>' +
-        '<span class="server-error" id="error_' + this.serverId + '"></span>' +
-        '<span class="server-label" id="player-count_' + this.serverId + '">Players: <span class="server-value" id="player-count-value_' + this.serverId + '"></span></span>' +
-        '<span class="server-label" id="peak_' + this.serverId + '">' + this._app.publicConfig.graphDurationLabel + ' Peak: <span class="server-value" id="peak-value_' + this.serverId + '">-</span></span>' +
-        '<span class="server-label" id="record_' + this.serverId + '">Record: <span class="server-value" id="record-value_' + this.serverId + '">-</span></span>' +
-        '<span class="server-label" id="version_' + this.serverId + '"></span>' +
-      '</div>' +
-      '<div class="column column-graph" id="chart_' + this.serverId + '"></div>'
+    serverElement.id = `container_${this.serverId}`
+    serverElement.innerHTML = `<div class="column column-favicon">
+        <img class="server-favicon" src="${latestPing.favicon || MISSING_FAVICON}" id="favicon_${this.serverId}" title="${this.data.name}\n${formatMinecraftServerAddress(this.data.ip, this.data.port)}">
+        <span class="server-rank" id="ranking_${this.serverId}"></span>
+      </div>
+      <div class="column column-status">
+        <h3 class="server-name"><span class="${this._app.favoritesManager.getIconClass(this.isFavorite)}" id="favorite-toggle_${this.serverId}"></span> ${this.data.name}</h3>
+        <span class="server-error" id="error_${this.serverId}"></span>
+        <span class="server-label" id="player-count_${this.serverId}">Players: <span class="server-value" id="player-count-value_${this.serverId}"></span></span>
+        <span class="server-label" id="peak_${this.serverId}">${this._app.publicConfig.graphDurationLabel} Peak: <span class="server-value" id="peak-value_${this.serverId}">-</span></span>
+        <span class="server-label" id="record_${this.serverId}">Record: <span class="server-value" id="record-value_${this.serverId}">-</span></span>
+        <span class="server-label" id="version_${this.serverId}"></span>
+      </div>
+      <div class="column column-graph" id="chart_${this.serverId}"></div>`
 
     serverElement.setAttribute('class', 'server')
 
@@ -297,8 +299,8 @@ export class ServerRegistration {
 
   updateHighlightedValue (selectedCategory) {
     ['player-count', 'peak', 'record'].forEach((category) => {
-      const labelElement = document.getElementById(category + '_' + this.serverId)
-      const valueElement = document.getElementById(category + '-value_' + this.serverId)
+      const labelElement = document.getElementById(`${category}_${this.serverId}`)
+      const valueElement = document.getElementById(`${category}-value_${this.serverId}`)
 
       if (selectedCategory && category === selectedCategory) {
         labelElement.setAttribute('class', 'server-highlighted-label')
@@ -311,7 +313,7 @@ export class ServerRegistration {
   }
 
   initEventListeners () {
-    document.getElementById('favorite-toggle_' + this.serverId).addEventListener('click', () => {
+    document.getElementById(`favorite-toggle_${this.serverId}`).addEventListener('click', () => {
       this._app.favoritesManager.handleFavoriteButtonClick(this)
     }, false)
   }
