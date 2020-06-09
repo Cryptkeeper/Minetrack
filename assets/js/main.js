@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setTimeout(() => {
         dismissAlert()
-      }, 30 * 1000)
+      }, 15 * 1000)
     }
   }
 }, false)
