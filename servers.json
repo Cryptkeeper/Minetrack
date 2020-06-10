@@ -33,4 +33,10 @@
 		"color": "#ffcb03",
 		"favicon": "hive.png"
 	}
+		{
+		"name": "NetherGames Network",
+		"ip": "play.nethergames.org",
+		"type": "PE",
+		"color": "#ac5e39",
+	}
 ]
