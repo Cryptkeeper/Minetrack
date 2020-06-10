@@ -177,6 +177,19 @@ export class GraphDisplayManager {
       this.loadLocalStorage()
     }
 
+    for (const playerCounts of data) {
+      // Each playerCounts value corresponds to a ServerRegistration
+      // Require each array is the length of timestamps, if not, pad at the start with null values to fit to length
+      // This ensures newer ServerRegistrations do not left align due to a lower length
+      const lengthDiff = timestamps.length - playerCounts.length
+
+      if (lengthDiff > 0) {
+        const padding = Array(lengthDiff).fill(null)
+
+        playerCounts.unshift(...padding)
+      }
+    }
+
     this._graphTimestamps = timestamps
     this._graphData = data
 
