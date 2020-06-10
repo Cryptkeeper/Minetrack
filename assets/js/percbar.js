@@ -20,12 +20,15 @@ export class PercentageBar {
 
       // Update position/width
       // leftPadding is a sum of previous iterations width value
-      const div = document.getElementById('perc-bar-part_' + serverRegistration.serverId) || this.createPart(serverRegistration)
+      const div = document.getElementById(`perc-bar-part_${serverRegistration.serverId}`) || this.createPart(serverRegistration)
+
+      const widthPixels = `${width}px`
+      const leftPaddingPixels = `${leftPadding}px`
 
       // Only redraw if needed
-      if (div.style.width !== width + 'px' || div.style.left !== leftPadding + 'px') {
-        div.style.width = width + 'px'
-        div.style.left = leftPadding + 'px'
+      if (div.style.width !== widthPixels || div.style.left !== leftPaddingPixels) {
+        div.style.width = widthPixels
+        div.style.left = leftPaddingPixels
       }
 
       leftPadding += width
@@ -35,7 +38,7 @@ export class PercentageBar {
   createPart (serverRegistration) {
     const div = document.createElement('div')
 
-    div.id = 'perc-bar-part_' + serverRegistration.serverId
+    div.id = `perc-bar-part_${serverRegistration.serverId}`
     div.style.background = serverRegistration.data.color
 
     div.setAttribute('class', 'perc-bar-part')
@@ -55,10 +58,10 @@ export class PercentageBar {
     const serverRegistration = this._app.serverRegistry.getServerRegistration(serverId)
 
     this._app.tooltip.set(event.target.offsetLeft, event.target.offsetTop, 10, this._parent.offsetTop + this._parent.offsetHeight + 10,
-      (typeof serverRegistration.rankIndex !== 'undefined' ? '#' + (serverRegistration.rankIndex + 1) + ' ' : '') +
-      serverRegistration.data.name +
-      '<br>' + formatNumber(serverRegistration.playerCount) + ' Players<br>' +
-      '<strong>' + formatPercent(serverRegistration.playerCount, this._app.getTotalPlayerCount()) + '</strong>')
+      `${typeof serverRegistration.rankIndex !== 'undefined' ? `#${serverRegistration.rankIndex + 1} ` : ''}
+      ${serverRegistration.data.name}<br>
+      ${formatNumber(serverRegistration.playerCount)} Players<br>
+      <strong>${formatPercent(serverRegistration.playerCount, this._app.getTotalPlayerCount())}</strong>`)
   }
 
   handleMouseOut = () => {

@@ -3,7 +3,7 @@ import uPlot from 'uplot'
 import { RelativeScale } from './scale'
 
 import { formatNumber, formatTimestampSeconds } from './util'
-import { uPlotTooltipPlugin } from './tooltip'
+import { uPlotTooltipPlugin, uPlotIsZoomedPlugin } from './plugins'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
 
@@ -18,6 +18,7 @@ export class GraphDisplayManager {
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
     this._showOnlyFavorites = false
+    this._isPlotZoomed = false
   }
 
   addGraphPoint (timestamp, playerCounts) {
@@ -49,11 +50,14 @@ export class GraphDisplayManager {
       }
     }
 
-    // Paint updated data structure
-    this._plotInstance.setData([
-      this._graphTimestamps,
-      ...this._graphData
-    ])
+    // If not zoomed, paint updated data structure
+    // Otherwise flag the plot data as dirty with repainting to be handled by #handlePlotZoomOut
+    // This prevents #addGraphPoint calls from resetting the graph's zoom state
+    if (!this._isPlotZoomed) {
+      this._plotInstance.setData(this.getGraphData())
+    } else {
+      this._isPlotZoomedDataDirty = true
+    }
   }
 
   loadLocalStorage () {
@@ -127,11 +131,49 @@ export class GraphDisplayManager {
     }
   }
 
+  getGraphData () {
+    return [
+      this._graphTimestamps,
+      ...this._graphData
+    ]
+  }
+
   getGraphDataPoint (serverId, index) {
     const graphData = this._graphData[serverId]
     if (graphData && index < graphData.length && typeof graphData[index] === 'number') {
       return graphData[index]
     }
+  }
+
+  getClosestPlotSeriesIndex (idx) {
+    let closestSeriesIndex = -1
+    let closestSeriesDist = Number.MAX_VALUE
+
+    const plotHeight = this._plotInstance.bbox.height / devicePixelRatio
+
+    for (let i = 1; i < this._plotInstance.series.length; i++) {
+      const series = this._plotInstance.series[i]
+
+      if (!series.show) {
+        continue
+      }
+
+      const point = this._plotInstance.data[i][idx]
+
+      if (typeof point === 'number') {
+        const scale = this._plotInstance.scales[series.scale]
+        const posY = (1 - ((point - scale.min) / (scale.max - scale.min))) * plotHeight
+
+        const dist = Math.abs(posY - this._plotInstance.cursor.top)
+
+        if (dist < closestSeriesDist) {
+          closestSeriesIndex = i
+          closestSeriesDist = dist
+        }
+      }
+    }
+
+    return closestSeriesIndex
   }
 
   buildPlotInstance (timestamps, data) {
@@ -142,6 +184,19 @@ export class GraphDisplayManager {
       this.loadLocalStorage()
     }
 
+    for (const playerCounts of data) {
+      // Each playerCounts value corresponds to a ServerRegistration
+      // Require each array is the length of timestamps, if not, pad at the start with null values to fit to length
+      // This ensures newer ServerRegistrations do not left align due to a lower length
+      const lengthDiff = timestamps.length - playerCounts.length
+
+      if (lengthDiff > 0) {
+        const padding = Array(lengthDiff).fill(null)
+
+        playerCounts.unshift(...padding)
+      }
+    }
+
     this._graphTimestamps = timestamps
     this._graphData = data
 
@@ -150,7 +205,7 @@ export class GraphDisplayManager {
         scale: 'Players',
         stroke: serverRegistration.data.color,
         width: 2,
-        value: (_, raw) => formatNumber(raw) + ' Players',
+        value: (_, raw) => `${formatNumber(raw)} Players`,
         show: serverRegistration.isVisible,
         spanGaps: true,
         points: {
@@ -160,54 +215,44 @@ export class GraphDisplayManager {
     })
 
     const tickCount = 10
+    const maxFactor = 4
 
     // eslint-disable-next-line new-cap
     this._plotInstance = new uPlot({
       plugins: [
-        uPlotTooltipPlugin((pos, id) => {
+        uPlotTooltipPlugin((pos, idx) => {
           if (pos) {
-            let text = this._app.serverRegistry.getServerRegistrations()
+            const closestSeriesIndex = this.getClosestPlotSeriesIndex(idx)
+
+            const text = this._app.serverRegistry.getServerRegistrations()
               .filter(serverRegistration => serverRegistration.isVisible)
               .sort((a, b) => {
                 if (a.isFavorite !== b.isFavorite) {
                   return a.isFavorite ? -1 : 1
-                }
-
-                const aPoint = this.getGraphDataPoint(a.serverId, id)
-                const bPoint = this.getGraphDataPoint(b.serverId, id)
-
-                if (typeof aPoint === typeof bPoint) {
-                  if (typeof aPoint === 'undefined') {
-                    return 0
-                  }
                 } else {
-                  return typeof aPoint === 'number' ? -1 : 1
+                  return a.data.name.localeCompare(b.data.name)
                 }
-
-                return bPoint - aPoint
               })
               .map(serverRegistration => {
-                const point = this.getGraphDataPoint(serverRegistration.serverId, id)
+                const point = this.getGraphDataPoint(serverRegistration.serverId, idx)
 
                 let serverName = serverRegistration.data.name
+                if (closestSeriesIndex === serverRegistration.getGraphDataIndex()) {
+                  serverName = `<strong>${serverName}</strong>`
+                }
                 if (serverRegistration.isFavorite) {
-                  serverName = '<span class="' + this._app.favoritesManager.getIconClass(true) + '"></span> ' + serverName
+                  serverName = `<span class="${this._app.favoritesManager.getIconClass(true)}"></span> ${serverName}`
                 }
 
-                if (typeof point === 'number') {
-                  return serverName + ': ' + formatNumber(point)
-                } else {
-                  return serverName + ': -'
-                }
-              }).join('<br>')
-
-            text += '<br><br><strong>' + formatTimestampSeconds(this._graphTimestamps[id]) + '</strong>'
+                return `${serverName}: ${formatNumber(point)}`
+              }).join('<br>') + `<br><br><strong>${formatTimestampSeconds(this._graphTimestamps[idx])}</strong>`
 
             this._app.tooltip.set(pos.left, pos.top, 10, 10, text)
           } else {
             this._app.tooltip.hide()
           }
-        })
+        }),
+        uPlotIsZoomedPlugin(this.handlePlotZoomIn, this.handlePlotZoomOut)
       ],
       ...this.getPlotSize(),
       cursor: {
@@ -237,8 +282,8 @@ export class GraphDisplayManager {
           },
           split: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const [, max, scale] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
-            const ticks = RelativeScale.generateTicks(0, max, scale)
+            const { scaledMax, scale } = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
+            const ticks = RelativeScale.generateTicks(0, scaledMax, scale)
             return ticks
           }
         }
@@ -248,18 +293,15 @@ export class GraphDisplayManager {
           auto: false,
           range: () => {
             const visibleGraphData = this.getVisibleGraphData()
-            const [, scaledMax] = RelativeScale.scaleMatrix(visibleGraphData, tickCount)
-            return [0, scaledMax]
+            const { scaledMin, scaledMax } = RelativeScale.scaleMatrix(visibleGraphData, tickCount, maxFactor)
+            return [scaledMin, scaledMax]
           }
         }
       },
       legend: {
         show: false
       }
-    }, [
-      this._graphTimestamps,
-      ...this._graphData
-    ], document.getElementById('big-graph'))
+    }, this.getGraphData(), document.getElementById('big-graph'))
 
     // Show the settings-toggle element
     document.getElementById('settings-toggle').style.display = 'inline-block'
@@ -272,7 +314,7 @@ export class GraphDisplayManager {
 
     // Copy application state into the series data used by uPlot
     for (const serverRegistration of this._app.serverRegistry.getServerRegistrations()) {
-      this._plotInstance.series[serverRegistration.serverId + 1].show = serverRegistration.isVisible
+      this._plotInstance.series[serverRegistration.getGraphDataIndex()].show = serverRegistration.isVisible
     }
 
     this._plotInstance.redraw()
@@ -303,6 +345,21 @@ export class GraphDisplayManager {
     }
 
     this._resizeRequestTimeout = undefined
+  }
+
+  handlePlotZoomIn = () => {
+    this._isPlotZoomed = true
+  }
+
+  handlePlotZoomOut = () => {
+    this._isPlotZoomed = false
+
+    // Test if the data has changed while the plot was zoomed in
+    if (this._isPlotZoomedDataDirty) {
+      this._isPlotZoomedDataDirty = false
+
+      this._plotInstance.setData(this.getGraphData())
+    }
   }
 
   initEventListeners () {
@@ -411,6 +468,9 @@ export class GraphDisplayManager {
     this._graphTimestamps = []
     this._graphData = []
     this._hasLoadedSettings = false
+
+    this._isPlotZoomed = false
+    this._isPlotZoomedDataDirty = false
 
     // Fire #clearTimeout if the timeout is currently defined
     if (this._resizeRequestTimeout) {

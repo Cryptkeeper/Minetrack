@@ -1,18 +1,18 @@
 {
   "name": "minetrack",
-  "version": "5.5.0",
+  "version": "5.5.1",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "main.js",
   "dependencies": {
     "finalhandler": "^1.1.2",
     "mcpe-ping-fixed": "0.0.3",
-    "mcping-js": "^1.4.0",
+    "mcping-js": "^1.4.1",
     "request": "2.88.2",
     "serve-static": "^1.14.1",
-    "sqlite3": "4.1.1",
-    "uplot": "^1.0.8",
-    "winston": "^2.0.0",
-    "ws": "^7.2.5"
+    "sqlite3": "4.2.0",
+    "uplot": "1.0.8",
+    "winston": "^2.4.4",
+    "ws": "^7.3.0"
   },
   "repository": {
     "type": "git",
@@ -31,12 +31,12 @@
     "node": ">=12.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/core": "^7.10.2",
+    "@babel/plugin-proposal-class-properties": "^7.10.1",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.2.0",
     "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",

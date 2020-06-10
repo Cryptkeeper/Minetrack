@@ -15,7 +15,7 @@ export class SocketManager {
       webSocketProtocol = 'wss:'
     }
 
-    this._webSocket = new WebSocket(webSocketProtocol + '//' + location.host)
+    this._webSocket = new WebSocket(`${webSocketProtocol}//${location.host}`)
 
     // The backend will automatically push data once connected
     this._webSocket.onopen = () => {
@@ -119,10 +119,10 @@ export class SocketManager {
             .forEach(serverName => {
               const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
 
-              controlsHTML += '<td>' +
-                '<input type="checkbox" class="graph-control" minetrack-server-id="' + serverRegistration.serverId + '" ' + (serverRegistration.isVisible ? 'checked' : '') + '>' +
-                ' ' + serverName +
-                '</input></td>'
+              controlsHTML += `<td>
+                <input type="checkbox" class="graph-control" minetrack-server-id="${serverRegistration.serverId}" ${serverRegistration.isVisible ? 'checked' : ''}>
+                ${serverName}
+                </input></td>`
 
               // Occasionally break table rows using a magic number
               if (++lastRowCounter % 6 === 0) {
@@ -131,10 +131,7 @@ export class SocketManager {
             })
 
           // Apply generated HTML and show controls
-          document.getElementById('big-graph-checkboxes').innerHTML = '<table><tr>' +
-            controlsHTML +
-            '</tr></table>'
-
+          document.getElementById('big-graph-checkboxes').innerHTML = `<table><tr>${controlsHTML}</tr></table>`
           document.getElementById('big-graph-controls').style.display = 'block'
 
           // Bind click event for updating graph data
@@ -171,7 +168,7 @@ export class SocketManager {
         this.createWebSocket()
       } else if (this._reconnectDelaySeconds > 0) {
         // Update displayed text
-        this._app.caption.set('Reconnecting in ' + this._reconnectDelaySeconds + 's...')
+        this._app.caption.set(`Reconnecting in ${this._reconnectDelaySeconds}s...`)
       }
     }, 1000)
   }
