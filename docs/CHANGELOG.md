@@ -1,6 +1,8 @@
 **5.5.1** *(June 10 2020)*
 - New tooltip hover design on the historical graph. It will highlight the server closest to your cursor.
 - Historical graph is now limited to 10,000 increments on the Y axis. This prevents servers with over 100,000 players forcing the graph into 100,000 increments.
+- Fixed the historical graph zooming out when receiving new data points.
+- Fixed newly added servers aligning to the left of the historical graph.
 - Replaces manual string concats with template literals.
 - Updated various dependencies.
 
