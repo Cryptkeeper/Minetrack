@@ -3,7 +3,7 @@ import uPlot from 'uplot'
 import { RelativeScale } from './scale'
 
 import { formatNumber, formatTimestampSeconds } from './util'
-import { uPlotTooltipPlugin } from './tooltip'
+import { uPlotTooltipPlugin, uPlotIsZoomedPlugin } from './plugins'
 
 import { FAVORITE_SERVERS_STORAGE_KEY } from './favorites'
 
@@ -18,6 +18,7 @@ export class GraphDisplayManager {
     this._hasLoadedSettings = false
     this._initEventListenersOnce = false
     this._showOnlyFavorites = false
+    this._isPlotZoomed = false
   }
 
   addGraphPoint (timestamp, playerCounts) {
@@ -49,8 +50,14 @@ export class GraphDisplayManager {
       }
     }
 
-    // Paint updated data structure
-    this._plotInstance.setData(this.getGraphData())
+    // If not zoomed, paint updated data structure
+    // Otherwise flag the plot data as dirty with repainting to be handled by #handlePlotZoomOut
+    // This prevents #addGraphPoint calls from resetting the graph's zoom state
+    if (!this._isPlotZoomed) {
+      this._plotInstance.setData(this.getGraphData())
+    } else {
+      this._isPlotZoomedDataDirty = true
+    }
   }
 
   loadLocalStorage () {
@@ -244,7 +251,8 @@ export class GraphDisplayManager {
           } else {
             this._app.tooltip.hide()
           }
-        })
+        }),
+        uPlotIsZoomedPlugin(this.handlePlotZoomIn, this.handlePlotZoomOut)
       ],
       ...this.getPlotSize(),
       cursor: {
@@ -337,6 +345,21 @@ export class GraphDisplayManager {
     }
 
     this._resizeRequestTimeout = undefined
+  }
+
+  handlePlotZoomIn = () => {
+    this._isPlotZoomed = true
+  }
+
+  handlePlotZoomOut = () => {
+    this._isPlotZoomed = false
+
+    // Test if the data has changed while the plot was zoomed in
+    if (this._isPlotZoomedDataDirty) {
+      this._isPlotZoomedDataDirty = false
+
+      this._plotInstance.setData(this.getGraphData())
+    }
   }
 
   initEventListeners () {
@@ -445,6 +468,9 @@ export class GraphDisplayManager {
     this._graphTimestamps = []
     this._graphData = []
     this._hasLoadedSettings = false
+
+    this._isPlotZoomed = false
+    this._isPlotZoomedDataDirty = false
 
     // Fire #clearTimeout if the timeout is currently defined
     if (this._resizeRequestTimeout) {

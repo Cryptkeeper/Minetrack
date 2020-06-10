@@ -3,7 +3,7 @@ import uPlot from 'uplot'
 import { RelativeScale } from './scale'
 
 import { formatNumber, formatTimestampSeconds, formatDate, formatMinecraftServerAddress, formatMinecraftVersions } from './util'
-import { uPlotTooltipPlugin } from './tooltip'
+import { uPlotTooltipPlugin } from './plugins'
 
 import MISSING_FAVICON from '../images/missing_favicon.svg'
 
