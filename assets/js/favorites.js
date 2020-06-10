@@ -20,7 +20,7 @@ export class FavoritesManager {
             serverRegistration.isFavorite = true
 
             // Update icon since by default it is unfavorited
-            document.getElementById('favorite-toggle_' + serverRegistration.serverId).setAttribute('class', this.getIconClass(serverRegistration.isFavorite))
+            document.getElementById(`favorite-toggle_${serverRegistration.serverId}`).setAttribute('class', this.getIconClass(serverRegistration.isFavorite))
           }
         }
       }
@@ -47,7 +47,7 @@ export class FavoritesManager {
     serverRegistration.isFavorite = !serverRegistration.isFavorite
 
     // Update the displayed favorite icon
-    document.getElementById('favorite-toggle_' + serverRegistration.serverId).setAttribute('class', this.getIconClass(serverRegistration.isFavorite))
+    document.getElementById(`favorite-toggle_${serverRegistration.serverId}`).setAttribute('class', this.getIconClass(serverRegistration.isFavorite))
 
     // Request the app controller instantly re-sort the server listing
     // This handles the favorite sorting logic internally

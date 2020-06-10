@@ -6,7 +6,7 @@ const SORT_OPTIONS = [
   },
   {
     getName: (app) => {
-      return app.publicConfig.graphDurationLabel + ' Peak'
+      return `${app.publicConfig.graphDurationLabel} Peak`
     },
     sortFunc: (a, b) => {
       if (!a.lastPeakData && !b.lastPeakData) {
@@ -188,7 +188,7 @@ export class SortController {
     // Update the DOM structure
     sortedServers.forEach(function (serverRegistration) {
       const parentElement = document.getElementById('server-list')
-      const serverElement = document.getElementById('container_' + serverRegistration.serverId)
+      const serverElement = document.getElementById(`container_${serverRegistration.serverId}`)
 
       parentElement.appendChild(serverElement)
 

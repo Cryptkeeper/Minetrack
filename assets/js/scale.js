@@ -1,6 +1,6 @@
 export class RelativeScale {
   static scale (data, tickCount, maxFactor) {
-    const [min, max] = RelativeScale.calculateBounds(data)
+    const { min, max } = RelativeScale.calculateBounds(data)
 
     let factor = 1
 
@@ -12,8 +12,12 @@ export class RelativeScale {
 
       const ticks = (scaledMax - scaledMin) / scale
 
-      if (ticks < tickCount + 1 || (typeof maxFactor === 'number' && factor === maxFactor)) {
-        return [scaledMin, scaledMax, scale]
+      if (ticks <= tickCount || (typeof maxFactor === 'number' && factor === maxFactor)) {
+        return {
+          scaledMin,
+          scaledMax,
+          scale
+        }
       } else {
         // Too many steps between min/max, increase factor and try again
         factor++
@@ -22,27 +26,9 @@ export class RelativeScale {
   }
 
   static scaleMatrix (data, tickCount, maxFactor) {
-    let max = Number.MIN_VALUE
+    const max = Math.max(...data.flat())
 
-    for (const row of data) {
-      let testMax = Number.MIN_VALUE
-
-      for (const point of row) {
-        if (point > testMax) {
-          testMax = point
-        }
-      }
-
-      if (testMax > max) {
-        max = testMax
-      }
-    }
-
-    if (max === Number.MIN_VALUE) {
-      max = 0
-    }
-
-    return RelativeScale.scale([0, max], tickCount, maxFactor)
+    return RelativeScale.scale([0, RelativeScale.isFiniteOrZero(max)], tickCount, maxFactor)
   }
 
   static generateTicks (min, max, step) {
@@ -55,30 +41,22 @@ export class RelativeScale {
 
   static calculateBounds (data) {
     if (data.length === 0) {
-      return [0, 0]
+      return {
+        min: 0,
+        max: 0
+      }
     } else {
-      let min = Number.MAX_VALUE
-      let max = Number.MIN_VALUE
+      const min = Math.min(...data)
+      const max = Math.max(...data)
 
-      for (const point of data) {
-        if (typeof point === 'number') {
-          if (point > max) {
-            max = point
-          }
-          if (point < min) {
-            min = point
-          }
-        }
+      return {
+        min: RelativeScale.isFiniteOrZero(min),
+        max: RelativeScale.isFiniteOrZero(max)
       }
-
-      if (min === Number.MAX_VALUE) {
-        min = 0
-      }
-      if (max === Number.MIN_VALUE) {
-        max = 0
-      }
-
-      return [min, max]
     }
+  }
+
+  static isFiniteOrZero (val) {
+    return Number.isFinite(val) ? val : 0
   }
 }
