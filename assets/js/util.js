@@ -19,8 +19,8 @@ export class Tooltip {
       offsetX *= -1
     }
 
-    this._div.style.top = (y + offsetY) + 'px'
-    this._div.style.left = (x + offsetX) + 'px'
+    this._div.style.top = `${y + offsetY}px`
+    this._div.style.left = `${x + offsetX}px`
   }
 
   hide = () => {
@@ -49,7 +49,7 @@ const MINECRAFT_DEFAULT_PORTS = [25565, 19132]
 
 export function formatMinecraftServerAddress (ip, port) {
   if (port && !MINECRAFT_DEFAULT_PORTS.includes(port)) {
-    return ip + ':' + port
+    return `${ip}:${port}`
   }
   return ip
 }
@@ -93,8 +93,7 @@ export function formatMinecraftVersions (versions, knownVersions) {
       return startVersion
     } else {
       const endVersion = knownVersions[versionGroup[versionGroup.length - 1]]
-
-      return startVersion + '-' + endVersion
+      return `${startVersion}-${endVersion}`
     }
   }).join(', ')
 }
@@ -113,9 +112,13 @@ export function formatDate (secs) {
 
 export function formatPercent (x, over) {
   const val = Math.round((x / over) * 100 * 10) / 10
-  return val + '%'
+  return `${val}%`
 }
 
 export function formatNumber (x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  if (typeof x !== 'number') {
+    return '-'
+  } else {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  }
 }
