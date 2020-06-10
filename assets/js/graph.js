@@ -142,6 +142,8 @@ export class GraphDisplayManager {
     let closestSeriesIndex = -1
     let closestSeriesDist = Number.MAX_VALUE
 
+    const plotHeight = this._plotInstance.bbox.height / devicePixelRatio
+
     for (let i = 1; i < this._plotInstance.series.length; i++) {
       const series = this._plotInstance.series[i]
 
@@ -153,11 +155,9 @@ export class GraphDisplayManager {
 
       if (typeof point === 'number') {
         const scale = this._plotInstance.scales[series.scale]
-        const posY = (1 - ((point - scale.min) / (scale.max - scale.min))) * this._plotInstance.height
+        const posY = (1 - ((point - scale.min) / (scale.max - scale.min))) * plotHeight
 
-        // +20 to offset some sort of strange calculation bug
-        // cursor.top does not seem to correctly align with the generated posY values
-        const dist = Math.abs(posY - (this._plotInstance.cursor.top + 20))
+        const dist = Math.abs(posY - this._plotInstance.cursor.top)
 
         if (dist < closestSeriesDist) {
           closestSeriesIndex = i
