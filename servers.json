@@ -35,7 +35,7 @@
 	}
 		{
 		"name": "NetherGames Network",
-		"ip": "play.nethergames.org",
+		"ip": "proxylink.nethergames.org",
 		"type": "PE",
 		"color": "#ac5e39",
 	}
