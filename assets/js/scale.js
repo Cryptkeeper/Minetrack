@@ -26,7 +26,7 @@ export class RelativeScale {
   }
 
   static scaleMatrix (data, tickCount, maxFactor) {
-    const max = Math.max(...data.flat())
+    const max = Math.max(...data.flat().filter(val => val !== null))
 
     return RelativeScale.scale([0, RelativeScale.isFiniteOrZero(max)], tickCount, maxFactor)
   }
@@ -46,8 +46,8 @@ export class RelativeScale {
         max: 0
       }
     } else {
-      const min = Math.min(...data)
-      const max = Math.max(...data)
+      const min = Math.min(...data.filter(val => val !== null))
+      const max = Math.max(...data.filter(val => val !== null))
 
       return {
         min: RelativeScale.isFiniteOrZero(min),
