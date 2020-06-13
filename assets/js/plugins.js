@@ -26,27 +26,3 @@ export function uPlotTooltipPlugin (onHover) {
     }
   }
 }
-
-export function uPlotIsZoomedPlugin (onZoomIn, onZoomOut) {
-  return {
-    hooks: {
-      setSelect: u => {
-        u._zoomPluginIgnoreNextSetScale = true
-
-        if (onZoomIn) {
-          onZoomIn(u)
-        }
-      },
-      setScale: u => {
-        if (typeof u._zoomPluginIgnoreNextSetScale !== 'boolean') {
-          return
-        }
-        if (u._zoomPluginIgnoreNextSetScale) {
-          u._zoomPluginIgnoreNextSetScale = false
-        } else if (onZoomOut) {
-          onZoomOut(u)
-        }
-      }
-    }
-  }
-}

@@ -1,3 +1,8 @@
+**5.5.2** *(June 12 2020)*
+- Fixed ping errors causing server graphs (or the historical graph) to sometimes disappear.
+- Fixed ping errors causing server graphs to reset their Y scale minimum to 0.
+- Improved zoomed detection and updating of the historical graph with recommendations by [@leeoniya](https://github.com/leeoniya).
+
 **5.5.1** *(June 10 2020)*
 - New tooltip hover design on the historical graph. It will highlight the server closest to your cursor.
 - Historical graph is now limited to 10,000 increments on the Y axis. This prevents servers with over 100,000 players forcing the graph into 100,000 increments.
