@@ -201,7 +201,6 @@ export class GraphDisplayManager {
 
     const series = this._app.serverRegistry.getServerRegistrations().map(serverRegistration => {
       return {
-        scale: 'Players',
         stroke: serverRegistration.data.color,
         width: 2,
         value: (_, raw) => `${formatNumber(raw)} Players`,
@@ -287,7 +286,7 @@ export class GraphDisplayManager {
         }
       ],
       scales: {
-        Players: {
+        y: {
           auto: false,
           range: () => {
             const visibleGraphData = this.getVisibleGraphData()
