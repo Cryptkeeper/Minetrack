@@ -465,27 +465,3 @@ footer a:hover {
   background: var(--color-blue);
   opacity: 0.3;
 }
-
-/* Alert */
-#alert {
-  background: var(--background-color);
-  color: var(--text-color);
-  text-align: center;
-  width: 500px;
-  padding: 10px;
-  border-radius: var(--border-radius);
-  position: fixed;
-  top: 50px;
-  left: -250px;
-  margin-left: 50%;
-  z-index: 999999999;
-  display: none;
-}
-
-#alert a {
-  color: var(--color-blue-inverted);
-}
-
-#alert a:hover {
-  color: var(--text-color);
-}
