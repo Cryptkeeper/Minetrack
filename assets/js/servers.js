@@ -115,7 +115,6 @@ export class ServerRegistration {
       series: [
         {},
         {
-          scale: 'Players',
           stroke: '#E9E581',
           width: 2,
           value: (_, raw) => `${formatNumber(raw)} Players`,
@@ -148,7 +147,7 @@ export class ServerRegistration {
         }
       ],
       scales: {
-        Players: {
+        y: {
           auto: false,
           range: () => {
             const { scaledMin, scaledMax } = RelativeScale.scale(this._graphData[1], tickCount)
