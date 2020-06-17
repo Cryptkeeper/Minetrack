@@ -1,6 +1,8 @@
+**5.5.4** *(June 16 2020)*
+- Updated uPlot dependency 1.0.8 -> 1.0.11.
+
 **5.5.3** *(June 14 2020)*
 - Fixed issue with graph scales being wrongly set which could cause Y axis labels to not appear.
-- ~Updated uPlot dependency 1.0.8 -> 1.0.11.~
 
 **5.5.2** *(June 12 2020)*
 - Fixed ping errors causing server graphs (or the historical graph) to sometimes disappear.
