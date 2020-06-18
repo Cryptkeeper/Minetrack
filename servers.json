@@ -32,7 +32,7 @@
 		"type": "PE",
 		"color": "#ffcb03",
 		"favicon": "hive.png"
-	}
+	},
 	{
 		"name": "NetherGames",
 		"ip": "proxylink.nethergames.org",
