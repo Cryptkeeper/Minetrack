@@ -34,7 +34,7 @@
 		"favicon": "hive.png"
 	}
 	{
-		"name": "NetherGames Network",
+		"name": "NetherGames",
 		"ip": "proxylink.nethergames.org",
 		"type": "PE",
 		"color": "#ac5e39",
