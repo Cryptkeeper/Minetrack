@@ -1,3 +1,6 @@
+**5.5.5** *(June 17 2020)*
+- Fixes servers with constant player counts failing to render graphs due to the min/max values being equal.
+
 **5.5.4** *(June 16 2020)*
 - Updated uPlot dependency 1.0.8 -> 1.0.11.
 

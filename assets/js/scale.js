@@ -8,7 +8,13 @@ export class RelativeScale {
       const scale = Math.pow(10, factor)
 
       const scaledMin = min - (min % scale)
-      const scaledMax = max + (max % scale === 0 ? 0 : (scale - (max % scale)))
+      let scaledMax = max + (max % scale === 0 ? 0 : (scale - (max % scale)))
+
+      // Prevent min/max from being equal (and generating 0 ticks)
+      // This happens when all data points are products of scale value
+      if (scaledMin === scaledMax) {
+        scaledMax += scale
+      }
 
       const ticks = (scaledMax - scaledMin) / scale
 
