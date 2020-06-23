@@ -43,6 +43,10 @@
 		{
 			"name": "1.15.2",
 			"protocolId": 578
+		},
+		{
+			"name": "1.16",
+			"protocolId": 735
 		}
 	]
 }
