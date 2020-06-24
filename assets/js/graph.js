@@ -29,6 +29,11 @@ export class GraphDisplayManager {
       return
     }
 
+    // Calculate isZoomed before mutating graphData otherwise the indexed values
+    // are out of date and will always fail when compared to plotScaleX.min/max
+    const plotScaleX = this._plotInstance.scales.x
+    const isZoomed = plotScaleX.min > this._graphTimestamps[0] || plotScaleX.max < this._graphTimestamps[this._graphTimestamps.length - 1]
+
     this._graphTimestamps.push(timestamp)
 
     for (let i = 0; i < playerCounts.length; i++) {
@@ -48,12 +53,6 @@ export class GraphDisplayManager {
         series.splice(0, series.length - graphMaxLength)
       }
     }
-
-    // Dedrive plotTimestamps from the uPlot instance's data since this._graphTimestamps has been mutated
-    const plotTimestamps = this._plotInstance.data[0]
-    const plotScaleX = this._plotInstance.scales.x
-
-    const isZoomed = plotScaleX.min > plotTimestamps[0] || plotScaleX.max < plotTimestamps[plotTimestamps.length - 1]
 
     // Avoid redrawing the plot when zoomed
     this._plotInstance.setData(this.getGraphData(), !isZoomed)
