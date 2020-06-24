@@ -39,5 +39,12 @@
 		"type": "PE",
 		"color": "#ac5e39",
 		"favicon": "nethergames.png"
+	},
+	{
+		"name": "Galaxite",
+		"ip": "play.galaxite.net",
+		"type": "PE",
+		"color": "#609be1",
+		"favicon": "galaxite.png"
 	}
 ]
