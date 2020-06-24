@@ -1,3 +1,7 @@
+**5.5.6** *(June 24 2020)*
+- Adds Minecraft versions 1.16 and 1.16.1 to `minecraft_versions.json`
+- Fixes the historical graph not updating.
+
 **5.5.5** *(June 17 2020)*
 - Fixes servers with constant player counts failing to render graphs due to the min/max values being equal.
 
