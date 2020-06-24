@@ -28,7 +28,7 @@ export class GraphDisplayManager {
       // and the application has received updates prior to the initial state
       return
     }
-    
+
     // Calculate isZoomed before mutating graphData otherwise the indexed values
     // are out of date and will always fail when compared to plotScaleX.min/max
     const plotScaleX = this._plotInstance.scales.x
