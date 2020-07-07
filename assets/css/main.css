@@ -404,18 +404,18 @@ footer a:hover {
 }
 
 /* Mojang status colors */
-@media (prefers-color-scheme: light) {
-  .mojang-status-online {
-    background: #87D37C;
-  }
 
-  .mojang-status-unstable {
-    background: #f1c40f;
-  }
+/* Light theme */
+.mojang-status-online {
+  background: #87D37C;
+}
 
-  .mojang-status-offline {
-    background: #DE5749;
-  }
+.mojang-status-unstable {
+  background: #f1c40f;
+}
+
+.mojang-status-offline {
+  background: #DE5749;
 }
 
 @media (prefers-color-scheme: dark) {
