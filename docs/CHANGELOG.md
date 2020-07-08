@@ -1,3 +1,6 @@
+**5.5.7** *(July 7 2020)*
+- Fixes an issue in which the light theme CSS may not be applied by default.
+
 **5.5.6** *(June 24 2020)*
 - Adds Minecraft versions 1.16 and 1.16.1 to `minecraft_versions.json`
 - Fixes the historical graph not updating.

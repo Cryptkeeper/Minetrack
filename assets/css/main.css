@@ -21,23 +21,20 @@
   --theme-color-light: #EBEBEB;
 
   --border-radius: 1px;
+
+  /* Light theme */
+  --color-purple: var(--color-light-purple);
+  --color-blue: var(--color-light-blue);
+  --color-blue-inverted: var(--color-dark-blue);
+  --background-color: var(--theme-color-light);
+  --text-decoration-color: var(--theme-color-dark);
+  --text-color: #000;
+  --text-color-inverted: #FFF;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-purple: var(--color-light-purple);
-    --color-blue: var(--color-light-blue);
-    --color-blue-inverted: var(--color-dark-blue);
-    --background-color: var(--theme-color-light);
-    --text-decoration-color: var(--theme-color-dark);
-    --text-color: #000;
-    --text-color-inverted: #FFF;
-  }
-
-  body {
-    background: #212021;
-    color: #FFF;
-  }
+body {
+  background: #212021;
+  color: #FFF;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -223,8 +220,8 @@ footer a:hover {
 /* Server listing */
 #server-list {
   overflow: auto;
-  display: flex; 
-  flex-wrap: wrap; 
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
@@ -407,18 +404,18 @@ footer a:hover {
 }
 
 /* Mojang status colors */
-@media (prefers-color-scheme: light) {
-  .mojang-status-online {
-    background: #87D37C;
-  }
-  
-  .mojang-status-unstable {
-    background: #f1c40f;
-  }
-  
-  .mojang-status-offline {
-    background: #DE5749;
-  }
+
+/* Light theme */
+.mojang-status-online {
+  background: #87D37C;
+}
+
+.mojang-status-unstable {
+  background: #f1c40f;
+}
+
+.mojang-status-offline {
+  background: #DE5749;
 }
 
 @media (prefers-color-scheme: dark) {
