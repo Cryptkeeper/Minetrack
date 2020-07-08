@@ -1,6 +1,6 @@
 {
   "name": "minetrack",
-  "version": "5.5.6",
+  "version": "5.5.7",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "main": "main.js",
   "dependencies": {
