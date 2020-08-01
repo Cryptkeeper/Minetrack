@@ -1,3 +1,7 @@
+**5.5.8** *(August 1 2020)*
+- Adds daily database copies. This is mostly for use by Minetrack Data for automated exports. By setting `createDailyDatabaseCopy: true` in `config.json`, Minetrack will lazily create a copy of `database.sql` for each day, automatically rolling over to a new file each day. The database file is named in the format of `database_copy_(day)-(month)-(year).sql`. Daily database copies do not contain indexes or previous records. Pings are inserted into the daily database copy as they occur, Minetrack will not retroactively insert previous pings from `database.sql`.
+-  Bump lodash from 4.17.15 to 4.17.19
+
 **5.5.7** *(July 7 2020)*
 - Fixes an issue in which the light theme CSS may not be applied by default.
 
