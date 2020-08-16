@@ -9,6 +9,9 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
+	"logs" : {
+		"logFailedPings": false
+	}
 	"logToDatabase": false,
 	"graphDuration": 86400000,
 	"serverGraphDuration": 180000
