@@ -10,6 +10,7 @@
 		"connectTimeout": 2500
 	},
 	"logToDatabase": true,
+	"logFailedPings": true,
 	"graphDuration": 86400000,
 	"serverGraphDuration": 180000,
 	"createDailyDatabaseCopy": true
