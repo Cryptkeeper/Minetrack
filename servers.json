@@ -61,5 +61,10 @@
 		"name": "Minehut",
 		"ip": "mc.minehut.com",
 		"type": "PC"
+	},
+	{
+		"name": "Aternos",
+		"ip": "aternos.me",
+		"type": "PC"
 	}
 ]
