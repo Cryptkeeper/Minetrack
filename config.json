@@ -9,6 +9,10 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
+	"versions": {
+		"type": "mc-versions",
+		"updateInterval": 86400000
+	},
 	"logFailedPings": true,
 	"logToDatabase": false,
 	"graphDuration": 86400000,

@@ -4,6 +4,7 @@ const ServerRegistration = require('./lib/servers')
 const logger = require('./lib/logger')
 
 const config = require('./config')
+const versions = require('./lib/versions')
 const servers = require('./servers')
 
 const app = new App()
@@ -30,12 +31,14 @@ if (!config.serverGraphDuration) {
   config.serverGraphDuration = 3 * 60 * 10000
 }
 
-if (!config.logToDatabase) {
-  logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.')
+versions.initProvider().then(() => {
+  if (!config.logToDatabase) {
+    logger.log('warn', 'Database logging is not enabled. You can enable it by setting "logToDatabase" to true in config.json. This requires sqlite3 to be installed.')
 
-  app.handleReady()
-} else {
-  app.loadDatabase(() => {
     app.handleReady()
-  })
-}
+  } else {
+    app.loadDatabase(() => {
+      app.handleReady()
+    })
+  }
+}).catch(err => logger.error('Cannot load versions data', err))
