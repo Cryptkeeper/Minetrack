@@ -1,14 +1,20 @@
-FROM node:12
+FROM node:lts
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+
+RUN echo Installing dependencies \
+	&& apt-get update \
+	&& apt-get install sqlite3 -y \
+	&& npm ci 
+
+COPY . .
+	
+RUN npm run build
 
 EXPOSE 8080
 
-COPY . /app
-WORKDIR /app
-
-RUN echo Installing \
-	&& apt-get update \
-	&& apt-get install git sqlite3 -y \
-	&& npm install --build-from-source \
-	&& npm run build
 
 CMD node main.js
