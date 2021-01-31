@@ -47,7 +47,7 @@ This requires sqlite3 drivers to be installed.
 Build and deploy Minetrack with Docker:
 ```
 docker build . -t minetrack:latest
-docker run --rm -p 127.0.0.1:8080:8080 minetrack:latest
+docker run --rm -p 127.0.0.1:80:8080 minetrack:latest
 ```
 Or use docker-compose instead:
 ```
