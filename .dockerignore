@@ -6,6 +6,5 @@
 !lib/
 !*.json
 !.babelrc
-!.eslintrc.json
 !LICENSE
 !main.js
