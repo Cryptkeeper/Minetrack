@@ -42,3 +42,15 @@ For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
 
 Database logging is disabled by default. You can enable it in ```config.json``` by setting ```logToDatabase``` to true.
 This requires sqlite3 drivers to be installed.
+
+## Docker
+Build and deploy Minetrack with Docker:
+```
+docker build . -t minetrack:latest
+docker run --rm -p 127.0.0.1:8080:8080 minetrack:latest
+```
+Or use docker-compose instead:
+```
+docker-compose up --build
+docker-compose down
+```

@@ -1,2 +1,11 @@
-node_modules
-npm-debug.log
+# ignore everything
+*
+
+# whitelist
+!assets/
+!lib/
+!*.json
+!.babelrc
+!.eslintrc.json
+!LICENSE
+!main.js
