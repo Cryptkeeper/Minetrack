@@ -1,0 +1,17 @@
+version: 2
+updates:
+
+- package-ecosystem: "npm"
+  directory: "/"
+  schedule:
+    interval: "daily"
+    time: "12:00"
+  assignees:
+    - "Cryptkeeper"
+    - "hugmanrique"
+  reviewers:
+    - "Cryptkeeper"
+    - "hugmanrique"
+  commit-message:
+    prefix: "npm"
+    include: "scope"
