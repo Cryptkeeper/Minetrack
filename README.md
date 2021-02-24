@@ -24,6 +24,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://bedrock.minetrack.me
 * https://pings.playlegend.net
 * https://track.read-my-man.ga
+* https://trackedservers.com/
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
