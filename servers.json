@@ -61,5 +61,10 @@
 		"name": "Minehut",
 		"ip": "mc.minehut.com",
 		"type": "PC"
+	},
+	{
+		"name": "OneBlockMC",
+		"ip": "play.oneblockmc.com",
+		"type": "PC"
 	}
 ]
