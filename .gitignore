@@ -1,8 +1,16 @@
+# npm
 node_modules/
+
+# minetrack
 minetrack.log
-.idea/
+
+# minetrack/sqlite3
 database.sql
 database.sql-journal
+
+# macOS
 .DS_Store
+
+# parcel
 dist/
-.cache/
+.parcel-cache/
