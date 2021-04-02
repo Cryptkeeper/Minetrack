@@ -29,6 +29,13 @@
   "engines": {
     "node": ">=12.4.0"
   },
+  "targets": {
+      "main": {
+          "engines": {
+              "browsers": "defaults"
+          }
+      }
+  },
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
