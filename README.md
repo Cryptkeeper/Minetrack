@@ -29,6 +29,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://skyblock.idotek.fr
 * https://survie.idotek.fr
 * https://minijeux.idotek.fr
+* https://stats.telfrancesco.it
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
