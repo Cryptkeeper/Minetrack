@@ -31,6 +31,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://survie.idotek.fr
 * https://minijeux.idotek.fr
 * https://stats.telfrancesco.it
+* https://suomimine.fi
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
