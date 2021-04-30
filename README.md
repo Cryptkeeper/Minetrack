@@ -22,7 +22,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 
 * https://minetrack.me
 * https://bedrock.minetrack.me
-* https://pings.playlegend.net
+* https://pings.minetrics.com/
 * https://track.read-my-man.ga
 * https://track.give-you-up.ga
 * https://trackedservers.com
