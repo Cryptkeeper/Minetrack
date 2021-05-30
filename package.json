@@ -11,7 +11,7 @@
     "sqlite3": "^5.0.2",
     "uplot": "1.0.11",
     "winston": "^2.4.4",
-    "ws": "^7.3.0"
+    "ws": "^7.4.6"
   },
   "repository": {
     "type": "git",
