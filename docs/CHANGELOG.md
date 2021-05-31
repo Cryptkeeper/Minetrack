@@ -1,4 +1,4 @@
-**5.5.9** *(May 31 20201)*
+**5.5.9** *(May 31 2021)*
 - Added configuration option to enable/disable ping failure logging.
 - Fixed a rendering error when the primary historical graph has too many data points.
 - Fixed sqlite3 errors from being ignored (now always logged).
