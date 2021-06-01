@@ -22,8 +22,18 @@ You can find a list of community hosted instances below. Want to be listed here?
 
 * https://minetrack.me
 * https://bedrock.minetrack.me
+* https://pings.minetrics.com/
+* https://track.read-my-man.ga
+* https://track.give-you-up.ga
 * https://trackedservers.com
-* https://ru-minetrack.merded.fun
+* https://stats.idotek.fr
+* https://skyblock.idotek.fr
+* https://survie.idotek.fr
+* https://minijeux.idotek.fr
+* https://stats.telfrancesco.it
+* https://suomimine.fi
+* https://minecraft-stats.de
+* https://minetrack.geyserconnect.net
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
@@ -42,3 +52,44 @@ For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
 
 Database logging is disabled by default. You can enable it in ```config.json``` by setting ```logToDatabase``` to true.
 This requires sqlite3 drivers to be installed.
+
+## Docker
+Minetrack can be built and run with Docker from this repository in several ways:
+
+### Build and deploy directly with Docker
+```
+# build image with name minetrack and tag latest
+docker build . --tag minetrack:latest
+
+# start container, delete on exit
+# publish container port 8080 on host port 80
+docker run --rm --publish 80:8080 minetrack:latest
+```
+
+The published port can be changed by modifying the parameter argument, e.g.:  
+* Publish to host port 8080: `--publish 8080:8080`  
+* Publish to localhost (thus prohibiting external access): `--publish 127.0.0.1:8080:8080`
+
+### Build and deploy with docker-compose
+```
+# build and start service
+docker-compose up --build
+
+# stop service and remove artifacts
+docker-compose down
+```
+
+## Nginx reverse proxy
+The following configuration enables Nginx to act as reverse proxy for a Minetrack instance that is available at port 8080 on localhost:
+```
+server {
+    server_name minetrack.example.net;
+    listen 80;
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+    }
+}
+```
