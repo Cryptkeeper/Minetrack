@@ -1,18 +1,17 @@
 {
   "name": "minetrack",
-  "version": "5.5.8",
+  "version": "5.5.9",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
-  "main": "main.js",
   "dependencies": {
     "finalhandler": "^1.1.2",
     "mcpe-ping-fixed": "0.0.3",
     "mcping-js": "^1.4.1",
     "request": "2.88.2",
     "serve-static": "^1.14.1",
-    "sqlite3": "4.2.0",
+    "sqlite3": "^5.0.2",
     "uplot": "1.0.11",
     "winston": "^2.4.4",
-    "ws": "^7.3.0"
+    "ws": "^7.4.6"
   },
   "repository": {
     "type": "git",
@@ -30,21 +29,27 @@
   "engines": {
     "node": ">=12.4.0"
   },
+  "targets": {
+    "main": {
+      "engines": {
+        "browsers": "defaults"
+      }
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
-    "eslint-config-standard": "^14.1.1",
+    "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "parcel-bundler": "^1.12.4"
+    "parcel": "^2.0.0-beta.2"
   },
   "scripts": {
-    "build": "eslint assets/js/*.js && parcel build assets/html/index.html",
-    "dev": "parcel build assets/html/index.html --no-minify"
+    "build": "eslint assets/js/*.js && parcel build assets/html/index.html --dist-dir dist",
+    "dev": "parcel build assets/html/index.html --no-optimize --dist-dir dist"
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.1",

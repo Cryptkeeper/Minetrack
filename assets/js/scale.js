@@ -8,7 +8,7 @@ export class RelativeScale {
       const scale = Math.pow(10, factor)
 
       const scaledMin = min - (min % scale)
-      let scaledMax = max + (max % scale === 0 ? 0 : (scale - (max % scale)))
+      let scaledMax = max + (max % scale === 0 ? 0 : scale - (max % scale))
 
       // Prevent min/max from being equal (and generating 0 ticks)
       // This happens when all data points are products of scale value
@@ -32,9 +32,20 @@ export class RelativeScale {
   }
 
   static scaleMatrix (data, tickCount, maxFactor) {
-    const max = Math.max(...data.flat().filter(val => val !== null))
+    const nonNullData = data.flat().filter((val) => val !== null)
 
-    return RelativeScale.scale([0, RelativeScale.isFiniteOrZero(max)], tickCount, maxFactor)
+    // when used with the spread operator large nonNullData/data arrays can reach the max call stack size
+    // use reduce calls to safely determine min/max values for any size of array
+    // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
+    const max = nonNullData.reduce((a, b) => {
+      return Math.max(a, b)
+    })
+
+    return RelativeScale.scale(
+      [0, RelativeScale.isFiniteOrZero(max)],
+      tickCount,
+      maxFactor
+    )
   }
 
   static generateTicks (min, max, step) {
@@ -52,8 +63,17 @@ export class RelativeScale {
         max: 0
       }
     } else {
-      const min = Math.min(...data.filter(val => val !== null))
-      const max = Math.max(...data.filter(val => val !== null))
+      const nonNullData = data.filter((val) => val !== null)
+
+      // when used with the spread operator large nonNullData/data arrays can reach the max call stack size
+      // use reduce calls to safely determine min/max values for any size of array
+      // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
+      const min = nonNullData.reduce((a, b) => {
+        return Math.min(a, b)
+      })
+      const max = nonNullData.reduce((a, b) => {
+        return Math.max(a, b)
+      })
 
       return {
         min: RelativeScale.isFiniteOrZero(min),

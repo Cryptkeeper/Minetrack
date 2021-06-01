@@ -1,18 +1,32 @@
-FROM node:lts
+FROM node:15
 
-WORKDIR /usr/src/app
+ARG TINI_VER="v0.19.0"
 
-COPY package*.json ./
+# install tini
+ADD https://github.com/krallin/tini/releases/download/$TINI_VER/tini /sbin/tini
+RUN chmod +x /sbin/tini
 
-RUN echo Installing dependencies \
-	&& apt-get update \
-	&& apt-get install sqlite3 -y \
-	&& npm ci 
+# install sqlite3
+RUN apt-get update                                                   \
+ && apt-get install    --quiet --yes --no-install-recommends sqlite3 \
+ && apt-get clean      --quiet --yes                                 \
+ && apt-get autoremove --quiet --yes                                 \
+ && rm -rf /var/lib/apt/lists/*
 
+# copy minetrack files
+WORKDIR /usr/src/minetrack
 COPY . .
-	
-RUN npm run build
+
+# build minetrack
+RUN npm install --build-from-source \
+ && npm run build
+
+# run as non root
+RUN addgroup --gid 10043 --system minetrack \
+ && adduser  --uid 10042 --system --ingroup minetrack --no-create-home --gecos "" minetrack \
+ && chown -R minetrack:minetrack /usr/src/minetrack
+USER minetrack
 
 EXPOSE 8080
 
-CMD node main.js
+ENTRYPOINT ["/sbin/tini", "--", "node", "main.js"]
