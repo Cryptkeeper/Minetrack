@@ -1,6 +1,6 @@
 {
   "name": "minetrack",
-  "version": "5.5.8",
+  "version": "5.5.9",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "dependencies": {
     "finalhandler": "^1.1.2",
@@ -30,11 +30,11 @@
     "node": ">=12.4.0"
   },
   "targets": {
-      "main": {
-          "engines": {
-              "browsers": "defaults"
-          }
+    "main": {
+      "engines": {
+        "browsers": "defaults"
       }
+    }
   },
   "devDependencies": {
     "@babel/core": "^7.10.2",
