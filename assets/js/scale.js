@@ -39,7 +39,7 @@ export class RelativeScale {
     // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
     const max = nonNullData.reduce((a, b) => {
       return Math.max(a, b)
-    }, 0)
+    }, Number.NEGATIVE_INFINITY)
 
     return RelativeScale.scale(
       [0, RelativeScale.isFiniteOrZero(max)],
@@ -70,10 +70,10 @@ export class RelativeScale {
       // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
       const min = nonNullData.reduce((a, b) => {
         return Math.min(a, b)
-      }, 0)
+      }, Number.POSITIVE_INFINITY)
       const max = nonNullData.reduce((a, b) => {
         return Math.max(a, b)
-      }, 0)
+      }, Number.NEGATIVE_INFINITY)
 
       return {
         min: RelativeScale.isFiniteOrZero(min),
