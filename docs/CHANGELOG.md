@@ -1,3 +1,6 @@
+**5.6.0** *(June 7 2021)*
+- Fixed a regression caused by rendering error fixed in 5.5.9. See https://github.com/Cryptkeeper/Minetrack/issues/257
+
 **5.5.9** *(May 31 2021)*
 - Added configuration option to enable/disable ping failure logging.
 - Fixed a rendering error when the primary historical graph has too many data points.
