@@ -34,12 +34,10 @@ export class RelativeScale {
   static scaleMatrix (data, tickCount, maxFactor) {
     const nonNullData = data.flat().filter((val) => val !== null)
 
-    // when used with the spread operator large nonNullData/data arrays can reach the max call stack size
-    // use reduce calls to safely determine min/max values for any size of array
+    // When used with the spread operator, large nonNullData arrays can reach the max call stack size.
+    // Use `Function.apply` to pass the array as arguments.
     // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
-    const max = nonNullData.reduce((a, b) => {
-      return Math.max(a, b)
-    }, Number.NEGATIVE_INFINITY)
+    const max = Math.max.apply(null, nonNullData)
 
     return RelativeScale.scale(
       [0, RelativeScale.isFiniteOrZero(max)],
@@ -65,15 +63,9 @@ export class RelativeScale {
     } else {
       const nonNullData = data.filter((val) => val !== null)
 
-      // when used with the spread operator large nonNullData/data arrays can reach the max call stack size
-      // use reduce calls to safely determine min/max values for any size of array
-      // https://stackoverflow.com/questions/63705432/maximum-call-stack-size-exceeded-when-using-the-dots-operator/63706516#63706516
-      const min = nonNullData.reduce((a, b) => {
-        return Math.min(a, b)
-      }, Number.POSITIVE_INFINITY)
-      const max = nonNullData.reduce((a, b) => {
-        return Math.max(a, b)
-      }, Number.NEGATIVE_INFINITY)
+      // See the note on #scaleMatrix for why we use Function.apply over the spread operator
+      const min = Math.min.apply(null, nonNullData)
+      const max = Math.max.apply(null, nonNullData)
 
       return {
         min: RelativeScale.isFiniteOrZero(min),
