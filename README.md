@@ -34,6 +34,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://suomimine.fi
 * https://minecraft-stats.de
 * https://minetrack.geyserconnect.net
+* https://track.rmly.dev
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
