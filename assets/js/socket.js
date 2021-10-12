@@ -63,10 +63,6 @@ export class SocketManager {
             this._app.addServer(serverId, serverPayload, payload.timestampPoints)
           })
 
-          if (payload.mojangServices) {
-            this._app.mojangUpdater.updateStatus(payload.mojangServices)
-          }
-
           // Init payload contains all data needed to render the page
           // Alert the app it is ready
           this._app.handleSyncComplete()
@@ -98,11 +94,6 @@ export class SocketManager {
           this._app.percentageBar.redraw()
           this._app.updateGlobalStats()
 
-          break
-        }
-
-        case 'updateMojangServices': {
-          this._app.mojangUpdater.updateStatus(payload)
           break
         }
 

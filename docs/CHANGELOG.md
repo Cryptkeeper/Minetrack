@@ -1,3 +1,6 @@
+**5.6.1** *(Oct 12 2021)*
+- Removed Mojang service status display, status.mojang.com/check was disabled by Mojang. See https://github.com/Cryptkeeper/Minetrack/issues/274
+
 **5.6.0** *(June 7 2021)*
 - Fixed a regression caused by rendering error fixed in 5.5.9. See https://github.com/Cryptkeeper/Minetrack/issues/257
 

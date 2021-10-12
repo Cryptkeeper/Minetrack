@@ -15,7 +15,6 @@ This project is not actively supported. Pull requests will be reviewed and merge
 - 📦 Out of the box included dashboard with various customizable sorting and viewing options.
 - 📱(Decent) mobile support.
 - 🕹 Supports both Minecraft Java Edition and Minecraft Bedrock Edition.
-- 🚨 [minecraft.net](https://minecraft.net) and [mojang.com](https://mojang.com) services status monitoring to watch for interruptions.
 
 ### Community Showcase
 You can find a list of community hosted instances below. Want to be listed here? Add yourself in a pull request!
