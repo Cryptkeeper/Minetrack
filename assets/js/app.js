@@ -2,7 +2,6 @@ import { ServerRegistry } from './servers'
 import { SocketManager } from './socket'
 import { SortController } from './sort'
 import { GraphDisplayManager } from './graph'
-import { MojangUpdater } from './mojang'
 import { PercentageBar } from './percbar'
 import { FavoritesManager } from './favorites'
 import { Tooltip, Caption, formatNumber } from './util'
@@ -17,7 +16,6 @@ export class App {
     this.socketManager = new SocketManager(this)
     this.sortController = new SortController(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
-    this.mojangUpdater = new MojangUpdater()
     this.percentageBar = new PercentageBar(this)
     this.favoritesManager = new FavoritesManager(this)
 
@@ -72,7 +70,6 @@ export class App {
     this.socketManager.reset()
     this.sortController.reset()
     this.graphDisplayManager.reset()
-    this.mojangUpdater.reset()
     this.percentageBar.reset()
 
     // Undefine publicConfig, resynced during the connection handshake
