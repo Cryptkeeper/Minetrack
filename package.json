@@ -1,6 +1,6 @@
 {
   "name": "minetrack",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "A Minecraft server tracker that lets you focus on the basics.",
   "dependencies": {
     "finalhandler": "^1.1.2",

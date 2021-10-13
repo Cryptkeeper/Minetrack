@@ -137,20 +137,6 @@ header .header-button > span:first-of-type {
   font-size: 22px;
 }
 
-header .header-button-group {
-  display: inline-block;
-}
-
-header .header-button-group:first-of-type {
-  border-top-left-radius: var(--border-radius);
-  border-bottom-left-radius: var(--border-radius);
-}
-
-header .header-button-group:last-of-type {
-  border-top-right-radius: var(--border-radius);
-  border-bottom-right-radius: var(--border-radius);
-}
-
 header .header-button-single {
   display: none;
   cursor: pointer;
@@ -399,35 +385,6 @@ footer a:hover {
   height: 100%;
   display: inline-block;
   position: absolute;
-}
-
-/* Mojang status colors */
-
-/* Light theme */
-.mojang-status-online {
-  background: #87D37C;
-}
-
-.mojang-status-unstable {
-  background: #f1c40f;
-}
-
-.mojang-status-offline {
-  background: #DE5749;
-}
-
-@media (prefers-color-scheme: dark) {
-  .mojang-status-online {
-    background: #66aa5a;
-  }
-
-  .mojang-status-unstable {
-    background: #cc8a4f;
-  }
-
-  .mojang-status-offline {
-    background: #A6453B;
-  }
 }
 
 /* Header rows */
