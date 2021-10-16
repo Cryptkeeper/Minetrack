@@ -53,5 +53,12 @@
 		"type": "PE",
 		"color": "#df44de",
 		"favicon": "pixelparadise.png"
+	},
+	{
+		"name": "HyperLands",
+		"ip": "play.hyperlandsmc.net",
+		"type": "PE",
+		"color": "#9f79d5",
+		"favicon": "hyperlands.png"
 	}
 ]
