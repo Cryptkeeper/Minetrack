@@ -21,19 +21,10 @@ You can find a list of community hosted instances below. Want to be listed here?
 
 * https://minetrack.me
 * https://bedrock.minetrack.me
-* https://pings.minetrics.com/
 * https://track.read-my-man.ga
-* https://track.give-you-up.ga
 * https://trackedservers.com
-* https://stats.idotek.fr
-* https://skyblock.idotek.fr
-* https://survie.idotek.fr
-* https://minijeux.idotek.fr
-* https://stats.telfrancesco.it
 * https://suomimine.fi
-* https://minecraft-stats.de
 * https://minetrack.geyserconnect.net
-* https://track.rmly.dev
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
