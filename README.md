@@ -25,6 +25,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://trackedservers.com
 * https://suomimine.fi
 * https://minetrack.geyserconnect.net
+* https://minetrack.rmly.dev
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
