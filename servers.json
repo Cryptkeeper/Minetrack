@@ -5,11 +5,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "HiveMC",
-		"ip": "play.hivemc.com",
-		"type": "PC"
-	},
-	{
 		"name": "Mineplex",
 		"ip": "us.mineplex.com",
 		"type": "PC"
