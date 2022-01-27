@@ -27,6 +27,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://minetrack.geyserconnect.net
 * https://minetrack.rmly.dev
 * https://minetrack.fi
+* https://livemcbe.ru
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
