@@ -30,6 +30,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://livemcbe.ru
 * https://ruminetrack.merded.xyz
 * https://bleepotrack.xyz
+* https://pvp-factions.fr
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
