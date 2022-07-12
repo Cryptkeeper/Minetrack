@@ -65,7 +65,7 @@ docker run --rm --publish 80:8080 minetrack:latest
 
 The published port can be changed by modifying the parameter argument, e.g.:  
 * Publish to host port 8080: `--publish 8080:8080`  
-* Publish to localhost (thus prohibiting external access): `--publish 127.0.0.1:8080:8080`
+* Publish to localhost (this prohibiting external access): `--publish 127.0.0.1:8080:8080`
 
 ### Build and deploy with docker-compose
 ```
