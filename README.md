@@ -31,6 +31,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://ruminetrack.merded.xyz
 * https://bleepotrack.xyz
 * https://pvp-factions.fr
+* https://stats.liste-serveurs.fr
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
