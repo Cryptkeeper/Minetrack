@@ -7,6 +7,10 @@
 		"pingAll": 3000,
 		"connectTimeout": 2500
 	},
+	"oldPingsCleanup": {
+		"enabled": false,
+		"interval": 3600000
+	},
 	"logFailedPings": true,
 	"logToDatabase": false,
 	"graphDuration": 86400000,
