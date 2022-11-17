@@ -33,6 +33,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://pvp-factions.fr
 * https://minetrack.top
 * https://stats.liste-serveurs.fr
+* https://minetrack.live
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
