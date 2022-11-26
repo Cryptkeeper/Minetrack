@@ -33,7 +33,8 @@
     "main": {
       "engines": {
         "browsers": "defaults"
-      }
+      },
+      "includeNodeModules": true
     }
   },
   "devDependencies": {
