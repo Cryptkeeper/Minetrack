@@ -5,6 +5,7 @@ import { GraphDisplayManager } from './graph'
 import { PercentageBar } from './percbar'
 import { FavoritesManager } from './favorites'
 import { Tooltip, Caption, formatNumber } from './util'
+import { DisplayController } from './display'
 
 export class App {
   publicConfig
@@ -15,6 +16,7 @@ export class App {
     this.serverRegistry = new ServerRegistry(this)
     this.socketManager = new SocketManager(this)
     this.sortController = new SortController(this)
+    this.displayController = new DisplayController(this)
     this.graphDisplayManager = new GraphDisplayManager(this)
     this.percentageBar = new PercentageBar(this)
     this.favoritesManager = new FavoritesManager(this)
@@ -51,6 +53,7 @@ export class App {
 
     // Run a single bulk server sort instead of per-add event since there may be multiple
     this.sortController.show()
+    this.displayController.show()
     this.percentageBar.redraw()
 
     // The data may not be there to correctly compute values, but run an attempt
@@ -69,6 +72,7 @@ export class App {
     this.serverRegistry.reset()
     this.socketManager.reset()
     this.sortController.reset()
+    this.displayController.reset()
     this.graphDisplayManager.reset()
     this.percentageBar.reset()
 

@@ -306,6 +306,11 @@ footer a:hover {
   background: var(--color-purple);
 }
 
+/* Display format */
+#display-format {
+  background: var(--color-blue-inverted);
+}
+
 /* Settings toggle */
 #settings-toggle {
   background: var(--color-blue);
