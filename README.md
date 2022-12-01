@@ -27,7 +27,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://minetrack.geyserconnect.net
 * https://minetrack.rmly.dev
 * https://minetrack.fi
-* https://livemcbe.ru
+* https://livemc.ru
 * https://ruminetrack.merded.xyz
 * https://bleepotrack.xyz
 * https://pvp-factions.fr
