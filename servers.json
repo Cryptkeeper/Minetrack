@@ -1,8 +1,23 @@
 [
 	{
-		"name": "Hypixel",
-		"ip": "mc.hypixel.net",
-		"type": "PC"
+		"name": "Galaxite",
+		"ip": "play.galaxite.net",
+		"type": "PE",
+		"color": "#609be1",
+		"favicon": "galaxite.png"
+	},
+	{
+		"name": "Mineplex",
+		"ip": "pe.mineplex.com",
+		"type": "PE",
+		"color": "#ec8008",
+		"favicon": "mineplex.png"
+	},
+	{
+		"name": "Lifeboat",
+		"ip": "play.lbsg.net",
+		"type": "PE",
+		"favicon": "lifeboat.png"
 	},
 	{
 		"name": "Mineplex",
@@ -11,7 +26,30 @@
 	},
 	{
 		"name": "CubeCraft",
-		"ip": "play.cubecraft.net",
-		"type": "PC"
+		"ip": "mco.cubecraft.net",
+		"type": "PE",
+		"color": "#176093",
+		"favicon": "cubecraft.png"
+	},
+	{
+		"name": "Hive Games",
+		"ip": "geo.hivebedrock.network",
+		"type": "PE",
+		"color": "#ffcb03",
+		"favicon": "hive.png"
+	},
+	{
+		"name": "NetherGames",
+		"ip": "proxylink.nethergames.org",
+		"type": "PE",
+		"color": "#ac5e39",
+		"favicon": "nethergames.png"
+	},
+	{
+		"name": "Pixel Paradise",
+		"ip": "play.pixelparadise.gg",
+		"type": "PE",
+		"color": "#8f00ff",
+		"favicon": "pp.png"
 	}
 ]
