@@ -50,5 +50,10 @@
 		"name": "Minehut",
 		"ip": "mc.minehut.com",
 		"type": "PC"
+	},
+	{
+		"name": "TubNet",
+		"ip": "tubnet.gg",
+		"type": "PC"
 	}
 ]
