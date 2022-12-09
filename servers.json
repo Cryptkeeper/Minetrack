@@ -20,11 +20,6 @@
 		"favicon": "lifeboat.png"
 	},
 	{
-		"name": "Mineplex",
-		"ip": "us.mineplex.com",
-		"type": "PC"
-	},
-	{
 		"name": "CubeCraft",
 		"ip": "mco.cubecraft.net",
 		"type": "PE",
