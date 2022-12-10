@@ -33,7 +33,8 @@
     "main": {
       "engines": {
         "browsers": "defaults"
-      }
+      },
+      "includeNodeModules": true
     }
   },
   "devDependencies": {
@@ -45,7 +46,7 @@
     "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "parcel": "^2.0.0-beta.2"
+    "parcel": "^2.8.0"
   },
   "scripts": {
     "build": "eslint assets/js/*.js && parcel build assets/html/index.html --dist-dir dist",

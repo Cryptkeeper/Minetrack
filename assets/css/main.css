@@ -1,4 +1,4 @@
-@import url(uplot/dist/uPlot.min.css);
+@import url(npm:uplot/dist/uPlot.min.css);
 
 @import url(../css/icons.css);
 
