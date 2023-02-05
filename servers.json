@@ -1,32 +1,71 @@
-[
-	{
-		"name": "Hypixel",
-		"ip": "mc.hypixel.net",
-		"type": "PC"
-	},
-	{
-		"name": "Mineplex",
-		"ip": "us.mineplex.com",
-		"type": "PC"
-	},
-	{
-		"name": "CubeCraft",
-		"ip": "play.cubecraft.net",
-		"type": "PC"
-	},
-	{
-		"name": "BachErik Network",
-		"ip": "bacherik.be",
-		"type": "PC"
-	},
-	{
-		"name": "BachErik Network",
-		"ip": "placeandbreakworld.bacherik.be",
-		"type": "PC"
-	},
-	{
-		"name": "TheJoCraft Network",
-		"ip": "thejocraft.net",
-		"type": "PC"
-	}
+[{
+        "name": "Hypixel",
+        "ip": "mc.hypixel.net",
+        "type": "PC"
+    },
+    {
+        "name": "Mineplex",
+        "ip": "us.mineplex.com",
+        "type": "PC"
+    },
+    {
+        "name": "CubeCraft",
+        "ip": "play.cubecraft.net",
+        "type": "PC"
+    },
+    {
+        "name": "BachErik Network",
+        "ip": "bacherik.be",
+        "type": "PC"
+    },
+    {
+        "name": "BachErik Network",
+        "ip": "placeandbreakworld.bacherik.be",
+        "type": "PC"
+    },
+    {
+        "name": "TheJoCraft Network",
+        "ip": "thejocraft.net",
+        "type": "PC"
+    },
+    {
+        "name": "2b2t",
+        "ip": "2b2t.org",
+        "type": "PC"
+    },
+    {
+        "name": "5b5t",
+        "ip": "5b5t.org",
+        "type": "PC"
+    },
+    {
+        "name": "8b8t",
+        "ip": "8b8t.org",
+        "type": "PC"
+    },
+    {
+        "name": "6b6t",
+        "ip": "6b6t.org",
+        "type": "PC"
+    },
+    {
+        "name": "9b9t",
+        "ip": "9b9t.org",
+        "type": "PC"
+    },
+    {
+        "name": "0b0t",
+        "ip": "0b0t.org",
+        "type": "PC"
+    },
+    {
+        "name": "4b4t",
+        "ip": "4b4t.org",
+        "type": "PC"
+    },
+    {
+        "name": "3b3t",
+        "ip": "3b3t.org",
+        "type": "PC"
+    }
 ]
