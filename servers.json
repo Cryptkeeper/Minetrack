@@ -13,5 +13,20 @@
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
 		"type": "PC"
+	},
+	{
+		"name": "BachErik Network",
+		"ip": "bacherik.be",
+		"type": "PC"
+	},
+	{
+		"name": "BachErik Network",
+		"ip": "placeandbreakworld.bacherik.be",
+		"type": "PC"
+	},
+	{
+		"name": "TheJoCraft Network",
+		"ip": "thejocraft.net",
+		"type": "PC"
 	}
 ]
