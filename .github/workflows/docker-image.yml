@@ -16,8 +16,9 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag bacherik/minetrack:$(date +%s)
+      run: docker build . --file Dockerfile --tag bacherik/minetrack:latest
       
     - name: Docker Image Artifact Upload
       uses: ishworkh/docker-image-artifact-upload@v1
-
+      with:
+        image: "bacherik/minetrack:latest"
