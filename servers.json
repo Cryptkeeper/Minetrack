@@ -67,5 +67,65 @@
         "name": "3b3t",
         "ip": "3b3t.org",
         "type": "PC"
+    },
+    {
+        "name": "GrieferGames",
+        "ip": "GrieferGames.de",
+        "type": "PC"
+    },
+    {
+        "name": "iostein",
+        "ip": "iostein.de",
+        "type": "PC"
+    },
+    {
+        "name": "MixelPixel",
+        "ip": "play.MixelPixel.net",
+        "type": "PC"
+    },
+    {
+        "name": "BauSucht",
+        "ip": "BauSucht.net",
+        "type": "PC"
+    },
+    {
+        "name": "OPSucht",
+        "ip": "opsucht.net",
+        "type": "PC"
+    },
+    {
+        "name": "UNLIMITEDWORLD",
+        "ip": "uwmc.de",
+        "type": "PC"
+    },
+    {
+        "name": "MineVale",
+        "ip": "minevale.de",
+        "type": "PC"
+    },
+    {
+        "name": "cytooxien",
+        "ip": "cytooxien.de",
+        "type": "PC"
+    },
+    {
+        "name": "HorstBlocks",
+        "ip": "horstblocks.de",
+        "type": "PE"
+    },
+    {
+        "name": "UnicaCity",
+        "ip": "unicacity.de:25565",
+        "type": "PC"
+    },
+    {
+        "name": "LAINTANIA",
+        "ip": "LAINTANIA.net",
+        "type": "PC"
+    },
+    {
+        "name": "GermanMiner",
+        "ip": "MC.GermanMiner.de",
+        "type": "PC"
     }
 ]
