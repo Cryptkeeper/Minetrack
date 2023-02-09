@@ -46,5 +46,13 @@
 		"type": "PE",
 		"color": "#8f00ff",
 		"favicon": "pp.png"
+	},
+	{
+		"name": "InPvP",
+		"ip": "play.inpvp.net",
+		"type": "PE",
+		"color": "#A874AB",
+		"favicon": "inpvp.png"
 	}
+
 ]
