@@ -55,5 +55,10 @@
 		"name": "TubNet",
 		"ip": "tubnet.gg",
 		"type": "PC"
+	},
+	{
+		"name": "Minemen Club",
+		"ip": "minemen.club",
+		"type": "PC"
 	}
 ]
