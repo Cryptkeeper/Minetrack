@@ -55,5 +55,10 @@
 		"name": "TubNet",
 		"ip": "tubnet.gg",
 		"type": "PC"
+	},
+	{
+		"name": "Origin Realms",
+		"ip": "play.originrealms.com",
+		"type": "PC"
 	}
 ]
