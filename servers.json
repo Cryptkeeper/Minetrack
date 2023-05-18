@@ -7,13 +7,6 @@
 		"favicon": "galaxite.png"
 	},
 	{
-		"name": "Mineplex",
-		"ip": "pe.mineplex.com",
-		"type": "PE",
-		"color": "#ec8008",
-		"favicon": "mineplex.png"
-	},
-	{
 		"name": "Lifeboat",
 		"ip": "play.lbsg.net",
 		"type": "PE",
