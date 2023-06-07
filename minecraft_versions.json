@@ -143,6 +143,10 @@
 		{
 			"name": "1.19.4",
 			"protocolId": 762
+		},
+		{
+			"name": "1.20",
+			"protocolId": 763
 		}
 	]
 }
