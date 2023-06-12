@@ -7,6 +7,52 @@
 	{
 		"name": "CubeCraft",
 		"ip": "play.cubecraft.net",
+		"type": "PC",
+		"color": "#176093"
+	},
+	{
+		"name": "Shotbow",
+		"ip": "us.shotbow.net",
+		"type": "PC"
+	},
+	{
+		"name": "Wynncraft",
+		"ip": "play.wynncraft.com",
+		"type": "PC"
+	},
+	{
+		"name": "Cosmic PVP",
+		"ip": "cosmicpvp.com",
+		"type": "PC"
+	},
+  	{
+ 		"name": "Timolia",
+ 		"ip": "play.timolia.de",
+ 		"type": "PC"
+  	},
+	{
+		"name": "FunCraft",
+		"ip": "premium.funcraft.net",
+		"type": "PC"
+	},
+	{
+		"name": "GommeHD",
+		"ip": "play.gommehd.net",
+		"type": "PC"
+	},
+	{
+		"name": "Minehut",
+		"ip": "mc.minehut.com",
+		"type": "PC"
+	},
+	{
+		"name": "TubNet",
+		"ip": "tubnet.gg",
+		"type": "PC"
+	},
+	{
+		"name": "MCC Island",
+		"ip": "play.mccisland.net",
 		"type": "PC"
 	}
 ]
