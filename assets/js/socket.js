@@ -110,10 +110,10 @@ export class SocketManager {
             .forEach(serverName => {
               const serverRegistration = this._app.serverRegistry.getServerRegistration(serverName)
 
-              controlsHTML += `<td>
+              controlsHTML += `<td><label>
                 <input type="checkbox" class="graph-control" minetrack-server-id="${serverRegistration.serverId}" ${serverRegistration.isVisible ? 'checked' : ''}>
                 ${serverName}
-                </input></td>`
+                </label></td>`
 
               // Occasionally break table rows using a magic number
               if (++lastRowCounter % 6 === 0) {
