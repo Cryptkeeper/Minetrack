@@ -21,12 +21,6 @@
 		"type": "PC"
 	},
 	{
-		"name": "Mineplex",
-		"ip": "us.mineplex.com",
-		"type": "PC",
-		"color": "#ec8008"
-	},
-	{
 		"name": "Cosmic PVP",
 		"ip": "cosmicpvp.com",
 		"type": "PC"
@@ -56,6 +50,11 @@
 		"ip": "tubnet.gg",
 		"type": "PC"
 	},
+  {
+    "name": "MCC Island",
+		"ip": "play.mccisland.net",
+    "type": "PC"
+  },
 	{
 		"name": "Origin Realms",
 		"ip": "play.originrealms.com",
