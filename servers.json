@@ -49,5 +49,10 @@
 		"name": "TubNet",
 		"ip": "tubnet.gg",
 		"type": "PC"
+	},
+	{
+		"name": "MCC Island",
+		"ip": "play.mccisland.net",
+		"type": "PC"
 	}
 ]
