@@ -6,11 +6,11 @@
 		"favicon": "lifeboat.png"
 	},
 	{
-		"name": "InPvP",
+		"name": "Mineville City",
 		"ip": "play.inpvp.net",
 		"type": "PE",
-		"color": "#A874AB",
-		"favicon": "inpvp.png"
+		"color": "#D22B2B",
+		"favicon": "minevillecity.png"
 	},
 	{
 		"name": "CubeCraft",
