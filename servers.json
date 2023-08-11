@@ -34,13 +34,6 @@
 		"favicon": "nethergames.png"
 	},
 	{
-		"name": "Pixel Paradise",
-		"ip": "play.pixelparadise.gg",
-		"type": "PE",
-		"color": "#8f00ff",
-		"favicon": "pp.png"
-	},
-	{
 		"name": "InPvP",
 		"ip": "play.inpvp.net",
 		"type": "PE",
