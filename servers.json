@@ -40,11 +40,4 @@
 		"color": "#609be1",
 		"favicon": "galaxite.png"
 	},
-	{
-		"name": "Pixel Paradise",
-		"ip": "play.pixelparadise.gg",
-		"type": "PE",
-		"color": "#df44de",
-		"favicon": "pixelparadise.png"
-	}
 ]
