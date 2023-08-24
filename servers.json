@@ -50,14 +50,19 @@
 		"ip": "tubnet.gg",
 		"type": "PC"
 	},
-  {
-    "name": "MCC Island",
+	{
+		"name": "MCC Island",
 		"ip": "play.mccisland.net",
-    "type": "PC"
-  },
+		"type": "PC"
+	},
 	{
 		"name": "Origin Realms",
 		"ip": "play.originrealms.com",
+		"type": "PC"
+	},
+	{
+		"name": "Cytooxien",
+		"ip": "cytooxien.net",
 		"type": "PC"
 	}
 ]
