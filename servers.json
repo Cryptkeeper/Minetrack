@@ -20,21 +20,11 @@
 		"ip": "play.wynncraft.com",
 		"type": "PC"
 	},
-	{
-		"name": "Cosmic PVP",
-		"ip": "cosmicpvp.com",
-		"type": "PC"
-	},
   	{
  		"name": "Timolia",
  		"ip": "play.timolia.de",
  		"type": "PC"
   	},
-	{
-		"name": "FunCraft",
-		"ip": "premium.funcraft.net",
-		"type": "PC"
-	},
 	{
 		"name": "GommeHD",
 		"ip": "play.gommehd.net",
