@@ -54,5 +54,10 @@
 		"name": "Hideaway",
 		"ip": "playhideaway.com",
 		"type": "PC"
+	},
+	{
+		"name": "2b2t",
+		"ip": "2b2t.org",
+		"type": "PC"
 	}
 ]
