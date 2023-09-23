@@ -95,7 +95,7 @@ export function formatMinecraftVersions (versions, knownVersions) {
       const endVersion = knownVersions[versionGroup[versionGroup.length - 1]]
       return `${startVersion}-${endVersion}`
     }
-  }).join(', ')
+  }).map(x => `<div class="badge text-bg-secondary">${x}</div>`).join(' ')
 }
 
 export function formatTimestampSeconds (secs) {

@@ -300,7 +300,7 @@ export class GraphDisplayManager {
     }, this.getGraphData(), document.getElementById('big-graph'))
 
     // Show the settings-toggle element
-    document.getElementById('settings-toggle').style.display = 'inline-block'
+    document.getElementById('settings-toggle').classList.remove('d-none')
   }
 
   redraw = () => {

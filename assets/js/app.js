@@ -27,10 +27,20 @@ export class App {
     this.socketManager.createWebSocket()
   }
 
+  setElementVisible (id, visible) {
+    const element = document.getElementById(id)
+
+    if (element) {
+      element.classList.add(visible ? 'd-block' : 'd-none')
+      element.classList.remove(visible ? 'd-none' : 'd-block')
+    }
+  }
+
   setPageReady (isReady) {
-    document.getElementById('push').style.display = isReady ? 'block' : 'none'
-    document.getElementById('footer').style.display = isReady ? 'block' : 'none'
-    document.getElementById('status-overlay').style.display = isReady ? 'none' : 'block'
+    this.setElementVisible('push', isReady)
+    this.setElementVisible('footer', isReady)
+
+    this.setElementVisible('status-overlay', !isReady)
   }
 
   setPublicConfig (publicConfig) {

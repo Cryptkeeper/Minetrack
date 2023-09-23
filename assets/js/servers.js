@@ -200,7 +200,7 @@ export class ServerRegistration {
   _renderValue (prefix, handler) {
     const labelElement = document.getElementById(`${prefix}_${this.serverId}`)
 
-    labelElement.style.display = 'block'
+    labelElement.classList.remove("d-none")
 
     const valueElement = document.getElementById(`${prefix}-value_${this.serverId}`)
     const targetElement = valueElement || labelElement
@@ -209,6 +209,10 @@ export class ServerRegistration {
       if (typeof handler === 'function') {
         handler(targetElement)
       } else {
+        if (prefix === 'version') {
+          targetElement.innerHTML = handler;
+          return;
+        }
         targetElement.innerText = handler
       }
     }
@@ -217,7 +221,7 @@ export class ServerRegistration {
   _hideValue (prefix) {
     const element = document.getElementById(`${prefix}_${this.serverId}`)
 
-    element.style.display = 'none'
+    element.classList.add("d-none")
   }
 
   updateServerStatus (ping, minecraftVersions) {
@@ -277,21 +281,47 @@ export class ServerRegistration {
     const serverElement = document.createElement('div')
 
     serverElement.id = `container_${this.serverId}`
-    serverElement.innerHTML = `<div class="column column-favicon">
-        <img class="server-favicon" src="${latestPing.favicon || MISSING_FAVICON}" id="favicon_${this.serverId}" title="${this.data.name}\n${formatMinecraftServerAddress(this.data.ip, this.data.port)}">
-        <span class="server-rank" id="ranking_${this.serverId}"></span>
+    serverElement.innerHTML = `
+      <div class="col">
+        <div class="vstack gap-2">
+          <div class="hstack gap-2">
+            <div style="width: 64px">
+              <div class="vstack">
+                <img class="rounded" style="height: 64px; width: 64px;" src="${latestPing.favicon || MISSING_FAVICON}" id="favicon_${this.serverId}" title="${this.data.name}\n${formatMinecraftServerAddress(this.data.ip, this.data.port)}">
+                <span class="mt-1 text-center" id="ranking_${this.serverId}"></span>
+              </div>
+            </div>
+            <div class="vstack">
+              <div class="hstack align-items-center gap-1 justify-content-between">
+                <div class="hstack align-items-center gap-1">
+                  <a role="button" style="font-size: 1.3rem" class="${this._app.favoritesManager.getIconClass(this.isFavorite)}" id="favorite-toggle_${this.serverId}"></a>
+                  <h2 class="h5 fw-semibold text-body-emphasis my-0">${this.data.name}</h2>
+                </div>
+                <div>
+                  <span class="d-none text-end" id="version_${this.serverId}"></span>
+                </div>
+              </div>
+              <span class="text-warning d-none" id="error_${this.serverId}"></span>
+              <div class="row mt-2">
+                <div id="player-count_${this.serverId}" class="col text-center">
+                  <span class="text-body-secondary small text-uppercase">Players</span><br />
+                  <span class="server-value" id="player-count-value_${this.serverId}"></span>
+                </div>
+                <div id="peak_${this.serverId}" class="col text-center d-none">
+                  <span class="text-body-secondary small text-uppercase">${this._app.publicConfig.graphDurationLabel} Peak</span><br />
+                  <span class="server-value" id="peak-value_${this.serverId}"></span>
+                </div>
+                <div id="record_${this.serverId}" class="col text-center d-none">
+                  <span class="text-body-secondary small text-uppercase">Record</span><br />
+                  <span class="server-value text-nowrap" id="record-value_${this.serverId}">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column column-graph mx-auto" id="chart_${this.serverId}"></div>
+        </div>
       </div>
-      <div class="column column-status">
-        <h3 class="server-name"><span class="${this._app.favoritesManager.getIconClass(this.isFavorite)}" id="favorite-toggle_${this.serverId}"></span> ${this.data.name}</h3>
-        <span class="server-error" id="error_${this.serverId}"></span>
-        <span class="server-label" id="player-count_${this.serverId}">Players: <span class="server-value" id="player-count-value_${this.serverId}"></span></span>
-        <span class="server-label" id="peak_${this.serverId}">${this._app.publicConfig.graphDurationLabel} Peak: <span class="server-value" id="peak-value_${this.serverId}">-</span></span>
-        <span class="server-label" id="record_${this.serverId}">Record: <span class="server-value" id="record-value_${this.serverId}">-</span></span>
-        <span class="server-label" id="version_${this.serverId}"></span>
-      </div>
-      <div class="column column-graph" id="chart_${this.serverId}"></div>`
-
-    serverElement.setAttribute('class', 'server')
+    `
 
     document.getElementById('server-list').appendChild(serverElement)
   }
@@ -301,12 +331,12 @@ export class ServerRegistration {
       const labelElement = document.getElementById(`${category}_${this.serverId}`)
       const valueElement = document.getElementById(`${category}-value_${this.serverId}`)
 
+
+
       if (selectedCategory && category === selectedCategory) {
-        labelElement.setAttribute('class', 'server-highlighted-label')
-        valueElement.setAttribute('class', 'server-highlighted-value')
+        labelElement.classList.add('fw-bold')
       } else {
-        labelElement.setAttribute('class', 'server-label')
-        valueElement.setAttribute('class', 'server-value')
+        labelElement.classList.remove('fw-bold')
       }
     })
   }

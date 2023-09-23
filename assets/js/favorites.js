@@ -61,9 +61,9 @@ export class FavoritesManager {
 
   getIconClass (isFavorite) {
     if (isFavorite) {
-      return 'icon-star server-is-favorite'
+      return 'bi bi-star-fill text-warning'
     } else {
-      return 'icon-star-o server-is-not-favorite'
+      return 'bi bi-star text-body-secondary'
     }
   }
 }
