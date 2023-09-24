@@ -14,58 +14,58 @@
 	</head>
 
 	<body>
-		<div id="perc-bar"></div>
-
 		<div id="status-overlay" class="p-3 bg-body-secondary shadow rounded text-center position-fixed top-50 start-50 translate-middle w-25">
 			<img style="height: 72px; width: 72px;" src="../images/logo.svg">
 			<h1 class="fw-bold" style="letter-spacing: -0.1rem">Minetrack</h1>
 			<p id="status-text" class="font-monospace mb-0">Connecting...</p>
 		</div>
 
-		<div id="tooltip"></div>
+		<div id="page-view" class="d-none">
+			<div id="perc-bar" class="overflow-x-hidden position-relative" style="height: 35px"></div>
 
-		<div class="container-fluid container-xxl">
-			<header class="hstack gx-2 justify-content-between align-items-center flex-wrap mt-3 mb-4">
-				<div>
+			<div id="tooltip" class="position-absolute p-2 shadow bg-light text-black rounded" style="display: none; z-index: 1080;"></div>
+
+			<div class="container-fluid">
+				<header class="hstack gap-2 justify-content-between align-items-center flex-wrap mt-3 mb-4">
 					<div>
-						<div class="hstack gap-2 align-items-center">
-							<img style="height: 48px; width: 48px;" src="../images/logo.svg">
-							<h1 class="fw-bold mb-0 text-body-emphasis" style="letter-spacing: -0.1rem">Minetrack</h1>
+						<div>
+							<div class="hstack gap-2 align-items-center">
+								<img style="height: 48px; width: 48px;" src="../images/logo.svg">
+								<h1 class="fw-bold mb-0 text-body-emphasis" style="letter-spacing: -0.1rem">Minetrack</h1>
+							</div>
+							<p class="lead mb-0">Counting <span class="fw-semibold text-body-emphasis" id="stat_totalPlayers">0</span> players on <span class="fw-semibold text-body-emphasis" id="stat_networks">0</span> Minecraft servers.</p>
 						</div>
-						<p class="lead mb-0">Counting <span class="fw-semibold text-body-emphasis" id="stat_totalPlayers">0</span> players on <span class="fw-semibold text-body-emphasis" id="stat_networks">0</span> Minecraft servers.</p>
 					</div>
-				</div>
-				<div>
-					<div class="btn-group">
-						<button id="sort-by" class="btn btn-success d-none">Sort By<i class="bi bi-chevron-right mx-1" aria-label="category"></i><span class="fw-semibold" id="sort-by-text"></span></button>
-						<button id="settings-toggle" class="btn btn-secondary d-none"><i class="bi bi-gear me-2" aria-hidden="true"></i>Settings</button>
+					<div>
+						<div class="hstack gap-2">
+							<button id="sort-by" class="btn btn-primary d-none">Sort By<i class="bi bi-chevron-right mx-1" aria-label="category"></i><span class="fw-semibold" id="sort-by-text"></span></button>
+							<button id="settings-toggle" class="btn btn-secondary d-none"><i class="bi bi-gear me-2" aria-hidden="true"></i>Graph Settings</button>
+						</div>
 					</div>
-				</div>
-			</header>
-		</div>
-
-		<div class="d-none d-xl-block">
-			<div id="big-graph" class="mt-4 mb-4"></div>
-		</div>
-
-		<div class="container">
-			<div id="big-graph-controls">
-				<div id="big-graph-controls-drawer">
-					<div id="big-graph-checkboxes"></div>
-
-					<span class="graph-controls-setall">
-						<a minetrack-show-type="all" class="button graph-controls-show"><span class="icon-eye"></span> Show All</a>
-						<a minetrack-show-type="none" class="button graph-controls-show"><span class="icon-eye-slash"></span> Hide All</a>
-						<a minetrack-show-type="favorites" class="button graph-controls-show"><span class="icon-star"></span> Only Favorites</a>
-					</span>
-				</div>
+				</header>
 			</div>
 
-			<div id="server-list" class="row row-cols-1 row-cols-lg-2 row-cols-xxl-3 g-3"></div>
+			<div>
+				<div id="big-graph" class="my-4 mx-auto" style="width: 95%"></div>
+			</div>
 
-			<footer id="footer" class="py-2 px-3 bg-body-secondary rounded mb-3 mt-4 font-monospace d-none">
-				<i class="bi bi-code-slash me-2"></i>Powered by open source software: <a href="https://github.com/Cryptkeeper/Minetrack" class="link link-info">make it your own!</a>
-			</footer>
+			<div class="container-fluid">
+				<div id="big-graph-controls" class="bg-body-secondary rounded p-3 mt-2 mb-5" style="display: none">
+					<div id="big-graph-checkboxes"></div>
+
+					<div class="hstack justify-content-center gap-2 mt-3">
+						<a class="btn btn-primary graph-controls-show" minetrack-show-type="all"><i class="bi bi-eye me-1" aria-hidden="true"></i>Show All</a>
+						<a class="btn btn-primary graph-controls-show" minetrack-show-type="none"><i class="bi bi-eye-slash me-1" aria-hidden="true"></i>Hide All</a>
+						<a class="btn btn-warning graph-controls-show" minetrack-show-type="favorites"><i class="bi bi-star me-1" aria-hidden="true"></i>Only Favorites</a>
+					</div>
+				</div>
+
+				<div id="server-list" class="row row-cols-1 row-cols-lg-2 row-cols-xxl-3 g-0"></div>
+
+				<footer class="py-2 px-3 bg-body-secondary rounded mb-3 mt-4 font-monospace">
+					<i class="bi bi-code-slash me-2"></i>Powered by open source software: <a href="https://github.com/Cryptkeeper/Minetrack" class="link link-info">make it your own!</a>
+				</footer>
+			</div>
 		</div>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

@@ -69,7 +69,7 @@ export class SortController {
     this._lastSortedServers = undefined
 
     // Reset modified DOM structures
-    this._buttonElement.style.display = 'none'
+    this._buttonElement.classList.add('d-none')
     this._textElement.innerText = '...'
 
     // Remove bound DOM event listeners

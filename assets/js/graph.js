@@ -124,7 +124,7 @@ export class GraphDisplayManager {
 
   getPlotSize () {
     return {
-      width: Math.max(window.innerWidth, 800) * 0.9,
+      width: window.innerWidth * 0.95,
       height: 400
     }
   }
@@ -334,6 +334,10 @@ export class GraphDisplayManager {
   resize = () => {
     this._plotInstance.setSize(this.getPlotSize())
 
+    document.querySelectorAll('.column-graph').forEach(element => {
+      
+    })
+
     // undefine value so #clearTimeout is not called
     // This is safe even if #resize is manually called since it removes the pending work
     if (this._resizeRequestTimeout) {
@@ -409,7 +413,7 @@ export class GraphDisplayManager {
   }
 
   handleSettingsToggle = () => {
-    const element = document.getElementById('big-graph-controls-drawer')
+    const element = document.getElementById('big-graph-controls')
 
     if (element.style.display !== 'block') {
       element.style.display = 'block'
@@ -459,8 +463,7 @@ export class GraphDisplayManager {
 
     // Reset modified DOM structures
     document.getElementById('big-graph-checkboxes').innerHTML = ''
-    document.getElementById('big-graph-controls').style.display = 'none'
 
-    document.getElementById('settings-toggle').style.display = 'none'
+    document.getElementById('settings-toggle').classList.add('d-none')
   }
 }

@@ -37,9 +37,7 @@ export class App {
   }
 
   setPageReady (isReady) {
-    this.setElementVisible('push', isReady)
-    this.setElementVisible('footer', isReady)
-
+    this.setElementVisible('page-view', isReady)
     this.setElementVisible('status-overlay', !isReady)
   }
 

@@ -107,7 +107,12 @@ export function formatTimestampSeconds (secs) {
 export function formatDate (secs) {
   const date = new Date(0)
   date.setUTCSeconds(secs)
-  return date.toLocaleDateString()
+
+  // attempt to shorten YYYY->YY in the pre-formatted date string
+  const s = date.toLocaleDateString()
+  const fullYear = date.getFullYear().toString()
+
+  return s.replace(fullYear, fullYear.substring(fullYear.length - 2))
 }
 
 export function formatPercent (x, over) {

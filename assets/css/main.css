@@ -1,89 +1,12 @@
 @import url(npm:uplot/dist/uPlot.min.css);
 
-/* Floating tooltip */
-#tooltip {
-  display: none;
-  position: absolute;
-  padding: 5px 8px;
-  border-radius: var(--border-radius);
-  background: var(--background-color);
-  color: var(--text-color);
-  z-index: 10000;
-}
-
 .column-graph {
   height: 100px;
   width: 400px;
 }
 
-/* Historical graph */
-#big-graph {
-  padding-right: 65px;
-}
-
-#big-graph, #big-graph-controls, #big-graph-checkboxes {
-    width: 90%;
-}
-
-#big-graph-checkboxes > table {
-    width: 100%;
-}
-
-#big-graph {
-  margin: 0 auto;
-}
-
-#big-graph-controls {
-  margin: 10px auto;
-  display: none;
-}
-
-.graph-controls-show {
-  color: var(--text-color);
-}
-
-#big-graph-controls .icon-star {
-  color: var(--color-gold);
-}
-
-#big-graph-controls-drawer {
-  background: var(--background-color);
-  color: var(--text-color);
-  border-radius: var(--border-radius);
-  padding-bottom: 10px;
-  overflow: auto;
-  display: none;
-}
-
-#big-graph-controls-drawer .graph-controls-setall {
-  text-align: center;
-  display: block;
-  margin: 15px 0;
-}
-
-#big-graph-checkboxes {
-  margin: 15px auto 0 auto;
-}
-
-/* Percentage bar */
-#perc-bar {
-  height: 35px;
-  position: relative;
-  overflow-x: hidden;
-}
-
-#perc-bar .perc-bar-part {
-  height: 100%;
-  display: inline-block;
-  position: absolute;
-}
-
 /* uPlot.css overrides */
 .uplot .select {
-  background: var(--color-blue);
+  background: lightblue;
   opacity: 0.3;
-}
-
-.server-highlighted-label, .server-highlighted-value {
-
 }

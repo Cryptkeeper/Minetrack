@@ -78,6 +78,13 @@ export class ServerRegistration {
     ]
   }
 
+  getPlotSize () {
+    return {
+      width: window.innerWidth * 0.95,
+      height: 400
+    }
+  }
+
   buildPlotInstance () {
     const tickCount = 4
 
@@ -282,7 +289,7 @@ export class ServerRegistration {
 
     serverElement.id = `container_${this.serverId}`
     serverElement.innerHTML = `
-      <div class="col">
+      <div class="col m-3">
         <div class="vstack gap-2">
           <div class="hstack gap-2">
             <div style="width: 64px">
@@ -302,16 +309,16 @@ export class ServerRegistration {
                 </div>
               </div>
               <span class="text-warning d-none" id="error_${this.serverId}"></span>
-              <div class="row mt-2">
-                <div id="player-count_${this.serverId}" class="col text-center">
+              <div class="row gx-0 mt-2">
+                <div id="player-count_${this.serverId}" class="col p-1 lh-sm text-center">
                   <span class="text-body-secondary small text-uppercase">Players</span><br />
                   <span class="server-value" id="player-count-value_${this.serverId}"></span>
                 </div>
-                <div id="peak_${this.serverId}" class="col text-center d-none">
+                <div id="peak_${this.serverId}" class="col p-1 lh-sm text-center d-none">
                   <span class="text-body-secondary small text-uppercase">${this._app.publicConfig.graphDurationLabel} Peak</span><br />
                   <span class="server-value" id="peak-value_${this.serverId}"></span>
                 </div>
-                <div id="record_${this.serverId}" class="col text-center d-none">
+                <div id="record_${this.serverId}" class="col p-1 lh-sm text-center d-none">
                   <span class="text-body-secondary small text-uppercase">Record</span><br />
                   <span class="server-value text-nowrap" id="record-value_${this.serverId}">-</span>
                 </div>
@@ -331,12 +338,10 @@ export class ServerRegistration {
       const labelElement = document.getElementById(`${category}_${this.serverId}`)
       const valueElement = document.getElementById(`${category}-value_${this.serverId}`)
 
-
-
       if (selectedCategory && category === selectedCategory) {
-        labelElement.classList.add('fw-bold')
+        labelElement.classList.add('rounded', 'bg-body-secondary')
       } else {
-        labelElement.classList.remove('fw-bold')
+        labelElement.classList.remove('rounded', 'bg-body-secondary')
       }
     })
   }

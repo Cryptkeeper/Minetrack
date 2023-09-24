@@ -41,7 +41,8 @@ export class PercentageBar {
     div.id = `perc-bar-part_${serverRegistration.serverId}`
     div.style.background = serverRegistration.data.color
 
-    div.setAttribute('class', 'perc-bar-part')
+    div.classList.add('d-inline-block', 'h-100', 'position-absolute')
+
     div.setAttribute('minetrack-server-id', serverRegistration.serverId)
 
     this._parent.appendChild(div)
