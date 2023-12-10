@@ -21,20 +21,14 @@ You can find a list of community hosted instances below. Want to be listed here?
 
 * https://minetrack.me
 * https://bedrock.minetrack.me
-* https://track.read-my-man.ga
-* https://trackedservers.com
 * https://suomimine.fi
 * https://minetrack.geyserconnect.net
 * https://minetrack.rmly.dev
 * https://minetrack.fi
-* https://livemc.ru
-* https://ruminetrack.merded.xyz
-* https://bleepotrack.xyz
 * https://pvp-factions.fr
-* https://minetrack.top
 * https://stats.liste-serveurs.fr
-* https://minetrack.live
-* https://minetrack.galaxite.dev/
+* https://minetrack.galaxite.dev
+* https://livemc.org
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
