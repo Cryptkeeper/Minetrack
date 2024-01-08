@@ -30,6 +30,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://minetrack.galaxite.dev
 * https://livemc.org
 * https://track.antralia.net
+* https://track.pacor.ro
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
