@@ -64,5 +64,10 @@
 		"name": "PlayLegend",
 		"ip": "playlegend.net",
 		"type": "PC"
+	},
+	{
+		"name": "Minemen Club",
+		"ip": "minemen.club",
+		"type": "PC"
 	}
 ]
