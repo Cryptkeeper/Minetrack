@@ -36,9 +36,9 @@
 		"type": "PC"
 	},
 	{
-	    	"name": "MCC Island",
+	  "name": "MCC Island",
 		"ip": "play.mccisland.net",
-	    	"type": "PC"
+	  "type": "PC"
 	},
 	{
 		"name": "Origin Realms",
@@ -48,6 +48,11 @@
 	{
 		"name": "Hideaway",
 		"ip": "playhideaway.com",
+		"type": "PC"
+	},
+	{
+		"name": "Hoplite",
+		"ip": "hoplite.gg",
 		"type": "PC"
 	},
 	{
