@@ -1,32 +1,37 @@
-FROM node:15
+FROM node:18.19.1-alpine3.19
 
-ARG TINI_VER="v0.19.0"
+ARG TINI_VER="0.19.0"
+ARG SQLITE_CLI_VER="3.45.1"
 
-# install tini
-ADD https://github.com/krallin/tini/releases/download/$TINI_VER/tini /sbin/tini
-RUN chmod +x /sbin/tini
+WORKDIR /app
 
-# install sqlite3
-RUN apt-get update                                                   \
- && apt-get install    --quiet --yes --no-install-recommends sqlite3 \
- && apt-get clean      --quiet --yes                                 \
- && apt-get autoremove --quiet --yes                                 \
- && rm -rf /var/lib/apt/lists/*
-
-# copy minetrack files
-WORKDIR /usr/src/minetrack
 COPY . .
 
-# build minetrack
-RUN npm install --build-from-source \
- && npm run build
+RUN apk add --no-cache bash tini="$TINI_VER" sqlite="$SQLITE_CLI_VER"
+RUN <<EOT bash
 
-# run as non root
-RUN addgroup --gid 10043 --system minetrack \
- && adduser  --uid 10042 --system --ingroup minetrack --no-create-home --gecos "" minetrack \
- && chown -R minetrack:minetrack /usr/src/minetrack
-USER minetrack
+set -ex
+
+(deluser --remove-home xfs 2>/dev/null || true)
+(deluser --remove-home www-data 2>/dev/null || true)
+(delgroup www-data 2>/dev/null || true)
+(delgroup xfs 2>/dev/null || true)
+addgroup -S -g 33 www-data
+adduser -S -D -u 33 -s /sbin/nologin -h /var/www -G www-data www-data
+
+npm install
+npm run build
+
+chown -R www-data:www-data /app
+chmod 750 /app
+
+EOT
+
+USER www-data:www-data
 
 EXPOSE 8080
 
-ENTRYPOINT ["/sbin/tini", "--", "node", "main.js"]
+VOLUME /app/data
+
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "main.js"]
