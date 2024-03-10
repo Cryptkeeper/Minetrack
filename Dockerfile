@@ -20,6 +20,9 @@ addgroup -S -g 33 www-data
 adduser -S -D -u 33 -s /sbin/nologin -h /var/www -G www-data www-data
 
 npm install
+(npm audit || true)
+(npm audit fix || true)
+npm cache clean --force
 npm run build
 
 chown -R www-data:www-data /app

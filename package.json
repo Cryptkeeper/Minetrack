@@ -38,7 +38,7 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/core": "^7.24.0",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.2.0",
@@ -46,7 +46,7 @@
     "eslint-plugin-import": "^2.21.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "parcel": "^2.8.0"
+    "parcel": "^2.12.0"
   },
   "scripts": {
     "build": "eslint assets/js/*.js && parcel build assets/html/index.html --dist-dir dist",

@@ -9,3 +9,5 @@ npm-debug.log
 README.md
 .parcel-cache/
 dist/
+*.sql*
+*.log*
