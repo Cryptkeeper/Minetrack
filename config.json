@@ -1,18 +1,18 @@
 {
 	"site": {
-		"port": 8080,
+		"port": 80,
 		"ip": "0.0.0.0"
 	},
 	"rates": {
-		"pingAll": 3000,
-		"connectTimeout": 2500
+		"pingAll": 5000,
+		"connectTimeout": 4000
 	},
 	"oldPingsCleanup": {
-		"enabled": false,
-		"interval": 3600000
+		"enabled": true,
+		"interval": 360000000
 	},
-	"logFailedPings": true,
-	"logToDatabase": false,
-	"graphDuration": 86400000,
-	"serverGraphDuration": 180000
+	"logFailedPings": false,
+	"logToDatabase": true,
+	"graphDuration": 259200000,
+	"serverGraphDuration": 43200000
 }
