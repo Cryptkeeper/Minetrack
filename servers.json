@@ -1,12 +1,252 @@
 [
-	{
-		"name": "Hypixel",
-		"ip": "mc.hypixel.net",
-		"type": "PC"
-	},
-	{
-		"name": "CubeCraft",
-		"ip": "play.cubecraft.net",
-		"type": "PC"
-	}
+  {
+    "name": "Hypixel",
+    "ip": "mc.hypixel.net",
+    "type": "PC"
+  },
+  {
+    "name": "Skydinse",
+    "ip": "skydinse.de",
+    "type": "PC"
+  },
+  {
+    "name": "GommeHD.net",
+    "ip": "GommeHD.net",
+    "type": "PC"
+  },
+  {
+    "name": "Anturnia",
+    "ip": "anturnia.net",
+    "type": "PC"
+  },
+  {
+    "name": "Auroracraft",
+    "ip": "auroracraft.de",
+    "type": "PC"
+  },
+  {
+    "name": "Devdinse",
+    "ip": "dev.skydinse.net",
+    "type": "PC"
+  },
+  {
+    "name": "Cytooxien",
+    "ip": "cytooxien.de",
+    "type": "PC"
+  },
+  {
+    "name": "AntiAC",
+    "ip": "antiac.net",
+    "type": "PC"
+  },
+  {
+    "name": "GrieferGames",
+    "ip": "griefergames.net",
+    "type": "PC"
+  },
+  {
+    "name": "CubeCraft",
+    "ip": "play.cubecraft.net",
+    "type": "PC"
+  },
+  {
+    "name": "Minehut",
+    "ip": "minehut.com",
+    "type": "PC"
+  },
+  {
+    "name": "Timolia",
+    "ip": "timolia.de",
+    "type": "PC"
+  },
+  {
+    "name": "SpieleLP",
+    "ip": "spielelp.de",
+    "type": "PC"
+  },
+  {
+    "name": "HeroMC",
+    "ip": "heromc.de",
+    "type": "PC"
+  },
+  {
+    "name": "Cafestube",
+    "ip": "cafestu.be",
+    "type": "PC"
+  },
+  {
+    "name": "Lostify",
+    "ip": "lostify.net",
+    "type": "PC"
+  },
+  {
+    "name": "PVP Land",
+    "ip": "pvp.land",
+    "type": "PC"
+  },
+  {
+    "name": "MCC Island",
+    "ip": "mccisland.net",
+    "type": "PC"
+  },
+  {
+    "name": "srinonetwork",
+    "ip": "srinonetwork.online",
+    "type": "PC"
+  },
+  {
+    "name": "SpieleOase",
+    "ip": "SpieleOase.NET",
+    "type": "PC"
+  },
+  {
+    "name": "Hive Bedrock",
+    "ip": "geo.hivebedrock.network",
+    "type": "PE"
+  },
+  {
+    "name": "Xevento",
+    "ip": "xevento.net",
+    "type": "PC"
+  },
+  {
+    "name": "Acewolf",
+    "ip": "acewolf.eu",
+    "type": "PC"
+  },
+  {
+    "name": "Survival Ecke",
+    "ip": "survivalecke.de",
+    "type": "PC"
+  },
+  {
+    "name": "roxbot",
+    "ip": "roxbot.com",
+    "type": "PC"
+  },
+  {
+    "name": "TeamHoly",
+    "ip": "teamholy.de",
+    "type": "PC"
+  },
+  {
+    "name": "Craftattack",
+    "ip": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "type": "PC"
+  },
+  {
+    "name": "Playlegend",
+    "ip": "playlegend.net",
+    "type": "PC"
+  },
+  {
+    "name": "FireCock",
+    "ip": "fireclock.net",
+    "type": "PC"
+  },
+  {
+    "name": "EinDino",
+    "ip": "EinDino.net",
+    "type": "PC"
+  },
+  {
+    "name": "StyyCraft",
+    "ip": "styycraft.net",
+    "type": "PC"
+  },
+  {
+    "name": "FreakyVille",
+    "ip": "freakyville.net",
+    "type": "PC"
+  },
+  {
+    "name": "OpSucht",
+    "ip": "opsucht.net",
+    "type": "PC"
+  },
+  {
+    "name": "Hoplite.gg",
+    "ip": "mc.hoplite.gg",
+    "type": "PC"
+  },
+  {
+    "name": "TheJoCraft",
+    "ip": "thejocraft.net",
+    "type": "PC"
+  },
+  {
+    "name": "RappyTV",
+    "ip": "rappytv.net",
+    "type": "PC"
+  },
+  {
+    "name": "labymod server",
+    "ip": "server.labystudio.de",
+    "type": "PC"
+  },
+  {
+    "name": "Lunarie.TV",
+    "ip": "lunarie.tv",
+    "type": "PC"
+  },
+  {
+    "name": "skymc.org",
+    "ip": "skymc.org",
+    "type": "PC"
+  },
+  {
+    "name": "Cockbande (Blockbande.de)",
+    "ip": "blockbande.de",
+    "type": "PC"
+  },
+  {
+    "name": "TrySMP",
+    "ip": "TrySmp.net",
+    "type": "PC"
+  },
+  {
+    "name": "EarthMC",
+    "ip": "earthmc.net",
+    "type": "PC"
+  },
+  {
+    "name": "GermanSMP",
+    "ip": "germansmp.de",
+    "type": "PC"
+  },
+  {
+    "name": "Landania",
+    "ip": "landania.net",
+    "type": "PC"
+  },
+  {
+    "name": "2bt2",
+    "ip": "2b2t.org",
+    "type": "PC"
+  },
+  {
+    "name": "thearcon.net",
+    "ip": "thearcon.net",
+    "type": "PC"
+  },
+  {
+    "name": "wynncraft.com",
+    "ip": "play.wynncraft.com",
+    "type": "PC"
+  },
+  {
+    "name": "purpleprison.net",
+    "ip": "purpleprison.net",
+    "type": "PC"
+  },
+  {
+    "name": "thelotus",
+    "ip": "thelotus.tv",
+    "type": "PC"
+  },
+  {
+    "name": "rapy.pl",
+    "ip": "rapy.pl",
+    "type": "PC"
+  }
 ]
