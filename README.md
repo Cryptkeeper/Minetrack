@@ -32,6 +32,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://track.antralia.net
 * https://track.pacor.ro
 * https://minetrack.spielelp.de
+* https://track.axsoter.com
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
