@@ -39,5 +39,12 @@
 		"type": "PE",
 		"color": "#609be1",
 		"favicon": "galaxite.png"
+	},
+        {
+		"name": "Dragons",
+		"ip": "play.enchanted.gg",
+		"type": "PE",
+		"color": "#902ad9",
+		"favicon": "dragons.png"
 	}
 ]
