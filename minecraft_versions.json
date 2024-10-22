@@ -161,8 +161,12 @@
 			"protocolId": 766
 		},
 		{
-			"name": "1.21",
+			"name": "1.21.1",
 			"protocolId": 767
+		},
+		{
+			"name": "1.21.2",
+			"protocolId": 768
 		}
 	]
 }
