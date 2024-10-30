@@ -30,6 +30,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://livemc.org
 * https://track.pacor.ro
 * https://minetrack.spielelp.de
+* https://tracking.v4guard.io
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
