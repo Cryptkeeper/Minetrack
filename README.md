@@ -24,6 +24,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://suomimine.fi
 * https://minetrack.geyserconnect.net
 * https://minetrack.fi
+* https://track.axsoter.com
 * https://pvp-factions.fr
 * https://stats.liste-serveurs.fr
 * https://minetrack.galaxite.dev
