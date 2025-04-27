@@ -23,14 +23,16 @@ You can find a list of community hosted instances below. Want to be listed here?
 * https://bedrock.minetrack.me
 * https://suomimine.fi
 * https://minetrack.geyserconnect.net
-* https://minetrack.rmly.dev
 * https://minetrack.fi
+* https://www.anarchytrack.live/
+* https://track.axsoter.com
 * https://pvp-factions.fr
 * https://stats.liste-serveurs.fr
 * https://minetrack.galaxite.dev
 * https://livemc.org
-* https://track.antralia.net
 * https://track.pacor.ro
+* https://minetrack.spielelp.de
+* https://tracking.v4guard.io
 
 ## Updates
 For updates and release notes, please read the [CHANGELOG](docs/CHANGELOG.md).
