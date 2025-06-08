@@ -21,6 +21,7 @@ You can find a list of community hosted instances below. Want to be listed here?
 
 * https://minetrack.me
 * https://bedrock.minetrack.me
+* https://minetrack.gg
 * https://suomimine.fi
 * https://minetrack.geyserconnect.net
 * https://minetrack.fi
